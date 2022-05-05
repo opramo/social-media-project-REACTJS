@@ -1,24 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route, useLocation } from "react-router-dom";
+import "./App.css";
+import LandingPage from "./Pages/LandingPage";
+import NavBar from "./components/NavBar";
+import Home from "./Pages/Home";
+import AccountSettings from "./Pages/AccountSettings";
+import MyKitchen from "./Pages/MyKitchen";
+import NewRecipe from "./Pages/NewRecipe";
+import VerifyAcc from "./Pages/VerifyAcc";
+import Verification from "./Pages/Verification";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// css
 
 function App() {
+  const location = useLocation();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <NavBar />
+      <Routes>
+        <Route path="" element={<LandingPage />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/accountsettings" element={<AccountSettings />} />
+        <Route path="/account" element={<MyKitchen />} />
+        <Route path="/newrecipe" element={<NewRecipe />} />
+        <Route path="/verifyaccount" element={<VerifyAcc />} />
+        <Route path="/verification/:token" element={<Verification />} />
+      </Routes>
+      <ToastContainer />
+    </>
   );
 }
 
