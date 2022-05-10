@@ -13,6 +13,8 @@ import { loginAction } from "../Redux/Actions/userActions";
 const ModalLogIn = (props) => {
   const { loading, error_mes } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [changed, setChanged] = useState(false);
+
   let message = [];
   if (error_mes && props.modalLogIn) {
     message = error_mes.split(",");
@@ -35,6 +37,8 @@ const ModalLogIn = (props) => {
 
   const onSubmit = async (values, onSubmitProps) => {
     try {
+      console.log(values);
+      setChanged(false);
       dispatch(loginAction(values));
     } catch (error) {
       console.log(error);
@@ -105,6 +109,13 @@ const ModalLogIn = (props) => {
                   onSubmit={onSubmit}
                 >
                   {(formik) => {
+                    // if (formik.values.personId === "") {
+                    //   dispatch({ type: "CLEARERROR" });
+                    // }
+                    // if (formik.values.password === "") {
+                    //   dispatch({ type: "CLEARERROR" });
+                    // }
+
                     return (
                       <Form className="flex flex-col gap-y-1">
                         {/* Email/Username */}
@@ -130,7 +141,9 @@ const ModalLogIn = (props) => {
 
                           {message[0] &&
                             !(
-                              formik.errors.personId && formik.touched.personId
+                              formik.errors.personId &&
+                              formik.touched.personId &&
+                              formik.values.personId === ""
                             ) && (
                               <div className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none">
                                 {error_mes}
@@ -159,7 +172,9 @@ const ModalLogIn = (props) => {
                           />
                           {message[1] &&
                             !(
-                              formik.errors.password && formik.touched.password
+                              formik.errors.password &&
+                              formik.touched.password &&
+                              formik.dirty
                             ) && (
                               <div className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none">
                                 {message[1]}

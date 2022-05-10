@@ -10,15 +10,29 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ModalNewComment from "./ModalNewComment";
-import { Popover } from "@headlessui/react";
-import { motion } from "framer-motion";
+import { Menu, Popover } from "@headlessui/react";
+import { AnimatePresence, motion } from "framer-motion";
+import API_URL from "../Helpers/apiurl";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import Cookies from "js-cookie";
+import ModalDelete from "./ModalDelete";
 
-const Recipe = () => {
+const Recipe = (props) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { id, comment, deleted } = useSelector((state) => state.user);
   const [modalNewComment, setModalNewComment] = useState(false);
-  const [kissed, setKissed] = useState(false);
+  const [modalDelete, setModalDelete] = useState(false);
+  const [kissed, setKissed] = useState(props.data.liked);
+  const [likes, setLikes] = useState(props.data.likes);
+  const [likers, setLikers] = useState(props.data.user_likes);
+  const [comments, setComments] = useState(props.data.comments);
   const modalNewCommentHandler = () => {
     setModalNewComment(!modalNewComment);
+  };
+  const modalDeleteHandler = () => {
+    setModalDelete(!modalDelete);
   };
 
   const [isPage, setIsPage] = useState({
@@ -28,9 +42,38 @@ const Recipe = () => {
     comment: 0,
   });
 
+  const createdAtPost = new Date(props.data.updated_at).toLocaleDateString(
+    undefined,
+    { year: "numeric", month: "long", day: "numeric" }
+  );
   useEffect(() => {
     printKissed();
-  }, [kissed]);
+    if (comment) {
+      printComments();
+      dispatch({ type: "NOCOMMENT" });
+    }
+    if (deleted) {
+      props.getFeeds();
+      dispatch({ type: "NODELETE" });
+    }
+    console.log(`edit dialog on close scroll by itself`);
+  }, [kissed, likes, modalNewComment, modalDelete]);
+
+  // const onKissed = async
+
+  const getComments = async () => {
+    try {
+      dispatch({ type: "LOADING" });
+      setIsPage({ main: 0, recipe: 0, kisses: 0, comment: 1 });
+      let res = await axios.post(`${API_URL}/recipe/recipe-comments`, {
+        post_id: props.data.post_id,
+      });
+      setComments(res.data);
+      dispatch({ type: "DONE" });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const printKissed = () => {
     return (
@@ -38,12 +81,80 @@ const Recipe = () => {
         className={`h-14 w-14 rounded-full border-2 border-merah mr-1 overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none ${
           kissed ? "bg-merah" : "grayscale"
         }`}
-        onClick={() => {
-          setKissed(!kissed);
+        onClick={async () => {
+          try {
+            let token = Cookies.get("token");
+
+            await axios.post(
+              `${API_URL}/recipe/like-recipe`,
+              { post_id: props.data.post_id },
+              {
+                headers: { authorization: token },
+              }
+            );
+            kissed ? setLikes(likes - 1) : setLikes(likes + 1);
+            setKissed(!kissed);
+            console.log("liked!");
+          } catch (error) {
+            console.log(error);
+          }
         }}
       >
         <img src={kiss} alt="" className="scale-90" />
       </button>
+    );
+  };
+
+  const printUserLikes = () => {
+    return (
+      <ul className="max-w-full ml-5 break-words text-xl bg-putih">
+        {likers.map((content) => {
+          return (
+            <li key={content.id}>
+              <div
+                className="flex rounded-md hover:bg-white/50 cursor-pointer text-base py-2"
+                onClick={() => navigate("/account")}
+              >
+                <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
+                  <img src={`${API_URL}${content.profile_picture}`} alt="" />
+                </div>
+                <div>
+                  <div className="mb-1">{content.username}</div>
+                  <div>{content.fullname}</div>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
+
+  const printComments = () => {
+    return (
+      <ul className="max-w-full ml-5 break-words text-base bg-putih">
+        {comments.map((content) => {
+          return (
+            <li className="flex flex-col" key={content.id}>
+              <div className="h-[10%] w-full flex justify-between">
+                <div
+                  className="flex  rounded-md hover:bg-white/50 cursor-pointer text-base py-2"
+                  onClick={() => navigate("/account")}
+                >
+                  <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
+                    <img src={`${API_URL}${content.profile_picture}`} alt="" />
+                  </div>
+                  <div>
+                    <div className="mb-1">{content.username}</div>
+                    <div>{content.fullname}</div>
+                  </div>
+                </div>
+              </div>
+              <div className="ml-16">{content.comment}</div>
+            </li>
+          );
+        })}
+      </ul>
     );
   };
 
@@ -52,6 +163,14 @@ const Recipe = () => {
       <ModalNewComment
         modalNewComment={modalNewComment}
         modalNewCommentHandler={modalNewCommentHandler}
+        post_id={props.data.post_id}
+        comments={comments}
+        setComments={setComments}
+      />
+      <ModalDelete
+        modalDelete={modalDelete}
+        modalDeleteHandler={modalDeleteHandler}
+        post_id={props.data.post_id}
       />
       {/* Nav Content */}
       <div className="absolute w-[6%] left-[94%] flex flex-col h-full z-10 bg-black/40 rounded-r">
@@ -88,8 +207,18 @@ const Recipe = () => {
           className={`w-full h-[30%] rounded-r break-words px-2 focus:outline-none duration-500 ${
             isPage.kisses ? "bg-merah text-putih" : " bg-putih "
           }`}
-          onClick={() => {
-            return setIsPage({ main: 0, recipe: 0, kisses: 1, comment: 0 });
+          onClick={async () => {
+            try {
+              dispatch({ type: "LOADING" });
+              setIsPage({ main: 0, recipe: 0, kisses: 1, comment: 0 });
+              let res = await axios.post(`${API_URL}/recipe/recipe-likers`, {
+                post_id: props.data.post_id,
+              });
+              setLikers(res.data);
+              dispatch({ type: "DONE" });
+            } catch (error) {
+              console.log(error);
+            }
           }}
         >
           K I<br /> S SES
@@ -100,7 +229,7 @@ const Recipe = () => {
             isPage.comment ? "bg-merah text-putih" : "bg-putih"
           }`}
           onClick={() => {
-            return setIsPage({ main: 0, recipe: 0, kisses: 0, comment: 1 });
+            getComments();
           }}
         >
           COMMENT
@@ -116,21 +245,81 @@ const Recipe = () => {
                   className="flex  rounded-md hover:bg-white/50 cursor-pointer"
                   onClick={() => navigate("/account")}
                 >
-                  <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                    <img src={cat} alt="" />
+                  <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
+                    <img
+                      src={`${API_URL}${props.data.user.profile_picture}`}
+                      alt=""
+                    />
                   </div>
                   <div>
-                    <div className="mb-1">CatTheChef</div>
-                    <div>Gordon Ramspaw</div>
+                    <div className="mb-1">{props.data.user.username}</div>
+                    <div>{props.data.user.fullname}</div>
                   </div>
                 </div>
                 <div className="flex flex-col text-center items-end mb-1">
-                  <DotsHorizontalIcon
-                    className="h-5 w-5 cursor-pointer hover:text-merah 
-                    text-merah/50 duration-500 border-2 border-merah/30 rounded-full hover:bg-merah/30 hover:border-transparent"
-                    onClick={() => {}}
-                  />
-                  <div className="text-xs">28th June 2022</div>
+                  <div className="text-xs">{createdAtPost}</div>
+                  {id == props.data.user_id ? (
+                    <div className="relative">
+                      <Menu>
+                        {({ open }) => (
+                          <>
+                            <Menu.Button className="">
+                              <DotsHorizontalIcon
+                                className="h-5 w-5 cursor-pointer hover:text-merah text-merah/50 duration-500 border-2 border-merah/30 rounded-full hover:bg-merah/30 hover:border-transparent"
+                                onClick={() => {}}
+                              />
+                            </Menu.Button>
+                            <AnimatePresence>
+                              {open && (
+                                <Menu.Items
+                                  as={motion.div}
+                                  static
+                                  initial={{ height: 0 }}
+                                  animate={{ height: "auto" }}
+                                  exit={{ height: 0 }}
+                                  transition={{ duration: 0.3, type: "spring" }}
+                                  className="absolute right-0 z-10 bg-putih rounded focus:outline-none shadow-xl shadow-black overflow-hidden"
+                                >
+                                  <Menu.Item>
+                                    {({ active }) => (
+                                      <div
+                                        className={`hover:bg-merah hover:text-putih duration-500 cursor-pointer ${
+                                          active ? "bg-cool-gray-200" : ""
+                                        } block px-5 py-3 whitespace-no-wrap`}
+                                        onClick={() => {
+                                          navigate("/editrecipe");
+                                          dispatch({
+                                            type: "NEWEDIT",
+                                            payload: props.data.post_id,
+                                          });
+                                        }}
+                                      >
+                                        Edit
+                                      </div>
+                                    )}
+                                  </Menu.Item>
+                                  <Menu.Item>
+                                    {({ active }) => (
+                                      <div
+                                        className={`hover:bg-merah hover:text-putih duration-500 cursor-pointer ${
+                                          active ? "bg-cool-gray-200" : ""
+                                        } block px-5 py-3 whitespace-no-wrap`}
+                                        onClick={() => {
+                                          modalDeleteHandler();
+                                        }}
+                                      >
+                                        Delete
+                                      </div>
+                                    )}
+                                  </Menu.Item>
+                                </Menu.Items>
+                              )}
+                            </AnimatePresence>
+                          </>
+                        )}
+                      </Menu>
+                    </div>
+                  ) : null}
                 </div>
               </div>
               <div className="h-[80%] w-full relative">
@@ -139,29 +328,36 @@ const Recipe = () => {
                 <div className="h-full w-full p-5 -mt-3">
                   <div className="h-5/6 p-2 pb-0 bg-white">
                     <img
-                      src={food1}
+                      src={`${API_URL}${props.data.photo}`}
                       alt=""
                       className="w-full h-full object-cover"
                       // style={{ objectPosition: "0 0" }}
                     />
                   </div>
                   <div className="h-1/6 flex items-center justify-center text-center text-2xl bg-white">
-                    "Spawgetti Seafood Marinara"
+                    {props.data.title}
                   </div>
                 </div>
               </div>
-              <div className="h-[10%] w-full flex justify-around item px-5 -mt-3">
-                <>{printKissed()}</>
+              <div className="h-[10%] w-full flex justify-between item px-10 -mt-3">
+                <div className="flex items-center">
+                  {printKissed()}
+                  <span className="text-xs">
+                    {likes
+                      ? `${likes} chefs like this!`
+                      : "No chef likes this recipe :<"}
+                  </span>
+                </div>
                 <button className="h-14 w-14 rounded-full  border-2 border-biru ml-1 overflow-hidden  hover:bg-biru duration-500 hover:shadow-black shadow-md focus:outline-none">
                   <PaperAirplaneIcon className="h-full w-full p-2 hover:text-white " />
                 </button>
-                <Popover as="div" className="relative h-14 w-14">
+                {/* <Popover as="div" className="relative h-14 w-14">
                   {({ open, close }) => (
                     <>
                       <Popover.Button className="absolute h-14 w-14 rounded-full  border-2 border-biru overflow-hidden  hover:bg-biru duration-500 hover:shadow-black shadow-md focus:outline-none">
                         Solutions
                       </Popover.Button>
-                      {/*const container =
+                      const container =
                        hidden: { opacity: 1, scale: 0 },
                         visible: {
                           opacity: 1,
@@ -178,7 +374,7 @@ const Recipe = () => {
                         visible: {
                           y: 0,
                           opacity: 1
-                        } */}
+                        }
                       {open && (
                         <Popover.Panel
                           static
@@ -220,7 +416,7 @@ const Recipe = () => {
                       )}
                     </>
                   )}
-                </Popover>
+                </Popover> */}
               </div>
             </div>
           </div>
@@ -234,25 +430,14 @@ const Recipe = () => {
               <div className="w-full h-[250px] bg-putih h mb-7">
                 Ingredients:
                 <div className="w-full h-full overflow-y-scroll border-y border-merah">
-                  <ul className="max-w-full list-disc ml-5 break-words text-sm bg-putih">
-                    <li>
-                      6 oz / 180g dried spaghetti pasta (or other long pasta of
-                      choice)
-                    </li>
-                    <li>2 1/2 tbsp olive oil , separated</li>
-                    <li>
-                      10 oz / 300g seafood Marinara mix , or make your own (Note
-                      1)
-                    </li>
-                    <li>2 garlic cloves , minced</li>
-                    <li>1/2 onion , finely chopped (~1/2 cup)</li>
-                    <li>1/2 cup white wine (any) (Note 2)</li>
-                    <li>
-                      2 cups tomato passata/tomato puree (Note 3) OR 600g/20oz
-                      canned crushed tomato + 1/2 cup water
-                    </li>
-                    <li>1/2 tsp sugar</li>
-                    <li>2 tbsp finely chopped fresh parsley</li>
+                  <ul className="max-w-full list-disc ml-5 break-words text-base bg-putih">
+                    {props.data.ingredients.map((content) => {
+                      return (
+                        <li key={content.ingredient_id}>
+                          {content.ingredient}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               </div>
@@ -260,48 +445,13 @@ const Recipe = () => {
                 Instructions:
                 <div className="w-full h-full overflow-y-scroll border-y border-merah">
                   <ol className="max-w-full list-decimal ml-5 break-words text-sm bg-putih">
-                    <li>
-                      Bring a large pot of salted water to boil. Cook pasta
-                      according to packet directions, but reduce the cooking
-                      time by 1 minute (because the pasta will finish cooking in
-                      the sauce). RESERVE 1 mug of pasta water, then drain the
-                      pasta.
-                    </li>
-                    <li>
-                      Separate the seafood mix based on cook time. Longest cook
-                      time: fish and medium / large prawns, medium cook time:
-                      small prawns, shortest cook time: calamari.
-                    </li>
-                    <li>
-                      Heat 1 1/2 tbsp oil in a large skillet over high heat. Add
-                      fish and large prawns first, cook for 30 seconds. Add
-                      small prawns, cook for 30 seconds. Add calamari, cook for
-                      1 minute. Immediately transfer everything to a bowl.
-                    </li>
-                    <li>
-                      Reduce heat to medium high. Heat remaining 1 tbsp oil,
-                      then add garlic and onion. Cook for 3 minutes until onion
-                      is translucent.
-                    </li>
-                    <li>
-                      Add wine and bring to simmer, scraping the bottom of the
-                      skillet to mix the brown bits into the liquid. Simmer for
-                      1 minute or until alcohol smell has evaporated.
-                    </li>
-                    <li>
-                      Add tomato passata, sugar, salt & pepper. Low heat to
-                      medium high, bring to simmer and cook for 2 minutes.
-                    </li>
-                    <li>
-                      Adjust salt and pepper to taste. Add pasta, seafood,
-                      around 1/2 cup of reserved pasta cooking water into the
-                      sauce. Toss gently and cook for 1 to 2 minutes or until
-                    </li>
-                    <li>
-                      the sauce has thickened and coats the pasta. Serve,
-                      garnished with fresh parsley. (See Note 4 re: parmesan
-                      cheese)
-                    </li>
+                    {props.data.instructions.map((content) => {
+                      return (
+                        <li key={content.instruction_id}>
+                          {content.instruction}
+                        </li>
+                      );
+                    })}
                   </ol>
                 </div>
               </div>
@@ -315,142 +465,16 @@ const Recipe = () => {
           <div className="h-full w-[95%] absolute pr-5 flex bg-merah rounded-l border-4 border-merah">
             <div className="h-full flex flex-col w-full p-5 bg-putih">
               <div className="w-full relative bg-putih text-3xl">
-                9 Chefs loved this recipe:
+                {likes} Chefs loved this recipe:
               </div>
               <div className="h-full w-full relative bg-putih border-y border-merah  overflow-y-scroll mt-5">
-                <ul className="max-w-full ml-5 break-words text-xl bg-putih">
-                  <li>
-                    <div
-                      className="flex  rounded-md hover:bg-white/50 cursor-pointer"
-                      onClick={() => navigate("/account")}
-                    >
-                      <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                        <img src={cat} alt="" />
-                      </div>
-                      <div>
-                        <div className="mb-1">CatTheChef</div>
-                        <div>Gordon Ramspaw</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div
-                      className="flex  rounded-md hover:bg-white/50 cursor-pointer"
-                      onClick={() => navigate("/account")}
-                    >
-                      <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                        <img src={cat} alt="" />
-                      </div>
-                      <div>
-                        <div className="mb-1">CatTheChef</div>
-                        <div>Gordon Ramspaw</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div
-                      className="flex  rounded-md hover:bg-white/50 cursor-pointer"
-                      onClick={() => navigate("/account")}
-                    >
-                      <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                        <img src={cat} alt="" />
-                      </div>
-                      <div>
-                        <div className="mb-1">CatTheChef</div>
-                        <div>Gordon Ramspaw</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div
-                      className="flex  rounded-md hover:bg-white/50 cursor-pointer"
-                      onClick={() => navigate("/account")}
-                    >
-                      <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                        <img src={cat} alt="" />
-                      </div>
-                      <div>
-                        <div className="mb-1">CatTheChef</div>
-                        <div>Gordon Ramspaw</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div
-                      className="flex  rounded-md hover:bg-white/50 cursor-pointer"
-                      onClick={() => navigate("/account")}
-                    >
-                      <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                        <img src={cat} alt="" />
-                      </div>
-                      <div>
-                        <div className="mb-1">CatTheChef</div>
-                        <div>Gordon Ramspaw</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div
-                      className="flex  rounded-md hover:bg-white/50 cursor-pointer"
-                      onClick={() => navigate("/account")}
-                    >
-                      <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                        <img src={cat} alt="" />
-                      </div>
-                      <div>
-                        <div className="mb-1">CatTheChef</div>
-                        <div>Gordon Ramspaw</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div
-                      className="flex  rounded-md hover:bg-white/50 cursor-pointer"
-                      onClick={() => navigate("/account")}
-                    >
-                      <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                        <img src={cat} alt="" />
-                      </div>
-                      <div>
-                        <div className="mb-1">CatTheChef</div>
-                        <div>Gordon Ramspaw</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div
-                      className="flex  rounded-md hover:bg-white/50 cursor-pointer"
-                      onClick={() => navigate("/account")}
-                    >
-                      <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                        <img src={cat} alt="" />
-                      </div>
-                      <div>
-                        <div className="mb-1">CatTheChef</div>
-                        <div>Gordon Ramspaw</div>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div
-                      className="flex  rounded-md hover:bg-white/50 cursor-pointer"
-                      onClick={() => navigate("/account")}
-                    >
-                      <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                        <img src={cat} alt="" />
-                      </div>
-                      <div>
-                        <div className="mb-1">CatTheChef</div>
-                        <div>Gordon Ramspaw</div>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
+                {likers[0] ? printUserLikes() : "No chef likes this recipe :<"}
               </div>
             </div>
           </div>
         </>
       )}
+      {/* Comments Page */}
       {isPage.comment === 1 && (
         <>
           <div className="h-full w-[95%] absolute pr-5 flex bg-merah rounded-l border-4 border-merah">
@@ -459,86 +483,7 @@ const Recipe = () => {
                 Comments from other chefs:
               </div>
               <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah mt-5">
-                <ul className="max-w-full ml-5 break-words text-base bg-putih">
-                  <li className="flex flex-col">
-                    <div className="h-[10%] w-full flex justify-between">
-                      <div
-                        className="flex  rounded-md hover:bg-white/50 cursor-pointer"
-                        onClick={() => navigate("/account")}
-                      >
-                        <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                          <img src={cat} alt="" />
-                        </div>
-                        <div>
-                          <div className="mb-1">CatTheChef</div>
-                          <div>Gordon Ramspaw</div>
-                        </div>
-                      </div>
-                      <div className="flex text-center items-end mb-1">
-                        28th June 2022
-                      </div>
-                    </div>
-                    <div className="ml-16">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Tempora corrupti praesentium, esse error suscipit,
-                      reprehenderit eos molestiae facere quod distinctio illo,
-                      minima aut quisquam? Animi quae necessitatibus corporis
-                      voluptate ut.
-                    </div>
-                  </li>
-                  <li className="flex flex-col">
-                    <div className="h-[10%] w-full flex justify-between">
-                      <div
-                        className="flex  rounded-md hover:bg-white/50 cursor-pointer"
-                        onClick={() => navigate("/account")}
-                      >
-                        <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                          <img src={cat} alt="" />
-                        </div>
-                        <div>
-                          <div className="mb-1">CatTheChef</div>
-                          <div>Gordon Ramspaw</div>
-                        </div>
-                      </div>
-                      <div className="flex text-center items-end mb-1">
-                        28th June 2022
-                      </div>
-                    </div>
-                    <div className="ml-16">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Tempora corrupti praesentium, esse error suscipit,
-                      reprehenderit eos molestiae facere quod distinctio illo,
-                      minima aut quisquam? Animi quae necessitatibus corporis
-                      voluptate ut.
-                    </div>
-                  </li>
-                  <li className="flex flex-col">
-                    <div className="h-[10%] w-full flex justify-between">
-                      <div
-                        className="flex  rounded-md hover:bg-white/50 cursor-pointer"
-                        onClick={() => navigate("/account")}
-                      >
-                        <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                          <img src={cat} alt="" />
-                        </div>
-                        <div>
-                          <div className="mb-1">CatTheChef</div>
-                          <div>Gordon Ramspaw</div>
-                        </div>
-                      </div>
-                      <div className="flex text-center items-end mb-1">
-                        28th June 2022
-                      </div>
-                    </div>
-                    <div className="ml-16">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Tempora corrupti praesentium, esse error suscipit,
-                      reprehenderit eos molestiae facere quod distinctio illo,
-                      minima aut quisquam? Animi quae necessitatibus corporis
-                      voluptate ut.
-                    </div>
-                  </li>
-                </ul>
+                {comments[0] ? printComments() : "No chef commented here :<"}
               </div>
               <div className="w-full relative bg-putih text-3xl">
                 <div className="flex items-center">

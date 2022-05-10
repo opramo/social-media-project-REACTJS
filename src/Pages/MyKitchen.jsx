@@ -7,9 +7,8 @@ import { useSelector } from "react-redux";
 import API_URL from "../Helpers/apiurl";
 
 const MyKitchen = () => {
-  const { username, fullname, profile_picture, profile_cover } = useSelector(
-    (state) => state.user
-  );
+  const { username, fullname, profile_picture, profile_cover, bio } =
+    useSelector((state) => state.user);
   let [myRecipes, setMyRecipe] = useState(true);
   console.log(profile_picture);
   console.log(profile_cover);
@@ -46,6 +45,9 @@ const MyKitchen = () => {
             <div className="mt-3 text-center py-1 shadow-lg bg-black/30 text-putih px-5">
               {fullname}
             </div>
+          </div>
+          <div className="border-kuning border-2 text-white bg-black/50 w-[200px] h-[200px] absolute right-0 top-1/2 -translate-y-1/2">
+            {bio}
           </div>
           <div className="w-full flex justify-center bg-transparent absolute bottom-0 z-10">
             <button

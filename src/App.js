@@ -10,6 +10,7 @@ import VerifyAcc from "./Pages/VerifyAcc";
 import Verification from "./Pages/Verification";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EditRecipe from "./Pages/EditRecipe";
 
 // css
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/accountsettings" element={<AccountSettings />} />
         <Route path="/account" element={<MyKitchen />} />
         <Route path="/newrecipe" element={<NewRecipe />} />
+        <Route path="/editrecipe" element={<EditRecipe />} />
         <Route path="/verifyaccount" element={<VerifyAcc />} />
         <Route path="/verification/:token" element={<Verification />} />
       </Routes>

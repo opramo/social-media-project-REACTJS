@@ -9,54 +9,40 @@ import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
-const ModalNewComment = (props) => {
+const ModalDelete = (props) => {
   const { loading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  const validationSchema = Yup.object({
-    comment: Yup.string().max(
-      300,
-      "You are exceeding the maximum characters limit! (300 characters)."
-    ),
-  });
-  const initialValues = {
-    comment: "",
-  };
-
-  const onSubmit = async (values, { setSubmitting }) => {
+  const onSubmit = async () => {
     try {
+      dispatch({ type: "LOADING" });
       let token = Cookies.get("token");
-      let res = await axios.post(
-        `${API_URL}/recipe/comment-recipe`,
+      await axios.post(
+        `${API_URL}/recipe/delete-recipe`,
         {
-          comment: values.comment,
           post_id: props.post_id,
         },
         {
           headers: { authorization: token },
         }
       );
-      dispatch({ type: "NEWCOMMENT" });
-      props.setComments(res.data);
-      console.log(res.data);
-      toast.success("Comment Sent!", {
+      dispatch({ type: "NEWDELETE" });
+      toast.success("Deleted!", {
         theme: "colored",
         position: "top-center",
       });
-      props.modalNewCommentHandler();
+      props.modalDeleteHandler();
     } catch (error) {
       console.log(error);
-    } finally {
-      setSubmitting(false);
     }
   };
   return (
     <>
-      <Transition appear show={props.modalNewComment} as={Fragment}>
+      <Transition appear show={props.modalDelete} as={Fragment}>
         <Dialog
           as="div"
           className="fixed inset-0 z-50 overflow-y-auto bg-black/50"
-          onClose={props.modalNewCommentHandler}
+          onClose={props.modalDeleteHandler}
         >
           <div className="min-h-screen px-4 text-center">
             <Transition.Child
@@ -93,63 +79,29 @@ const ModalNewComment = (props) => {
                   className="relative text-lg font-medium leading-6 text-putih bg-merah rounded text-center mb-5 -mt-7 -mx-10"
                 >
                   <h1 className="h-20 w-100 flex justify-center items-center text-xl">
-                    Leave a comment below!
+                    You are about to delete your post
                   </h1>
                   <XIcon
                     className="h-5 w-5 absolute top-1/2 right-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:text-white text-white/50 duration-500 border-2 border-white/30 rounded-full hover:bg-white/30 hover:border-transparent"
-                    onClick={() => props.modalNewCommentHandler()}
+                    onClick={() => props.modalDeleteHandler()}
                   />
                 </Dialog.Title>
-                <Formik
-                  // component="div"
-                  initialValues={initialValues}
-                  isValid
-                  // validateOnMount
-                  // validateOnBlur={false}
 
-                  validationSchema={validationSchema}
-                  onSubmit={onSubmit}
-                  className="flex flex-col gap-y-5"
-                >
-                  {(formik) => {
-                    return (
-                      <Form>
-                        <div className="flex flex-col relative">
-                          <Field
-                            as="textarea"
-                            type="text"
-                            name="comment"
-                            cols="30"
-                            rows="10"
-                            spellCheck="false"
-                            placeholder="(e.g. I like your recipe!)"
-                            className={`p-2 outline outline-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 focus:bg-white ${
-                              formik.errors.comment && formik.touched.comment
-                                ? "outline-merah"
-                                : "outline-biru"
-                            }`}
-                          />
-                          <ErrorMessage
-                            component="div"
-                            name="comment"
-                            className="text-merah -mt-5 mx-10 text-xs absolute bottom-2  pointer-events-none"
-                          />
-                        </div>
-                        <div className="mt-2 flex justify-center">
-                          <button
-                            disabled={!formik.dirty || !formik.isValid}
-                            type="input"
-                            className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+                <div className="flex justify-center items-center">
+                  Are you sure?
+                </div>
+                <div className="mt-2 flex justify-center">
+                  <button
+                    disabled={loading}
+                    type="button"
+                    className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
                             disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                            hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                          >
-                            Submit Comment
-                          </button>
-                        </div>
-                      </Form>
-                    );
-                  }}
-                </Formik>
+                    onClick={() => onSubmit()}
+                  >
+                    Yes, delete this post
+                  </button>
+                </div>
               </div>
             </Transition.Child>
           </div>
@@ -159,4 +111,4 @@ const ModalNewComment = (props) => {
   );
 };
 
-export default ModalNewComment;
+export default ModalDelete;

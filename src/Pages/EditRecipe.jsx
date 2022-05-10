@@ -6,24 +6,48 @@ import { useCallback, useEffect, useState } from "react";
 import * as Yup from "yup";
 import Cropper from "react-easy-crop";
 import { useDispatch, useSelector } from "react-redux";
-import { postRecipe } from "../Redux/Actions/userActions";
+import { editRecipe, postRecipe } from "../Redux/Actions/userActions";
+import axios from "axios";
+import API_URL from "../Helpers/apiurl";
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-const NewRecipe = () => {
+const EditRecipe = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.user);
+  const { loading, edit } = useSelector((state) => state.user);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+  const [data, setData] = useState(null);
   const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
     // console.log(croppedArea, croppedAreaPixels);
   }, []);
+  const [photoRecipe, setPhotoRecipe] = useState(null);
+
+  let editTitle = data ? data.post.title : "";
+  console.log(`benerin fotonya ngab`);
+
+  let editIngredients = data
+    ? data.ingredients.map((val) => val.ingredient)
+    : [""];
+  let editInstructions = data
+    ? data.instructions.map((val) => val.instruction)
+    : [""];
 
   const initialValues = {
-    title: "",
+    title: editTitle,
     photo: null,
-    ingredients: [""],
-    instructions: [""],
+    ingredients: editIngredients,
+    instructions: editInstructions,
   };
-  const [photoRecipe, setPhotoRecipe] = useState(null);
+  // const editValues = {
+  //   title: editTitle,
+  //   photo: editPhoto,
+  //   ingredients: editIngredients,
+  //   instructions: editInstructions,
+  // };
+
   const validationSchema = Yup.object({
     title: Yup.string()
       .max(50, "Recipe's name  must be 4 to 15 characters.")
@@ -36,10 +60,15 @@ const NewRecipe = () => {
     //   .oneOf([Yup.ref("password"), null], "Passwords do not match.")
     //   .required("Passwords do not match."),
   });
-  const onSubmit = (values, { setSubmitting }) => {
+
+  const onSubmit = async (values, { setSubmitting }) => {
     console.log("onSubmitvalues :", values);
     let formData = new FormData();
-    formData.append("photo", values.photo[0]);
+    if (values.photo) {
+      formData.append("photo", values.photo[0]);
+    } else {
+      formData.append("photo", 0);
+    }
     console.log("values.title:", values.title);
     console.log("values.ingredients :", values.ingredients);
     console.log("values.instructions :", values.instructions);
@@ -47,12 +76,58 @@ const NewRecipe = () => {
       title: values.title,
       ingredients: values.ingredients,
       instructions: values.instructions,
+      post_id: edit,
     };
     console.log(dataInput);
     formData.append("data", JSON.stringify(dataInput));
-    dispatch(postRecipe(formData));
+    try {
+      dispatch({ type: "LOADING" });
+      let token = Cookies.get("token");
+      let res = await axios.patch(`${API_URL}/recipe/edit-recipe`, formData, {
+        headers: { authorization: token },
+      });
+      dispatch({ type: "LOGIN", payload: res.data });
+      toast.success("Post edited!", {
+        theme: "colored",
+        position: "top-center",
+      });
+      setTimeout(() => {
+        navigate("/home");
+      }, 3000);
+    } catch (error) {
+      dispatch({
+        type: "ERROR",
+        payload: error.response.data.message || "Network Error",
+      });
+    } finally {
+      dispatch({ type: "DONE" });
+    }
     setSubmitting(false);
   };
+
+  const getRecipe = async () => {
+    try {
+      dispatch({ type: "LOADING" });
+      let res = await axios.post(`${API_URL}/recipe/recipe-detail`, {
+        post_id: edit,
+      });
+      setData(res.data);
+      setPhotoRecipe(`${API_URL}${res.data.post.photo}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getRecipe();
+  }, []);
+
+  useEffect(() => {
+    if (loading) {
+      dispatch({ type: "NOEDIT" });
+    }
+    dispatch({ type: "DONE" });
+  }, [loading]);
 
   return (
     <div className="min-h-screen flex pt-20 bg-putih justify-center">
@@ -64,6 +139,7 @@ const NewRecipe = () => {
           // validateOnBlur={false}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
+          enableReinitialize
         >
           {(formik) => {
             return (
@@ -277,7 +353,7 @@ const NewRecipe = () => {
                         disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-white disabled:cursor-not-allowed
                         }`}
                 >
-                  Submit Your Recipe
+                  Edit Your Recipe
                 </button>
               </Form>
             );
@@ -288,4 +364,4 @@ const NewRecipe = () => {
   );
 };
 
-export default NewRecipe;
+export default EditRecipe;

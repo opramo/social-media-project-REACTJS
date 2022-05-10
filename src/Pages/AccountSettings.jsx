@@ -11,7 +11,7 @@ import { editPhoto, editProfile } from "../Redux/Actions/userActions";
 
 const AccountSettings = () => {
   const dispatch = useDispatch();
-  const {
+  let {
     profile_picture,
     profile_cover,
     id,
@@ -23,6 +23,13 @@ const AccountSettings = () => {
     loading,
     error_mes,
   } = useSelector((state) => state.user);
+
+  if (bio == null) {
+    bio = "";
+  }
+  if (fullname == null) {
+    fullname = "";
+  }
 
   const [profilePicture, setProfilePicture] = useState(
     API_URL + profile_picture
@@ -52,17 +59,14 @@ const AccountSettings = () => {
 
   const onSubmit = async (values) => {
     try {
-      // let formDataCover = new FormData();
       console.log("onSUbmit values:", values);
-      console.log("onSUbmit picture:", values.profile_picture);
-      console.log("onSUbmit cover:", values.profile_cover);
       let formData = new FormData();
       if (values.profile_picture) {
-        formData.append("profile_picture", values.profile_picture);
+        formData.append("profile_picture", values.profile_picture[0]);
         console.log("berhasil append profile");
       }
       if (values.profile_cover) {
-        formData.append("profile_cover", values.profile_cover);
+        formData.append("profile_cover", values.profile_cover[0]);
         console.log("berhasil append cover");
       }
 
@@ -73,41 +77,11 @@ const AccountSettings = () => {
       };
 
       formData.append("data", JSON.stringify(dataInput));
-      console.log(formData);
-      // formDataCover.append("profile_cover", values.profile_cover);
-      // console.log(formData);
-      // console.log(formDataCover);
       dispatch(editProfile(formData));
-      // dispatch(editPhoto(formData));
-      // alert(JSON.stringify(values, null, 2));
     } catch (error) {
       console.log(error);
     }
   };
-  // const onSubmitPhoto = async (values) => {
-  //   try {
-  //     let formData = new FormData();
-  //     // let formDataCover = new FormData();
-  //     if (values.profile_picture) {
-  //       formData.append("profile_picture", values.profile_picture[0]);
-  //     }
-  //     if (values.profile_cover) {
-  //       formData.append("profile_cover", values.profile_cover[0]);
-  //     }
-  //     // formDataCover.append("profile_cover", values.profile_cover);
-  //     console.log(formData);
-  //     // console.log(formDataCover);
-  //     // dispatch(editProfile(values));
-  //     dispatch(editPhoto(formData));
-  //     // alert(JSON.stringify(values, null, 2));
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-  // const fileSelectedHandler = (event) => {
-  //   setSelectedImage(event.target.files[0]);
-  //   console.log(selectedImage);
-  // };
 
   const sendEmail = async () => {
     try {
@@ -140,7 +114,7 @@ const AccountSettings = () => {
   // }, []);
 
   return (
-    <div className="min-h-screen w-screen flex pt-20 bg-putih justify-center">
+    <div className="min-h-screen flex pt-20 bg-putih justify-center ">
       <div className="min-w-[600px] flex flex-col items-center shadow-lg shadow-black bg-putih pb-5">
         <div className="my-3">Account Settings</div>
         <div className="my-3">
@@ -204,7 +178,7 @@ const AccountSettings = () => {
                         setProfilePicture(cat);
                       }
 
-                      console.log(event.target.files[0]);
+                      // console.log(event.target.files[0]);
                     }}
                   />
                   <div className="rounded-full h-[200px]  w-[500px] border-2 border-black overflow-hidden">
@@ -231,7 +205,7 @@ const AccountSettings = () => {
                         setProfileCover(cat);
                       }
 
-                      console.log(event.target.files[0]);
+                      // console.log(event.target.files[0]);
                     }}
                   />
                   {/* <button onClick={() => fileInput.click()}>Pick File</button> */}
@@ -270,9 +244,11 @@ const AccountSettings = () => {
                   <ErrorMessage
                     component="div"
                     name="fullname"
-                    className="text-merah -mt-5 mx-2 text-xs absolute bottom-0"
+                    className="text-merah -mt-5 mx-2 text-xs absolute bottom-0  pointer-events-none"
                   />
                 </div>
+
+                {/* Username */}
                 <div className="flex flex-col relative w-full items-center">
                   <label htmlFor="username">Username</label>
                   <Field
@@ -289,7 +265,7 @@ const AccountSettings = () => {
                   <ErrorMessage
                     component="div"
                     name="username"
-                    className="text-merah -mt-5 mx-2 text-xs absolute bottom-0"
+                    className="text-merah -mt-5 mx-2 text-xs absolute bottom-0  pointer-events-none"
                   />
                   {error_mes &&
                     !(formik.errors.username && formik.touched.username) && (
@@ -298,6 +274,8 @@ const AccountSettings = () => {
                       </div>
                     )}
                 </div>
+
+                {/* Bio */}
                 <div className="flex flex-col relative w-full items-center">
                   <label htmlFor="bio">Bio</label>
                   <Field
@@ -317,7 +295,7 @@ const AccountSettings = () => {
                   <ErrorMessage
                     component="div"
                     name="bio"
-                    className="text-merah -mt-5 mx-10 text-xs absolute bottom-2"
+                    className="text-merah -mt-5 mx-10 text-xs absolute bottom-2 pointer-events-none"
                   />
                   {/* <textarea name="" id="" cols="30" rows="10"></textarea> */}
                 </div>

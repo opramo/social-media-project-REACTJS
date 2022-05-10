@@ -11,6 +11,9 @@ const INITIAL_STATE = {
   bio: "",
   profile_picture: "",
   profile_cover: "",
+  comment: false,
+  deleted: false,
+  edit: null,
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -38,6 +41,18 @@ const userReducer = (state = INITIAL_STATE, action) => {
       };
     case "LOGOUT":
       return INITIAL_STATE;
+    case "NEWCOMMENT":
+      return { ...state, comment: true };
+    case "NOCOMMENT":
+      return { ...state, comment: false };
+    case "NEWDELETE":
+      return { ...state, deleted: true };
+    case "NODELETE":
+      return { ...state, deleted: false };
+    case "NEWEDIT":
+      return { ...state, edit: action.payload };
+    case "NOEDIT":
+      return { ...state, edit: null };
     case "DONE":
       return { ...state, loading: false };
     case "CLEARERROR":

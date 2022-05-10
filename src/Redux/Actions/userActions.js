@@ -2,6 +2,7 @@ import axios from "axios";
 import API_URL from "../../Helpers/apiurl";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const registerAction = ({ ...values }) => {
   return async (dispatch) => {
@@ -52,10 +53,11 @@ export const logoutAction = () => {
 };
 
 export const editProfile = (formData) => {
+  // const  navigate = useNavigate()
   return async (dispatch) => {
     try {
       console.log("masuk action");
-      // console.log("values :", values);
+      console.log("formData :", formData);
       dispatch({ type: "LOADING" });
       let token = Cookies.get("token");
       let res = await axios.patch(
@@ -72,6 +74,7 @@ export const editProfile = (formData) => {
         theme: "colored",
         position: "top-center",
       });
+      // navigate;
     } catch (error) {
       dispatch({
         type: "ERROR",
@@ -83,20 +86,47 @@ export const editProfile = (formData) => {
   };
 };
 
-// export const editPhoto = (formData) => {
+export const postRecipe = (formData) => {
+  return async (dispatch) => {
+    try {
+      dispatch({ type: "LOADING" });
+      let token = Cookies.get("token");
+      let res = await axios.post(`${API_URL}/recipe/post-recipe`, formData, {
+        headers: { authorization: token },
+      });
+      dispatch({ type: "LOGIN", payload: res.data });
+      toast.success("submitted!", {
+        theme: "colored",
+        position: "top-center",
+      });
+    } catch (error) {
+      dispatch({
+        type: "ERROR",
+        payload: error.response.data.message || "Network Error",
+      });
+    } finally {
+      dispatch({ type: "DONE" });
+    }
+  };
+};
+
+// export const editRecipe = (formData) => {
+//   const navigate = useNavigate();
 //   return async (dispatch) => {
 //     try {
+//       dispatch({ type: "LOADING" });
 //       let token = Cookies.get("token");
-//       let res = await axios.patch(
-//         `${API_URL}/profile/photos-update`,
-//         formData,
-//         { headers: { authorization: token } }
-//       );
+//       let res = await axios.patch(`${API_URL}/recipe/edit-recipe`, formData, {
+//         headers: { authorization: token },
+//       });
 //       dispatch({ type: "LOGIN", payload: res.data });
-//       toast.success("Updated!", {
+//       toast.success("Post edited!", {
 //         theme: "colored",
 //         position: "top-center",
 //       });
+//       setTimeout(() => {
+//         navigate("/home");
+//       }, 3000);
 //     } catch (error) {
 //       dispatch({
 //         type: "ERROR",

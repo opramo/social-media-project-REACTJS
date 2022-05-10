@@ -109,7 +109,7 @@ const NavBar = () => {
         modalForgotPassword={modalForgotPassword}
         modalForgotPasswordHandler={modalForgotPasswordHandler}
       />
-      <div className="z-50 fixed w-screen h-20 flex justify-center bg-putih shadow-lg ">
+      <div className="z-50 fixed w-screen h-20 flex justify-center bg-putih shadow-lg">
         <div className="px-10 flex items-center justify-center  relative bg-putih pointer-events-none">
           {/* Left Button */}
           {token ? (
