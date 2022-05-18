@@ -1,7 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { EyeIcon, EyeOffIcon, XIcon } from "@heroicons/react/outline";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import { Fragment } from "react";
+import { Form, Formik } from "formik";
+import { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { registerAction } from "../Redux/Actions/userActions";
@@ -9,7 +9,9 @@ import { registerAction } from "../Redux/Actions/userActions";
 // USE FORMIK ERRORMESSAGE CHILDREN PROPS TO RENDER VALIDATION FROM SERVER//
 const ModalSignUp = (props) => {
   const { loading, error_mes } = useSelector((state) => state.user);
+  console.log("error message", error_mes);
   const dispatch = useDispatch();
+  const [changed, setChanged] = useState(false);
   let message = [];
   if (error_mes && props.modalSignUp) {
     message = error_mes.split(",");
@@ -110,6 +112,7 @@ const ModalSignUp = (props) => {
                     text-white/50 duration-500 border-2 border-white/30 rounded-full hover:bg-white/30 hover:border-transparent"
                     onClick={() => {
                       props.modalSignUpHandler();
+                      // dispatch({ type: "DONE" });
                     }}
                   />
                 </Dialog.Title>
@@ -123,78 +126,135 @@ const ModalSignUp = (props) => {
                   onSubmit={onSubmit}
                 >
                   {(formik) => {
-                    // console.log(formik);
-                    //try to use manual validation for unique email and username
-                    // try textinput formik
-                    //throttling the sign up button by using the isSubmitting value to the disabled condition
+                    const {
+                      handleChange,
+                      errors,
+                      touched,
+                      isSubmitting,
+                      isValid,
+                      values,
+                      dirty,
+                      handleBlur,
+                    } = formik;
+
                     return (
                       <Form className="flex flex-col gap-y-1">
                         {/* Username */}
                         <div className="flex flex-col relative">
                           <label htmlFor="username">Username</label>
-                          <Field
+                          <input
                             name="username"
                             placeholder="Username*"
                             type="text"
+                            onChange={(e) => {
+                              setChanged(true);
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            value={values.username}
                             className={
-                              formik.errors.username && formik.touched.username
-                                ? "p-2 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                              (errors.username &&
+                                touched.username &&
+                                values.username.length &&
+                                dirty) ||
+                              (message[0] && !changed)
+                                ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
+                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
                             }
                           />
-                          <ErrorMessage
-                            component="div"
-                            name="username"
-                            className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none"
-                          />
-                          {message[0] && (
-                            <div className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none">
+
+                          {errors.username &&
+                          touched.username &&
+                          dirty &&
+                          values.username.length ? (
+                            <div
+                              name="username"
+                              className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                            >
+                              {errors.username}
+                            </div>
+                          ) : null}
+                          {message[0] && !changed && (
+                            <div className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none">
                               {message[0]}
                             </div>
                           )}
                         </div>
+
                         {/* Email */}
                         <div className="flex flex-col relative">
                           <label htmlFor="email">Email</label>
-                          <Field
+                          <input
                             name="email"
                             placeholder="Email*"
                             type="text"
+                            onChange={(e) => {
+                              setChanged(true);
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            value={values.email}
                             className={
-                              formik.errors.email && formik.touched.email
-                                ? "p-2 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                              (errors.email &&
+                                touched.email &&
+                                values.email.length &&
+                                dirty) ||
+                              (message[1] && !changed)
+                                ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
+                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
                             }
                           />
-                          <ErrorMessage
-                            component="div"
-                            name="email"
-                            className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none"
-                          />
-                          {message[1] && (
-                            <div className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none">
+                          {errors.email &&
+                          touched.email &&
+                          dirty &&
+                          values.email.length ? (
+                            <div
+                              name="email"
+                              className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                            >
+                              {errors.email}
+                            </div>
+                          ) : null}
+                          {message[1] && !changed && (
+                            <div className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none">
                               {message[1]}
                             </div>
                           )}
                         </div>
+
                         {/* Password */}
                         <div className="flex flex-col relative">
                           <label htmlFor="password">Password</label>
-                          <Field
+                          <input
                             name="password"
                             placeholder="Password*"
                             type={props.passVis ? "text" : "password"}
+                            onChange={(e) => {
+                              setChanged(true);
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            value={values.password}
                             className={
-                              formik.errors.password && formik.touched.password
-                                ? "p-2 pr-10 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 pr-10 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                              errors.password &&
+                              touched.password &&
+                              values.password.length &&
+                              dirty
+                                ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
+                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
                             }
                           />
-                          <ErrorMessage
-                            component="div"
-                            name="password"
-                            className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none"
-                          />
+                          {errors.password &&
+                          touched.password &&
+                          dirty &&
+                          values.password.length ? (
+                            <div
+                              name="password"
+                              className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                            >
+                              {errors.password}
+                            </div>
+                          ) : null}
                           <div
                             className="w-7 h-7 right-2  top-7 absolute cursor-pointer overflow-hidden"
                             onClick={() => props.setPassVis(!props.passVis)}
@@ -202,22 +262,42 @@ const ModalSignUp = (props) => {
                             {props.passVis ? <EyeIcon /> : <EyeOffIcon />}
                           </div>
                         </div>
+
                         {/* Confirm Password */}
                         <div className="flex flex-col relative">
                           <label htmlFor="passwordConfirm">
                             Confirm Password
                           </label>
-                          <Field
+                          <input
                             name="passwordConfirm"
                             placeholder="Confirm Password"
                             type={props.passConfVis ? "text" : "password"}
+                            onChange={(e) => {
+                              setChanged(true);
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            value={values.passwordConfirm}
                             className={
-                              formik.errors.passwordConfirm &&
-                              formik.touched.passwordConfirm
-                                ? "p-2 pr-10 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 pr-10 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                              errors.passwordConfirm &&
+                              touched.passwordConfirm &&
+                              values.passwordConfirm.length &&
+                              dirty
+                                ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
+                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
                             }
                           />
+                          {errors.passwordConfirm &&
+                          touched.passwordConfirm &&
+                          dirty &&
+                          values.passwordConfirm.length ? (
+                            <div
+                              name="passwordConfirm"
+                              className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                            >
+                              {errors.passwordConfirm}
+                            </div>
+                          ) : null}
                           <div
                             className="w-7 h-7 right-2  top-7 absolute cursor-pointer overflow-hidden"
                             onClick={() => {
@@ -226,29 +306,38 @@ const ModalSignUp = (props) => {
                           >
                             {props.passConfVis ? <EyeIcon /> : <EyeOffIcon />}
                           </div>
-                          <ErrorMessage
-                            component="div"
-                            name="passwordConfirm"
-                            className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none"
-                          />
                         </div>
                         {/* Button Submit */}
-                        <button
-                          type="submit"
-                          disabled={
-                            !formik.dirty ||
-                            !formik.isValid ||
-                            formik.isSubmitting ||
-                            loading
-                          }
-                          className={`m-auto mt-3 justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
+                        <div className="mt-4 flex items-center justify-between">
+                          <button
+                            type="submit"
+                            disabled={
+                              !dirty || !isValid || isSubmitting || loading
+                            }
+                            className={`justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
                           focus-visible:ring-biru duration-500
-                        hover:text-putih shadow-md hover:shadow-black text-putih bg-hijau border-transparent 
-                        disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-white disabled:cursor-not-allowed
+                          hover:text-putih shadow-md hover:shadow-black text-putih bg-hijau border-transparent 
+                          disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-white disabled:cursor-not-allowed
                         }`}
-                        >
-                          Sign Up
-                        </button>
+                            onClick={() => setChanged(false)}
+                          >
+                            Sign Up
+                          </button>
+                          <div className="text-xs">
+                            <span>Already have an account? </span>
+                            <span
+                              className="hover:underline hover:text-biru duration-500 cursor-pointer"
+                              onClick={() => {
+                                props.modalSignUpHandler();
+                                setTimeout(() => {
+                                  props.modalLogInHandler();
+                                }, 500);
+                              }}
+                            >
+                              Sign in here!
+                            </span>
+                          </div>
+                        </div>
                       </Form>
                     );
                   }}

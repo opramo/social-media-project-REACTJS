@@ -1,21 +1,18 @@
-import { MinusIcon, MinusSmIcon, PlusSmIcon } from "@heroicons/react/outline";
+import { MinusSmIcon, PlusSmIcon } from "@heroicons/react/outline";
 import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
-import ReactCrop from "react-image-crop";
-import "react-image-crop/dist/ReactCrop.css";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import * as Yup from "yup";
-import Cropper from "react-easy-crop";
 import { useDispatch, useSelector } from "react-redux";
-import { postRecipe } from "../Redux/Actions/userActions";
+import { toast } from "react-toastify";
+import API_URL from "../Helpers/apiurl";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const NewRecipe = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading } = useSelector((state) => state.user);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-    // console.log(croppedArea, croppedAreaPixels);
-  }, []);
 
   const initialValues = {
     title: "",
@@ -36,22 +33,39 @@ const NewRecipe = () => {
     //   .oneOf([Yup.ref("password"), null], "Passwords do not match.")
     //   .required("Passwords do not match."),
   });
-  const onSubmit = (values, { setSubmitting }) => {
-    console.log("onSubmitvalues :", values);
+  const onSubmit = async (values, { setSubmitting }) => {
     let formData = new FormData();
     formData.append("photo", values.photo[0]);
-    console.log("values.title:", values.title);
-    console.log("values.ingredients :", values.ingredients);
-    console.log("values.instructions :", values.instructions);
     let dataInput = {
       title: values.title,
       ingredients: values.ingredients,
       instructions: values.instructions,
     };
-    console.log(dataInput);
     formData.append("data", JSON.stringify(dataInput));
-    dispatch(postRecipe(formData));
-    setSubmitting(false);
+    try {
+      dispatch({ type: "LOADING" });
+      let token = Cookies.get("token");
+      let res = await axios.post(`${API_URL}/recipe/post-recipe`, formData, {
+        headers: { authorization: token },
+      });
+      dispatch({ type: "LOGIN", payload: res.data });
+      toast.success("submitted!", {
+        theme: "colored",
+        position: "top-center",
+        style: { backgroundColor: "#3A7D44" },
+      });
+      setTimeout(() => {
+        navigate("/home");
+      }, 1000);
+    } catch (error) {
+      dispatch({
+        type: "ERROR",
+        payload: error.response.data.message || "Network Error",
+      });
+    } finally {
+      dispatch({ type: "DONE" });
+      setSubmitting(false);
+    }
   };
 
   return (

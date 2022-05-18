@@ -2,12 +2,12 @@ import cat from "../Assets/cat.jpg";
 import cover from "../Assets/cover.jpg";
 import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import API_URL from "../Helpers/apiurl";
-import { editPhoto, editProfile } from "../Redux/Actions/userActions";
+import Cookies from "js-cookie";
 
 const AccountSettings = () => {
   const dispatch = useDispatch();
@@ -32,11 +32,11 @@ const AccountSettings = () => {
   }
 
   const [profilePicture, setProfilePicture] = useState(
-    API_URL + profile_picture
+    profile_picture ? API_URL + profile_picture : cat
   );
-  console.log("picture:", profilePicture);
-  const [profileCover, setProfileCover] = useState(API_URL + profile_cover);
-  console.log("cover:", profileCover);
+  const [profileCover, setProfileCover] = useState(
+    profile_cover ? API_URL + profile_cover : cover
+  );
 
   const initialValues = {
     profile_picture: null,
@@ -58,28 +58,48 @@ const AccountSettings = () => {
   });
 
   const onSubmit = async (values) => {
+    let formData = new FormData();
+    if (values.profile_picture) {
+      formData.append("profile_picture", values.profile_picture[0]);
+    }
+    if (values.profile_cover) {
+      formData.append("profile_cover", values.profile_cover[0]);
+    }
+
+    let dataInput = {
+      username: values.username,
+      fullname: values.fullname,
+      bio: values.bio,
+    };
+
+    formData.append("data", JSON.stringify(dataInput));
     try {
-      console.log("onSUbmit values:", values);
-      let formData = new FormData();
-      if (values.profile_picture) {
-        formData.append("profile_picture", values.profile_picture[0]);
-        console.log("berhasil append profile");
-      }
-      if (values.profile_cover) {
-        formData.append("profile_cover", values.profile_cover[0]);
-        console.log("berhasil append cover");
-      }
+      dispatch({ type: "LOADING" });
+      let token = Cookies.get("token");
+      let res = await axios.patch(
+        `${API_URL}/profile/profile-update`,
+        formData,
+        {
+          headers: { authorization: token },
+        }
+      );
 
-      let dataInput = {
-        username: values.username,
-        fullname: values.fullname,
-        bio: values.bio,
-      };
-
-      formData.append("data", JSON.stringify(dataInput));
-      dispatch(editProfile(formData));
+      dispatch({ type: "LOGIN", payload: res.data });
+      toast.success("Updated!", {
+        theme: "colored",
+        position: "top-center",
+        style: { backgroundColor: "#3A7D44" },
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
-      console.log(error);
+      dispatch({
+        type: "ERROR",
+        payload: error.response.data.message || "Network Error",
+      });
+    } finally {
+      dispatch({ type: "DONE" });
     }
   };
 
@@ -95,16 +115,13 @@ const AccountSettings = () => {
       toast.success("Email sent!", {
         theme: "colored",
         position: "top-center",
+        style: { backgroundColor: "#3A7D44" },
       });
     } catch (error) {
       alert(error);
     }
   };
 
-  // console.log(
-  //   "buat error muncul on input, jangan touched",
-  //   "image upload buat sesuai referensi stack overflow"
-  // );
   // useEffect(() => {
   //   dispatch({ type: "CLEARERROR" });
 
@@ -138,7 +155,7 @@ const AccountSettings = () => {
         </div>
         {!is_verified && (
           <div className="text-sm mr-5 text-merah">
-            Please verify your account first to change User Details.
+            Please verify your account to be able to change User Details.
           </div>
         )}
         <Formik
@@ -150,7 +167,6 @@ const AccountSettings = () => {
           onSubmit={onSubmit}
         >
           {(formik) => {
-            // console.log(formik);
             return (
               <Form className="flex flex-col items-center gap-y-3">
                 <div className="flex flex-col relative w-full items-center">
@@ -177,8 +193,6 @@ const AccountSettings = () => {
                       } else {
                         setProfilePicture(cat);
                       }
-
-                      // console.log(event.target.files[0]);
                     }}
                   />
                   <div className="rounded-full h-[200px]  w-[500px] border-2 border-black overflow-hidden">
@@ -204,8 +218,6 @@ const AccountSettings = () => {
                       } else {
                         setProfileCover(cat);
                       }
-
-                      // console.log(event.target.files[0]);
                     }}
                   />
                   {/* <button onClick={() => fileInput.click()}>Pick File</button> */}
@@ -229,22 +241,24 @@ const AccountSettings = () => {
                   </button> */}
                 </div>
                 <div className="flex flex-col relative w-full items-center">
-                  <label htmlFor="fullname">Name</label>
+                  <label htmlFor="fullname">
+                    Name{formik.values.fullname.length}
+                  </label>
                   <Field
                     name="fullname"
                     placeholder="Add your name"
                     type="text"
                     disabled={!is_verified}
-                    className={`p-2 outline outline-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 focus:bg-white ${
+                    className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 focus:bg-white ${
                       formik.errors.fullname && formik.touched.fullname
-                        ? "outline-merah"
-                        : "outline-biru"
+                        ? "outline outline-2 outline-merah"
+                        : "focus:outline focus:outline-biru focus:outline-2"
                     }`}
                   />
                   <ErrorMessage
                     component="div"
                     name="fullname"
-                    className="text-merah -mt-5 mx-2 text-xs absolute bottom-0  pointer-events-none"
+                    className="text-merah -mt-5 mx-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
                   />
                 </div>
 
@@ -256,10 +270,10 @@ const AccountSettings = () => {
                     placeholder="Username*"
                     type="text"
                     disabled={!is_verified}
-                    className={`p-2 outline outline-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 focus:bg-white ${
+                    className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 focus:bg-white ${
                       formik.errors.username && formik.touched.username
-                        ? "outline-merah"
-                        : "outline-biru"
+                        ? "outline outline-2 outline-merah"
+                        : "focus:outline focus:outline-biru focus:outline-2"
                     }`}
                   />
                   <ErrorMessage
@@ -286,16 +300,16 @@ const AccountSettings = () => {
                     type="text"
                     cols="30"
                     rows="10"
-                    className={`p-2 outline outline-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 focus:bg-white ${
+                    className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 focus:bg-white ${
                       formik.errors.bio && formik.touched.bio
-                        ? "outline-merah"
-                        : "outline-biru"
+                        ? "outline outline-2 outline-merah"
+                        : "focus:outline focus:outline-biru focus:outline-2"
                     }`}
                   />
                   <ErrorMessage
                     component="div"
                     name="bio"
-                    className="text-merah -mt-5 mx-10 text-xs absolute bottom-2 pointer-events-none"
+                    className="text-merah -mt-5 mx-10 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
                   />
                   {/* <textarea name="" id="" cols="30" rows="10"></textarea> */}
                 </div>

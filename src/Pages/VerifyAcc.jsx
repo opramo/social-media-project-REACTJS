@@ -20,6 +20,7 @@ const VerifyAcc = () => {
         className: "bg-hijau",
         position: "bottom-center",
         theme: "colored",
+        style: { backgroundColor: "#3A7D44" },
       });
     } catch (error) {
       alert(error);

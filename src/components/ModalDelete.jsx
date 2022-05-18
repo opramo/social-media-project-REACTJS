@@ -2,8 +2,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import * as Yup from "yup";
-import { ErrorMessage, Field, Form, Formik } from "formik";
 import axios from "axios";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";

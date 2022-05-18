@@ -14,6 +14,7 @@ const INITIAL_STATE = {
   comment: false,
   deleted: false,
   edit: null,
+  restriction: false,
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -40,7 +41,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
         error_mes: action.payload,
       };
     case "LOGOUT":
-      return INITIAL_STATE;
+      return (state = INITIAL_STATE);
     case "NEWCOMMENT":
       return { ...state, comment: true };
     case "NOCOMMENT":
@@ -49,6 +50,10 @@ const userReducer = (state = INITIAL_STATE, action) => {
       return { ...state, deleted: true };
     case "NODELETE":
       return { ...state, deleted: false };
+    case "RESTRICTIONOPEN":
+      return { ...state, restriction: true };
+    case "RESTRICTIONCLOSE":
+      return { ...state, restriction: false };
     case "NEWEDIT":
       return { ...state, edit: action.payload };
     case "NOEDIT":

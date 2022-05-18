@@ -12,13 +12,13 @@ function Verification() {
   const { token } = useParams();
   const [loading, setLoading] = useState(false);
   const [verified, setVerified] = useState(false);
-  const [needLogIn, setLogIn] = useState(false);
   const { username, id, email, is_verified } = useSelector(
     (state) => state.user
   );
 
   useEffect(() => {
     verifying();
+    // eslint-disable-next-line
   }, [loading]);
 
   const verifying = async () => {
@@ -32,6 +32,9 @@ function Verification() {
       if (action) {
         setVerified(true);
       }
+      setTimeout(() => {
+        navigate("/home");
+      }, 5000);
     } catch (error) {
       setVerified(false);
     } finally {
@@ -48,13 +51,18 @@ function Verification() {
       });
       toast.success("Email sent!", {
         position: "top-center",
+        theme: "colored",
+        style: { backgroundColor: "#3A7D44" },
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   //   ubah auto redirect setelah selesai verifikasi
   useEffect(() => {
     is_verified && navigate("/");
+    // eslint-disable-next-line
   }, []);
 
   if (loading) {

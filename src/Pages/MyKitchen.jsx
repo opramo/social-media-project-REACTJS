@@ -1,20 +1,70 @@
 import Recipe from "../components/Recipe";
 import cover from "../Assets/cover.jpg";
 import Cat from "../Assets/cat.jpg";
-
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import API_URL from "../Helpers/apiurl";
+import axios from "axios";
 
 const MyKitchen = () => {
   const { username, fullname, profile_picture, profile_cover, bio } =
     useSelector((state) => state.user);
   let [myRecipes, setMyRecipe] = useState(true);
-  console.log(profile_picture);
-  console.log(profile_cover);
+  const [posts, setPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [loadingPosts, setLoadingPosts] = useState(false);
+
+  const getUserRecipes = async () => {
+    try {
+      setLoadingPosts(true);
+      let token = Cookies.get("token");
+      let res = await axios.get(`${API_URL}/recipe/recipes-user`, {
+        headers: { authorization: token },
+      });
+      setPosts(res.data);
+      setLoadingPosts(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getLikedRecipes = async () => {
+    try {
+      setLoadingPosts(true);
+      let token = Cookies.get("token");
+      let res = await axios.get(`${API_URL}/recipe/recipes-liked`, {
+        headers: { authorization: token },
+      });
+      setLikedPosts(res.data);
+      setLoadingPosts(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
+    getUserRecipes();
+    setMyRecipe(true);
+    // eslint-disable-next-line
   }, []);
+
+  const printRecipe = () => {
+    let dataRecipe = posts;
+    return dataRecipe.map((recipe) => {
+      return (
+        <Recipe data={recipe} key={recipe.post_id} getFeeds={getUserRecipes} />
+      );
+    });
+  };
+  const printLikedRecipe = () => {
+    let dataRecipe = likedPosts;
+    return dataRecipe.map((recipe) => {
+      return (
+        <Recipe data={recipe} key={recipe.post_id} getFeeds={getLikedRecipes} />
+      );
+    });
+  };
 
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
@@ -46,49 +96,57 @@ const MyKitchen = () => {
               {fullname}
             </div>
           </div>
-          <div className="border-kuning border-2 text-white bg-black/50 w-[200px] h-[200px] absolute right-0 top-1/2 -translate-y-1/2">
+          <div className="border-putih border-2 text-white bg-black/50 w-[200px] h-[200px] absolute right-0 top-1/2 -translate-y-1/2">
             {bio}
           </div>
+
+          {/* account button pages */}
           <div className="w-full flex justify-center bg-transparent absolute bottom-0 z-10">
             <button
-              className={
+              className={`${
                 myRecipes
-                  ? "mr-5 p-1 px-2 bg-kuning rounded-t-lg shadow-inner text-putih focus:outline-none duration-500"
-                  : "mr-5 p-1 px-2 bg-kuning rounded-t-lg shadow-inner hover:text-putih focus:outline-none duration-500"
-              }
-              onClick={() => setMyRecipe((myRecipes = true))}
+                  ? "bg-putih text-black shadow-all-md shadow-black"
+                  : "bg-merah text-putih brightness-75 hover:brightness-100"
+              } mr-5 p-1 px-2 rounded-t-lg focus:outline-none duration-500`}
+              onClick={() => {
+                setMyRecipe(true);
+                return getUserRecipes();
+              }}
             >
               My Recipes
             </button>
             <button
-              className={
-                myRecipes
-                  ? "p-1 px-2 bg-merah rounded-t-lg shadow-inner focus:outline-none hover:text-putih duration-500"
-                  : "p-1 px-2 bg-merah rounded-t-lg shadow-inner focus:outline-none text-putih duration-500"
-              }
-              onClick={() => setMyRecipe((myRecipes = false))}
+              className={`${
+                !myRecipes
+                  ? "bg-putih text-black shadow-all-md shadow-black"
+                  : "bg-merah text-putih brightness-75 hover:brightness-100"
+              } p-1 px-2 rounded-t-lg focus:outline-none duration-500 z-0`}
+              onClick={() => {
+                setMyRecipe(false);
+                return getLikedRecipes();
+              }}
             >
               Liked Recipes
             </button>
           </div>
         </div>
         {myRecipes ? (
-          <div className="bg-kuning w-full h-auto py-5 relative">
+          <div className="bg-putih w-full h-auto  py-5 relative z-10">
             <div className="">
-              <Recipe />
-            </div>
-            <div className="mt-5">
-              <Recipe />
+              {loadingPosts
+                ? "Loading..."
+                : posts[0]
+                ? printRecipe()
+                : "You have not posted any recipe yet :<"}
             </div>
           </div>
         ) : (
-          <div className="bg-merah w-full h-auto py-5 relative">
-            <div className="shadow-lg shadow-black">
-              <Recipe />
-            </div>
-            <div className="mt-5 shadow-lg shadow-black">
-              <Recipe />
-            </div>
+          <div className="bg-putih w-[full] h-auto py-5 relative z-10">
+            {loadingPosts
+              ? "Loading..."
+              : likedPosts[0]
+              ? printLikedRecipe()
+              : "You have not liked any recipe yet :<"}
           </div>
         )}
       </div>

@@ -22,6 +22,8 @@ const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.log("token expired");
+      dispatch({ type: "DONE" });
+      dispatch({ type: "LOGOUT" });
       Cookies.remove("token");
     } finally {
       setLoading(false);
@@ -29,6 +31,7 @@ const AuthProvider = ({ children }) => {
   };
   useEffect(() => {
     keeplogin();
+    // eslint-disable-next-line
   }, []);
 
   if (loading) {

@@ -1,12 +1,8 @@
-import { MinusIcon, MinusSmIcon, PlusSmIcon } from "@heroicons/react/outline";
+import { MinusSmIcon, PlusSmIcon } from "@heroicons/react/outline";
 import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
-import ReactCrop from "react-image-crop";
-import "react-image-crop/dist/ReactCrop.css";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
-import Cropper from "react-easy-crop";
 import { useDispatch, useSelector } from "react-redux";
-import { editRecipe, postRecipe } from "../Redux/Actions/userActions";
 import axios from "axios";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
@@ -17,16 +13,10 @@ const EditRecipe = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading, edit } = useSelector((state) => state.user);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
   const [data, setData] = useState(null);
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-    // console.log(croppedArea, croppedAreaPixels);
-  }, []);
   const [photoRecipe, setPhotoRecipe] = useState(null);
 
   let editTitle = data ? data.post.title : "";
-  console.log(`benerin fotonya ngab`);
 
   let editIngredients = data
     ? data.ingredients.map((val) => val.ingredient)
@@ -62,24 +52,21 @@ const EditRecipe = () => {
   });
 
   const onSubmit = async (values, { setSubmitting }) => {
-    console.log("onSubmitvalues :", values);
     let formData = new FormData();
     if (values.photo) {
       formData.append("photo", values.photo[0]);
     } else {
       formData.append("photo", 0);
     }
-    console.log("values.title:", values.title);
-    console.log("values.ingredients :", values.ingredients);
-    console.log("values.instructions :", values.instructions);
+
     let dataInput = {
       title: values.title,
       ingredients: values.ingredients,
       instructions: values.instructions,
       post_id: edit,
     };
-    console.log(dataInput);
     formData.append("data", JSON.stringify(dataInput));
+
     try {
       dispatch({ type: "LOADING" });
       let token = Cookies.get("token");
@@ -90,10 +77,11 @@ const EditRecipe = () => {
       toast.success("Post edited!", {
         theme: "colored",
         position: "top-center",
+        style: { backgroundColor: "#3A7D44" },
       });
       setTimeout(() => {
         navigate("/home");
-      }, 3000);
+      }, 1000);
     } catch (error) {
       dispatch({
         type: "ERROR",
@@ -101,8 +89,8 @@ const EditRecipe = () => {
       });
     } finally {
       dispatch({ type: "DONE" });
+      setSubmitting(false);
     }
-    setSubmitting(false);
   };
 
   const getRecipe = async () => {
@@ -120,6 +108,7 @@ const EditRecipe = () => {
 
   useEffect(() => {
     getRecipe();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -127,6 +116,7 @@ const EditRecipe = () => {
       dispatch({ type: "NOEDIT" });
     }
     dispatch({ type: "DONE" });
+    // eslint-disable-next-line
   }, [loading]);
 
   return (

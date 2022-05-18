@@ -4,8 +4,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        putih: "#F0EDE7",
         merah: "#A90409",
+        putih: "#F0EDE7",
         kuning: "#FFA600",
         biru: "#1F609E",
         hijau: "#3A7D44",
