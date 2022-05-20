@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import API_URL from "../Helpers/apiurl";
 import axios from "axios";
+import Loading from "../components/Loading";
 
 const MyKitchen = () => {
   const { username, fullname, profile_picture, profile_cover, bio } =
@@ -133,20 +134,30 @@ const MyKitchen = () => {
         {myRecipes ? (
           <div className="bg-putih w-full h-auto  py-5 relative z-10">
             <div className="">
-              {loadingPosts
-                ? "Loading..."
-                : posts[0]
-                ? printRecipe()
-                : "You have not posted any recipe yet :<"}
+              {loadingPosts ? (
+                <div className="py-20 flex flex-col justify-center items-center">
+                  <Loading className="h-20 w-20 animate-bounce" />
+                  <div>Please wait...</div>
+                </div>
+              ) : posts[0] ? (
+                printRecipe()
+              ) : (
+                "You have not posted any recipe yet :<"
+              )}
             </div>
           </div>
         ) : (
           <div className="bg-putih w-[full] h-auto py-5 relative z-10">
-            {loadingPosts
-              ? "Loading..."
-              : likedPosts[0]
-              ? printLikedRecipe()
-              : "You have not liked any recipe yet :<"}
+            {loadingPosts ? (
+              <div className="py-20 flex flex-col justify-center items-center">
+                <Loading className="h-20 w-20 animate-bounce" />
+                <div>Please wait...</div>
+              </div>
+            ) : likedPosts[0] ? (
+              printLikedRecipe()
+            ) : (
+              "You have not liked any recipe yet :<"
+            )}
           </div>
         )}
       </div>

@@ -9,6 +9,7 @@ import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Loading from "./Loading";
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
 // POINTERS EVENT NONE ERRORMESSAGE
@@ -62,13 +63,13 @@ const ModalLogIn = (props) => {
       dispatch({ type: "LOGIN", payload: res.data });
       setModalLogIn(false);
       console.log(`Berhasil Log In`);
-      toast.success(`Welcome back, ${values.personId}!`, {
-        theme: "colored",
-        position: "top-center",
-        style: { backgroundColor: "#3A7D44" },
-      });
       setTimeout(() => {
         navigate("/home");
+        toast.success(`Welcome back, ${res.data.username}!`, {
+          theme: "colored",
+          position: "top-center",
+          style: { backgroundColor: "#3A7D44" },
+        });
       }, 1000);
     } catch (error) {
       dispatch({
@@ -259,21 +260,31 @@ const ModalLogIn = (props) => {
                                 Register here!
                               </span>
                             </div>
-                            <button
-                              type="submit"
-                              disabled={
-                                !dirty || !isValid || isSubmitting || loading
-                              }
-                              className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+                            {loading ? (
+                              <Loading
+                                className={"animate-spin h-10 w-10 ml-5"}
+                              />
+                            ) : (
+                              <button
+                                type="submit"
+                                disabled={
+                                  !dirty ||
+                                  !isValid ||
+                                  isSubmitting ||
+                                  loading ||
+                                  !changed
+                                }
+                                className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
                                disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                               hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                            >
-                              Log In
-                            </button>
+                              >
+                                Log In
+                              </button>
+                            )}
                           </div>
 
                           <span
-                            className="hover:underline hover:text-biru duration-500"
+                            className="hover:underline hover:text-biru duration-500 cursor-pointer"
                             onClick={() => {
                               modalLogInHandler();
                               setTimeout(() => {

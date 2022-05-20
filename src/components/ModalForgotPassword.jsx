@@ -4,7 +4,7 @@ import axios from "axios";
 import { Fragment, useState } from "react";
 import { toast } from "react-toastify";
 import API_URL from "../Helpers/apiurl";
-import Spinner from "./Spinner";
+import Loading from "./Loading";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,7 +25,6 @@ const ModalForgotPassword = (props) => {
       .email("Invalid email address.")
       .required("Email is required!"),
   });
-  console.log("loading animation?:", loading);
 
   const onSubmit = async (values) => {
     try {
@@ -41,6 +40,7 @@ const ModalForgotPassword = (props) => {
       });
       setTimeout(() => {
         modalForgotPasswordHandler();
+        setSucceed(false);
       }, 3000);
     } catch (error) {
       console.log(error);
@@ -78,9 +78,7 @@ const ModalForgotPassword = (props) => {
             <span
               className="inline-block h-screen align-middle"
               aria-hidden="true"
-            >
-              &#8203;
-            </span>
+            ></span>
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -96,7 +94,7 @@ const ModalForgotPassword = (props) => {
                   className="relative text-lg font-medium leading-6 text-putih bg-merah rounded text-center mb-5 -mt-7 -mx-10"
                 >
                   <h1 className="h-20 w-100 flex justify-center items-center text-xl">
-                    {loading && !succeed && "Loading..."}
+                    {loading && !succeed && "Please wait..."}
                     {!loading && !succeed && "Forgot Password?"}
                     {succeed && "Email sent!"}
                   </h1>
@@ -109,17 +107,13 @@ const ModalForgotPassword = (props) => {
                 </Dialog.Title>
                 {loading && !succeed && (
                   <div className="flex justify-center">
-                    <Spinner />
+                    <Loading className={"w-10 h-10 animate-spin"} />
                   </div>
                 )}
                 {!loading && !succeed && (
                   <>
                     <Formik
                       initialValues={initialValues}
-                      // isValid
-                      // validateOnMount
-                      // validateOnBlur={false}
-
                       validationSchema={validationSchema}
                       onSubmit={onSubmit}
                     >
@@ -127,7 +121,6 @@ const ModalForgotPassword = (props) => {
                         const {
                           handleChange,
                           errors,
-                          touched,
                           isSubmitting,
                           isValid,
                           values,
@@ -138,6 +131,9 @@ const ModalForgotPassword = (props) => {
                         return (
                           <Form className="flex flex-col gap-y-1">
                             <div className="flex flex-col relative">
+                              <div className="flex justify-center">
+                                Please input the registered email
+                              </div>
                               <label htmlFor="email">Email</label>
                               <input
                                 name="email"

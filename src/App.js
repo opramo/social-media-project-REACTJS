@@ -14,6 +14,7 @@ import EditRecipe from "./Pages/EditRecipe";
 import { useSelector } from "react-redux";
 import ModalRestriction from "./components/ModalRestriction";
 import RecipeDetails from "./Pages/RecipeDetail";
+import ResetPassword from "./Pages/ResetPassword";
 
 // css
 
@@ -25,11 +26,14 @@ function App() {
     <>
       <NavBar />
       {!is_verified &&
-      location.pathname !== "/accountsettings" &&
-      location.pathname !== "/" &&
-      location.pathname !== "/verifyaccount" ? (
+      (location.pathname === "/home" ||
+        location.pathname === "/account" ||
+        location.pathname === "/newrecipe" ||
+        location.pathname === "/editrecipe" ||
+        location.pathname === "/verifyaccount") ? (
         <ModalRestriction />
       ) : null}
+
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
@@ -40,6 +44,7 @@ function App() {
         <Route path="/recipe/:post_id" element={<RecipeDetails />} />
         <Route path="/verifyaccount" element={<VerifyAcc />} />
         <Route path="/verification/:token" element={<Verification />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Routes>
       <ToastContainer
         pauseOnFocusLoss={false}

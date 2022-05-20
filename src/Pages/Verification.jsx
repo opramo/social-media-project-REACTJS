@@ -132,11 +132,9 @@ function Verification() {
             </h1>
           </div>
           <div className="flex flex-col gap-y-5">
-            <div className="flex flex-col relative text-sm">
-              <p>
-                Something went wrong with your verification email, please click
-                the button below to resend the email.
-              </p>
+            <div className="flex flex-col relative text-sm justify-center items-center">
+              Something went wrong with your verification link, please click the
+              button below to resend the email.
             </div>
           </div>
           <div className="mt-6 flex flex-col">

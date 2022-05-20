@@ -6,10 +6,14 @@ import axios from "axios";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ModalDelete = (props) => {
+  const { modalDelete, modalDeleteHandler } = props;
   const { loading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const onSubmit = async () => {
     try {
@@ -24,23 +28,27 @@ const ModalDelete = (props) => {
           headers: { authorization: token },
         }
       );
-      dispatch({ type: "NEWDELETE" });
       toast.success("Deleted!", {
         theme: "colored",
         position: "top-center",
       });
-      props.modalDeleteHandler();
+      props.setModalDelete(false);
+      setTimeout(() => {
+        location.pathname === "/home"
+          ? window.location.reload()
+          : navigate("/home");
+      }, 1000);
     } catch (error) {
       console.log(error);
     }
   };
   return (
     <>
-      <Transition appear show={props.modalDelete} as={Fragment}>
+      <Transition appear show={modalDelete} as={Fragment}>
         <Dialog
           as="div"
           className="fixed inset-0 z-50 overflow-y-auto bg-black/50"
-          onClose={props.modalDeleteHandler}
+          onClose={modalDeleteHandler}
         >
           <div className="min-h-screen px-4 text-center">
             <Transition.Child
@@ -81,7 +89,7 @@ const ModalDelete = (props) => {
                   </h1>
                   <XIcon
                     className="h-5 w-5 absolute top-1/2 right-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:text-white text-white/50 duration-500 border-2 border-white/30 rounded-full hover:bg-white/30 hover:border-transparent"
-                    onClick={() => props.modalDeleteHandler()}
+                    onClick={() => modalDeleteHandler()}
                   />
                 </Dialog.Title>
 

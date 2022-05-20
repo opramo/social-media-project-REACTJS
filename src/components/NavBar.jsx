@@ -22,16 +22,9 @@ const NavBar = () => {
   const location = useLocation();
 
   // Global states
-  const {
-    username,
-    is_verified,
-    fullname,
-    profile_picture,
-    profile_cover,
-    loading,
-  } = useSelector((state) => state.user);
+  const { username, is_verified, fullname, profile_picture, profile_cover } =
+    useSelector((state) => state.user);
   const dispatch = useDispatch();
-  console.log(`hapus fetched`);
 
   // Local states
   const [modalLogIn, setModalLogIn] = React.useState(false);
@@ -42,7 +35,6 @@ const NavBar = () => {
 
   let token = Cookies.get("token");
 
-  console.log("loading :", loading);
   const modalLogInHandler = () => {
     setModalLogIn(!modalLogIn);
     setPassVis(false);
@@ -79,7 +71,14 @@ const NavBar = () => {
       navigate("/verifyaccount");
       setModalLogIn(false);
     }
-    if (!token) {
+    if (
+      !token &&
+      (location.pathname === "/home" ||
+        location.pathname === "/account" ||
+        location.pathname === "/newrecipe" ||
+        location.pathname === "/editrecipe" ||
+        location.pathname === "/verifyaccount")
+    ) {
       console.log(`Tidak ada Session`);
       navigate("/");
     }

@@ -5,6 +5,7 @@ import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Loading from "../components/Loading";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -14,8 +15,6 @@ const Home = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(initialPage);
   const limit = 2;
-  console.log(posts);
-
   const getFeeds = async () => {
     try {
       if (hasMore) {
@@ -25,16 +24,16 @@ const Home = () => {
           headers: { authorization: token },
           params: { page, limit },
         });
-        console.log("ini ress data", res.data);
         if (res.data.length === 0) {
           setHasMore(false);
         }
         setPosts((prev) => [...prev, ...res.data]);
         setPage(page + 1);
-        dispatch({ type: "DONE" });
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      dispatch({ type: "DONE" });
     }
   };
 
@@ -69,7 +68,8 @@ const Home = () => {
         <div className="w-[600px] flex flex-col">{printRecipe()}</div>
         {loading ? (
           <div className="w-[600px] h-60 flex flex-col items-center justify-center text-xl">
-            Loading...
+            <Loading className={"h-20 w-20 animate-bounce"} />
+            <div>Please wait...</div>
           </div>
         ) : null}
         {hasMore ? null : (

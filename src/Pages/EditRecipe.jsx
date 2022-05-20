@@ -16,6 +16,8 @@ const EditRecipe = () => {
   const [data, setData] = useState(null);
   const [photoRecipe, setPhotoRecipe] = useState(null);
 
+  console.log(data);
+
   let editTitle = data ? data.post.title : "";
 
   let editIngredients = data
@@ -108,6 +110,16 @@ const EditRecipe = () => {
 
   useEffect(() => {
     getRecipe();
+    if (!edit) {
+      toast.error("No post detected!", {
+        theme: "colored",
+        position: "top-center",
+        style: { backgroundColor: "#A90409" },
+      });
+      setTimeout(() => {
+        navigate("/home");
+      }, 3000);
+    }
     // eslint-disable-next-line
   }, []);
 

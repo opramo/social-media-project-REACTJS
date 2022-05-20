@@ -1,18 +1,21 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { EyeIcon, EyeOffIcon, XIcon } from "@heroicons/react/outline";
+import axios from "axios";
 import { Form, Formik } from "formik";
 import { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
-import { registerAction } from "../Redux/Actions/userActions";
+import API_URL from "../Helpers/apiurl";
+import Cookies from "js-cookie";
+import Loading from "./Loading";
 
 // USE FORMIK ERRORMESSAGE CHILDREN PROPS TO RENDER VALIDATION FROM SERVER//
 const ModalSignUp = (props) => {
   const { loading, error_mes } = useSelector((state) => state.user);
-  console.log("error message", error_mes);
   const dispatch = useDispatch();
   const [changed, setChanged] = useState(false);
   let message = [];
+
   if (error_mes && props.modalSignUp) {
     message = error_mes.split(",");
   }
@@ -52,10 +55,19 @@ const ModalSignUp = (props) => {
 
   const onSubmit = async (values, { setSubmitting }) => {
     try {
-      dispatch(registerAction(values));
+      setChanged(false);
+      dispatch({ type: "LOADING" });
+      let res = await axios.post(`${API_URL}/auth/register`, values);
+      dispatch({ type: "LOGIN", payload: res.data });
+      Cookies.set("token", res.headers["x-token-access"]);
     } catch (error) {
-      console.log(error);
+      console.log(`masuk error`);
+      dispatch({
+        type: "ERROR",
+        payload: error.response.data.message || "Network Error",
+      });
     } finally {
+      dispatch({ type: "DONE" });
       setSubmitting(false);
     }
   };
@@ -136,7 +148,6 @@ const ModalSignUp = (props) => {
                       dirty,
                       handleBlur,
                     } = formik;
-
                     return (
                       <Form className="flex flex-col gap-y-1">
                         {/* Username */}
@@ -309,20 +320,29 @@ const ModalSignUp = (props) => {
                         </div>
                         {/* Button Submit */}
                         <div className="mt-4 flex items-center justify-between">
-                          <button
-                            type="submit"
-                            disabled={
-                              !dirty || !isValid || isSubmitting || loading
-                            }
-                            className={`justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
+                          {loading ? (
+                            <Loading
+                              className={"animate-spin h-10 w-10 ml-5"}
+                            />
+                          ) : (
+                            <button
+                              type="submit"
+                              disabled={
+                                !dirty ||
+                                !isValid ||
+                                isSubmitting ||
+                                loading ||
+                                !changed
+                              }
+                              className={`justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
                           focus-visible:ring-biru duration-500
                           hover:text-putih shadow-md hover:shadow-black text-putih bg-hijau border-transparent 
                           disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-white disabled:cursor-not-allowed
                         }`}
-                            onClick={() => setChanged(false)}
-                          >
-                            Sign Up
-                          </button>
+                            >
+                              Sign Up
+                            </button>
+                          )}
                           <div className="text-xs">
                             <span>Already have an account? </span>
                             <span

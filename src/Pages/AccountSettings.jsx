@@ -1,7 +1,7 @@
 import cat from "../Assets/cat.jpg";
 import cover from "../Assets/cover.jpg";
 import * as Yup from "yup";
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { Form, Formik } from "formik";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -37,6 +37,7 @@ const AccountSettings = () => {
   const [profileCover, setProfileCover] = useState(
     profile_cover ? API_URL + profile_cover : cover
   );
+  const [changed, setChanged] = useState(false);
 
   const initialValues = {
     profile_picture: null,
@@ -74,6 +75,7 @@ const AccountSettings = () => {
 
     formData.append("data", JSON.stringify(dataInput));
     try {
+      setChanged(false);
       dispatch({ type: "LOADING" });
       let token = Cookies.get("token");
       let res = await axios.patch(
@@ -90,9 +92,6 @@ const AccountSettings = () => {
         position: "top-center",
         style: { backgroundColor: "#3A7D44" },
       });
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
     } catch (error) {
       dispatch({
         type: "ERROR",
@@ -132,7 +131,7 @@ const AccountSettings = () => {
 
   return (
     <div className="min-h-screen flex pt-20 bg-putih justify-center ">
-      <div className="min-w-[600px] flex flex-col items-center shadow-lg shadow-black bg-putih pb-5">
+      <div className="min-w-[600px] flex flex-col items-center shadow-lg rounded-2xl  my-5 shadow-black bg-putih py-5">
         <div className="my-3">Account Settings</div>
         <div className="my-3">
           <span
@@ -167,6 +166,16 @@ const AccountSettings = () => {
           onSubmit={onSubmit}
         >
           {(formik) => {
+            const {
+              handleChange,
+              errors,
+              touched,
+              isSubmitting,
+              isValid,
+              values,
+              dirty,
+              handleBlur,
+            } = formik;
             return (
               <Form className="flex flex-col items-center gap-y-3">
                 <div className="flex flex-col relative w-full items-center">
@@ -190,6 +199,7 @@ const AccountSettings = () => {
                         formik.setFieldValue("profile_picture", [
                           event.target.files[0],
                         ]);
+                        setChanged(true);
                       } else {
                         setProfilePicture(cat);
                       }
@@ -215,6 +225,7 @@ const AccountSettings = () => {
                         formik.setFieldValue("profile_cover", [
                           event.target.files[0],
                         ]);
+                        setChanged(true);
                       } else {
                         setProfileCover(cat);
                       }
@@ -241,80 +252,136 @@ const AccountSettings = () => {
                   </button> */}
                 </div>
                 <div className="flex flex-col relative w-full items-center">
-                  <label htmlFor="fullname">
-                    Name{formik.values.fullname.length}
-                  </label>
-                  <Field
+                  <div className="flex justify-between w-full items-end">
+                    <label htmlFor="fullname">Full Name</label>
+                    <div
+                      className={`${
+                        errors.fullname ? "text-merah" : "text-black"
+                      } text-xs`}
+                    >
+                      {values.fullname.length}/50
+                    </div>
+                  </div>
+                  <input
                     name="fullname"
-                    placeholder="Add your name"
+                    placeholder="Full Name"
                     type="text"
+                    onChange={(e) => {
+                      setChanged(true);
+                      handleChange(e);
+                    }}
                     disabled={!is_verified}
-                    className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 focus:bg-white ${
-                      formik.errors.fullname && formik.touched.fullname
+                    onBlur={handleBlur}
+                    value={values.fullname}
+                    className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
+                      errors.fullname
                         ? "outline outline-2 outline-merah"
                         : "focus:outline focus:outline-biru focus:outline-2"
                     }`}
                   />
-                  <ErrorMessage
-                    component="div"
-                    name="fullname"
-                    className="text-merah -mt-5 mx-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
-                  />
+                  {errors.fullname && dirty && values.fullname.length ? (
+                    <div
+                      name="fullname"
+                      className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                    >
+                      {errors.fullname}
+                    </div>
+                  ) : null}
                 </div>
 
                 {/* Username */}
                 <div className="flex flex-col relative w-full items-center">
-                  <label htmlFor="username">Username</label>
-                  <Field
+                  <div className="flex justify-between w-full items-end">
+                    <label htmlFor="username">Username</label>
+                    <div
+                      className={`${
+                        errors.username ? "text-merah" : "text-black"
+                      } text-xs`}
+                    >
+                      {values.username.length}/15
+                    </div>
+                  </div>
+                  <input
                     name="username"
                     placeholder="Username*"
                     type="text"
+                    onChange={(e) => {
+                      setChanged(true);
+                      handleChange(e);
+                    }}
                     disabled={!is_verified}
-                    className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 focus:bg-white ${
-                      formik.errors.username && formik.touched.username
+                    onBlur={handleBlur}
+                    value={values.username}
+                    className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
+                      errors.username
                         ? "outline outline-2 outline-merah"
                         : "focus:outline focus:outline-biru focus:outline-2"
                     }`}
                   />
-                  <ErrorMessage
-                    component="div"
-                    name="username"
-                    className="text-merah -mt-5 mx-2 text-xs absolute bottom-0  pointer-events-none"
-                  />
-                  {error_mes &&
-                    !(formik.errors.username && formik.touched.username) && (
-                      <div className="text-merah -mt-5 mx-2 text-xs absolute bottom-0">
-                        {error_mes}
-                      </div>
-                    )}
+
+                  {errors.username && dirty ? (
+                    <div
+                      name="username"
+                      className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                    >
+                      {errors.username}
+                    </div>
+                  ) : null}
+                  {error_mes && !errors.username && (
+                    <div className="text-merah -mt-5 mx-2 text-xs absolute bottom-0">
+                      {error_mes}
+                    </div>
+                  )}
                 </div>
 
                 {/* Bio */}
                 <div className="flex flex-col relative w-full items-center">
-                  <label htmlFor="bio">Bio</label>
-                  <Field
-                    as="textarea"
+                  <div className="flex justify-between w-full items-end">
+                    <label htmlFor="bio">Bio</label>
+                    <div
+                      className={`${
+                        errors.bio && touched.bio ? "text-merah" : "text-black"
+                      } text-xs`}
+                    >
+                      {values.bio.length}/160
+                    </div>
+                  </div>
+
+                  <textarea
                     name="bio"
                     placeholder="Tell us about yourself"
-                    disabled={!is_verified}
                     type="text"
+                    onChange={(e) => {
+                      setChanged(true);
+                      handleChange(e);
+                    }}
                     cols="30"
-                    rows="10"
-                    className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 focus:bg-white ${
-                      formik.errors.bio && formik.touched.bio
+                    rows="5"
+                    disabled={!is_verified}
+                    onBlur={handleBlur}
+                    value={values.bio}
+                    className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
+                      errors.bio
                         ? "outline outline-2 outline-merah"
                         : "focus:outline focus:outline-biru focus:outline-2"
                     }`}
                   />
-                  <ErrorMessage
-                    component="div"
-                    name="bio"
-                    className="text-merah -mt-5 mx-10 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
-                  />
-                  {/* <textarea name="" id="" cols="30" rows="10"></textarea> */}
+                  {errors.bio && dirty && values.bio.length ? (
+                    <div
+                      name="bio"
+                      className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                    >
+                      {errors.bio}
+                    </div>
+                  ) : null}
                 </div>
                 <div className="flex flex-col relative w-full items-center">
-                  <div className="">Email</div>
+                  <div className="flex justify-between w-full items-end">
+                    <label htmlFor="">Email</label>
+                    <div className={`text-merah text-xs`}>
+                      Email cannot be changed.
+                    </div>
+                  </div>
                   <input
                     type="email"
                     name=""
@@ -327,16 +394,10 @@ const AccountSettings = () => {
                 <div className="">
                   <button
                     type="submit"
-                    disabled={
-                      !formik.dirty ||
-                      !formik.isValid ||
-                      formik.isSubmitting ||
-                      loading
-                    }
+                    disabled={!isValid || isSubmitting || loading || !changed}
                     className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
                                disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                               hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                    onClick={() => {}}
                   >
                     Save Changes
                   </button>

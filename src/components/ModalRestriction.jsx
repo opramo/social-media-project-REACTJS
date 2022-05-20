@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const ModalRestriction = (props) => {
+const ModalRestriction = () => {
   const navigate = useNavigate();
 
   return (

@@ -2,6 +2,7 @@ import {
   ChatAltIcon,
   DotsHorizontalIcon,
   PaperAirplaneIcon,
+  LinkIcon,
 } from "@heroicons/react/outline";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,7 +12,6 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useNavigate, useParams } from "react-router-dom";
 import kiss from "../Assets/kiss.png";
-import cat from "../Assets/cat.jpg";
 import { Popover } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -23,15 +23,18 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import ModalNewComment from "../components/ModalNewComment";
+import Loading from "../components/Loading";
+import ModalDelete from "../components/ModalDelete";
 
 const RecipeDetails = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const params = useParams();
 
-  const { is_verified, loading, id } = useSelector((state) => state.user);
+  const { is_verified, id } = useSelector((state) => state.user);
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [modalNewComment, setModalNewComment] = useState(false);
+  const [modalDelete, setModalDelete] = useState(false);
   const [data, setData] = useState({
     title: "",
     user_id: 0,
@@ -43,56 +46,67 @@ const RecipeDetails = () => {
     ingredients: [],
     instructions: [],
   });
-  const [kissed, setKissed] = useState(0);
+  const [kissed, setKissed] = useState(null);
   const [likes, setLikes] = useState(0);
   const [likers, setLikers] = useState([]);
+  const [likersRender, setLikersRender] = useState([]);
   const [comments, setComments] = useState([]);
-
+  const [commentsRender, setCommentsRender] = useState([]);
   const post_id = params.post_id;
+
+  const animationShare = {
+    item1: {
+      hidden: { x: 0, y: 0, opacity: 0 },
+      visible: {
+        x: -55,
+        y: -35,
+        opacity: 1,
+      },
+    },
+    item2: {
+      hidden: { x: 0, y: 0, opacity: 0 },
+      visible: {
+        x: -60,
+        y: 10,
+        opacity: 1,
+      },
+    },
+    item3: {
+      hidden: { x: 0, y: 0, opacity: 0 },
+      visible: {
+        x: -40,
+        y: 50,
+        opacity: 1,
+      },
+    },
+    item4: {
+      hidden: { x: 0, y: 0, opacity: 0 },
+      visible: {
+        x: 0,
+        y: 70,
+        opacity: 1,
+      },
+    },
+    container: {
+      hidden: { opacity: 0, x: 0 },
+      visible: {
+        opacity: 1,
+        x: 0,
+        transition: {
+          delayChildren: 0.5,
+          staggerChildren: 0.3,
+        },
+      },
+    },
+  };
 
   const modalNewCommentHandler = () => {
     setModalNewComment(!modalNewComment);
   };
-
-  const getRecipe = async () => {
-    try {
-      setLoadingPosts(true);
-      let res = await axios.post(`${API_URL}/recipe/recipe-detail`, {
-        post_id,
-      });
-      const {
-        ingredients,
-        instructions,
-        post,
-        user,
-        likes,
-        liked,
-        likers,
-        comments,
-      } = res.data;
-      const { username, fullname, profile_picture } = user;
-      const { updated_at, photo, title, user_id } = post;
-      setData({
-        photo: `${API_URL}${photo}`,
-        profile_picture: `${API_URL}${profile_picture}`,
-        title,
-        user_id,
-        updated_at,
-        username,
-        fullname,
-        ingredients,
-        instructions,
-      });
-      setLikes(likes);
-      setLikers(likers);
-      setComments(comments);
-      setKissed(liked);
-      setLoadingPosts(false);
-    } catch (error) {
-      console.log(error);
-    }
+  const modalDeleteHandler = () => {
+    setModalDelete(!modalDelete);
   };
-  console.log("modal comment detail: ", modalNewComment);
+
   const printKissed = () => {
     return (
       <button
@@ -130,9 +144,71 @@ const RecipeDetails = () => {
       </button>
     );
   };
+
   useEffect(() => {
-    getRecipe();
+    (async function fetchdata() {
+      try {
+        setLoadingPosts(true);
+        let res = await axios.post(`${API_URL}/recipe/recipe-detail`, {
+          post_id,
+          id,
+        });
+        const {
+          ingredients,
+          instructions,
+          post,
+          user,
+          likes,
+          liked,
+          likers,
+          comments,
+        } = res.data;
+        const { username, fullname, profile_picture } = user;
+        const { updated_at, photo, title, user_id } = post;
+        setData({
+          photo: `${API_URL}${photo}`,
+          profile_picture: `${API_URL}${profile_picture}`,
+          title,
+          user_id,
+          updated_at,
+          username,
+          fullname,
+          ingredients,
+          instructions,
+        });
+        setLikes(likes);
+        setLikers(likers);
+        setComments(comments);
+        setKissed(liked);
+        setLoadingPosts(false);
+        if (comments[0]) {
+          setCommentsRender([...comments.splice(0, 5)]);
+        }
+        if (likers[0]) {
+          setLikersRender([...likers.splice(0, 5)]);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+    window.scrollTo(0, 0);
+    // eslint-disable-next-line
   }, []);
+
+  window.onbeforeunload = function () {
+    window.scrollTo(0, 0);
+  };
+
+  const moreComments = () => {
+    if (comments[0]) {
+      setCommentsRender((prev) => [...prev, ...comments.splice(0, 5)]);
+    }
+  };
+  const moreLikers = () => {
+    if (likers[0]) {
+      setLikersRender((prev) => [...prev, ...likers.splice(0, 5)]);
+    }
+  };
 
   function copy() {
     const el = document.createElement("input");
@@ -142,6 +218,7 @@ const RecipeDetails = () => {
     document.execCommand("copy");
     document.body.removeChild(el);
   }
+
   const createdAtPost = new Date(data.updated_at).toLocaleDateString(
     undefined,
     {
@@ -150,18 +227,19 @@ const RecipeDetails = () => {
       day: "numeric",
     }
   );
-  const onSubmit = async (values, { setSubmitting }) => {};
+
   if (loadingPosts) {
     return (
       <div className="min-h-screen flex pt-20 bg-putih justify-center">
-        <div className="shadow-lg my-10 shadow-black w-[600px] rounded-2xl overflow-hidden">
-          Loading
+        <div className="shadow-lg my-10 shadow-black w-[600px] rounded-2xl overflow-hidden flex flex-col justify-center items-center">
+          <Loading className="h-20 w-20 animate-bounce" />
+          <div>Please wait...</div>
         </div>
       </div>
     );
   }
   return (
-    <div className="h-screen flex pt-20 bg-putih justify-center">
+    <div className="h-full flex pt-20 bg-putih justify-center">
       <ModalNewComment
         modalNewComment={modalNewComment}
         modalNewCommentHandler={modalNewCommentHandler}
@@ -170,53 +248,15 @@ const RecipeDetails = () => {
         setComments={setComments}
         setModalNewComment={setModalNewComment}
       />
-      <div className="w-full flex h-full justify-center overflow-y-scroll relative">
-        <div className="w-20 sticky top-10 flex flex-col">
-          <>{printKissed()}</>
-          <button
-            type="button"
-            className={`${
-              modalNewComment ? "bg-hijau" : "bg-putih"
-            } z-40 h-14 w-14 mt-2 rounded-full  border-2 border-hijau overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none`}
-            onClick={() => {
-              is_verified
-                ? modalNewCommentHandler()
-                : toast.error("Please verify your account!", {
-                    theme: "colored",
-                    position: "top-center",
-                    style: { backgroundColor: "#A90409" },
-                  });
-            }}
-          >
-            <ChatAltIcon
-              className={`${
-                modalNewComment ? "text-putih" : ""
-              } h-full w-full p-2`}
-            />
-          </button>
-          <button className="h-14 w-14 mt-2 rounded-full  border-2 border-biru overflow-hidden  hover:bg-biru duration-500 hover:shadow-black shadow-md focus:outline-none">
-            <PaperAirplaneIcon className="h-full w-full p-2 hover:text-white " />
-          </button>
-          <TwitterShareButton
-            url={`${API_URL}/recipe/${post_id}`}
-            title="TheChefBook.com"
-          >
-            <TwitterIcon size={32} round={true} />
-          </TwitterShareButton>
-          <WhatsappShareButton url={`${API_URL}/recipe/${post_id}`}>
-            <WhatsappIcon size={32} round={true} />
-          </WhatsappShareButton>
-          <FacebookShareButton url={`${API_URL}/recipe/${post_id}`}>
-            <FacebookIcon size={32} round={true} />
-          </FacebookShareButton>
-          <button
-            onClick={copy}
-            className="h-14 w-14 mt-2 rounded-full  border-2 border-biru overflow-hidden  hover:bg-biru duration-500 hover:shadow-black shadow-md focus:outline-none"
-          >
-            URL
-          </button>
-        </div>
-        <div className="shadow-lg my-10 shadow-black w-[600px] rounded-2xl relative">
+      <ModalDelete
+        setModalDelete={setModalDelete}
+        modalDelete={modalDelete}
+        modalDeleteHandler={modalDeleteHandler}
+        post_id={post_id}
+      />
+      <div className="h-60 sticky top-32 flex flex-col items-end w-20"></div>
+      <div className="min-w-min flex my-5 justify-center overflow-hidden relative z-0  rounded-2xl shadow-lg shadow-black w-[600px]">
+        <div className=" z-0 w-[600px] rounded-2xl relative ">
           <div>
             <img
               src={data.photo}
@@ -270,10 +310,10 @@ const RecipeDetails = () => {
                                 className={`hover:bg-merah hover:text-putih duration-500 cursor-pointer border-b border-merah block px-5 py-3 whitespace-no-wrap`}
                                 onClick={() => {
                                   navigate("/editrecipe");
-                                  // dispatch({
-                                  //   type: "NEWEDIT",
-                                  //   payload: post_id,
-                                  // });
+                                  dispatch({
+                                    type: "NEWEDIT",
+                                    payload: post_id,
+                                  });
                                 }}
                               >
                                 Edit
@@ -281,7 +321,7 @@ const RecipeDetails = () => {
                               <div
                                 className={`hover:bg-merah hover:text-putih duration-500 cursor-pointer block px-5 py-3 whitespace-no-wrap`}
                                 onClick={() => {
-                                  // modalDeleteHandler();
+                                  modalDeleteHandler();
                                 }}
                               >
                                 Delete
@@ -305,11 +345,10 @@ const RecipeDetails = () => {
             </div>
           </div>
           {/* Ingredients */}
-          <div>
-            <div className="w-full bg-putih h mb-7">
+          <div className="flex flex-col w-full p-5 bg-putih">
+            <div className="w-full bg-putih h mb-7 text-xl">
               Ingredients:
               <div className="w-full border-merah">
-                {/* {loading ? "Loading..." : printIngredients()} */}
                 <ul className="max-w-full list-disc ml-5 break-words text-base bg-putih">
                   {data.ingredients.map((content) => {
                     return (
@@ -319,7 +358,7 @@ const RecipeDetails = () => {
                 </ul>
               </div>
             </div>
-            <div className="w-full bg-putih">
+            <div className="w-full bg-putih ">
               Instructions:
               <div className="w-full border-merah">
                 <ol className="max-w-full list-decimal ml-5 break-words text-sm bg-putih">
@@ -335,43 +374,57 @@ const RecipeDetails = () => {
             </div>
           </div>
           {/* Liked */}
-          <div className="w-full bg-putih">
-            Likers:
-            <div className="w-full border-y border-merah">
-              <ul className="max-w-full ml-5 break-words text-xl bg-putih">
-                {likers.map((content) => {
-                  return (
-                    <li key={content.id}>
-                      <div
-                        className="flex rounded-md hover:bg-white/50 cursor-pointer text-base py-2"
-                        onClick={() => navigate("/account")}
-                      >
-                        <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
-                          <img
-                            src={`${API_URL}${content.profile_picture}`}
-                            alt=""
-                          />
+          <div className="flex flex-col w-full p-5 bg-putih">
+            <div className="w-full relative bg-putih text-xl">
+              Chefs loved this recipe:
+            </div>
+            <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah mt-5">
+              {likersRender[0] ? (
+                <ul className="max-w-full ml-5 break-words text-xl bg-putih">
+                  {likersRender.map((content) => {
+                    return (
+                      <li key={content.id}>
+                        <div
+                          className="flex rounded-md hover:bg-white/50 cursor-pointer text-base py-2 w-auto"
+                          onClick={() => navigate("/account")}
+                        >
+                          <div className="w-12 h-12 rounded-full mr-3 border border-merah overflow-hidden">
+                            <img
+                              src={`${API_URL}${content.profile_picture}`}
+                              alt=""
+                            />
+                          </div>
+                          <div className="text-sm">
+                            <div className="mb-1">{content.username}</div>
+                            <div>{content.fullname}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="mb-1">{content.username}</div>
-                          <div>{content.fullname}</div>
-                        </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
+                      </li>
+                    );
+                  })}
+                  {likers[0] ? (
+                    <div
+                      className="bg-merah flex justify-center items-center text-putih py-3 rounded-xl my-3 cursor-pointer text-base"
+                      onClick={() => moreLikers()}
+                    >
+                      See More
+                    </div>
+                  ) : null}
+                </ul>
+              ) : (
+                "No chef liked this recipe :<"
+              )}
             </div>
           </div>
           {/* Comments */}
-          <div className="flex flex-col w-full p-5 bg-putih">
-            <div className="w-full relative bg-putih text-3xl">
+          <div className="flex flex-col w-full px-5 bg-putih mb-10">
+            <div className="w-full relative bg-putih text-xl">
               Comments from other chefs:
             </div>
             <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah mt-5">
-              {comments[0] ? (
+              {commentsRender[0] ? (
                 <ul className="max-w-full ml-5 break-words text-base bg-putih">
-                  {comments.map((content) => {
+                  {commentsRender.map((content) => {
                     return (
                       <li className="flex flex-col" key={content.id}>
                         <div className="h-[10%] w-full flex justify-between">
@@ -379,13 +432,13 @@ const RecipeDetails = () => {
                             className="flex  rounded-md hover:bg-white/50 cursor-pointer text-base py-2"
                             onClick={() => navigate("/account")}
                           >
-                            <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
+                            <div className="w-12 h-12 rounded-full mr-3 overflow-hidden border border-merah">
                               <img
                                 src={`${API_URL}${content.profile_picture}`}
                                 alt=""
                               />
                             </div>
-                            <div>
+                            <div className="text-sm">
                               <div className="mb-1">{content.username}</div>
                               <div>{content.fullname}</div>
                             </div>
@@ -395,6 +448,14 @@ const RecipeDetails = () => {
                       </li>
                     );
                   })}
+                  {comments[0] ? (
+                    <div
+                      className="bg-merah flex justify-center items-center text-putih py-3 rounded-xl my-3 cursor-pointer"
+                      onClick={() => moreComments()}
+                    >
+                      See More
+                    </div>
+                  ) : null}
                 </ul>
               ) : (
                 "No chef commented here :<"
@@ -402,9 +463,128 @@ const RecipeDetails = () => {
             </div>
           </div>
         </div>
-        <div className="h-60 w-20 sticky top-10  flex flex-col">
-          {/* This div to make the content centered */}
-        </div>
+      </div>
+      {/* </div> */}
+      <div className="h-80 sticky top-32 flex flex-col items-end w-20">
+        <>{printKissed()}</>
+        <button
+          type="button"
+          className={`${
+            modalNewComment ? "bg-hijau" : "bg-putih"
+          } z-40 h-14 w-14 mt-2 rounded-full  border-2 border-hijau overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none`}
+          onClick={() => {
+            is_verified
+              ? modalNewCommentHandler()
+              : toast.error("Please verify your account!", {
+                  theme: "colored",
+                  position: "top-center",
+                  style: { backgroundColor: "#A90409" },
+                });
+          }}
+        >
+          <ChatAltIcon
+            className={`${
+              modalNewComment ? "text-putih" : ""
+            } h-full w-full p-2`}
+          />
+        </button>
+
+        <Popover className="relative overflow-visible w-14 h-14 mt-2 rounded-full">
+          {({ open }) => (
+            <>
+              <Popover.Button
+                className={`${
+                  open ? "bg-biru" : "bg-putih"
+                } h-14 w-14 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 hover:shadow-black shadow-md 
+                focus:outline-none`}
+              >
+                <PaperAirplaneIcon
+                  className={`${open ? "text-putih" : ""} h-full w-full p-2`}
+                />
+              </Popover.Button>
+              <AnimatePresence>
+                {open && (
+                  <Popover.Panel
+                    as={motion.div}
+                    static
+                    variants={animationShare.container}
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
+                    className="absolute top-0 focus:outline-none flex flex-col gap-y-2 h-14 w-14 pointer-events-none"
+                  >
+                    <motion.div
+                      variants={animationShare.item1}
+                      className="absolute"
+                    >
+                      <TwitterShareButton
+                        url={`TheChefBook.com/recipe/${post_id}`}
+                        title={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
+                      >
+                        <TwitterIcon
+                          size={40}
+                          round={true}
+                          className="absolute top-0 left-0 rounded-full shadow-black shadow-md pointer-events-auto"
+                          style={{ backgroundColor: "#00ACED" }}
+                        />
+                      </TwitterShareButton>
+                    </motion.div>
+                    <motion.div
+                      variants={animationShare.item2}
+                      className="absolute"
+                    >
+                      <WhatsappShareButton
+                        url={`TheChefBook.com/recipe/${post_id}`}
+                        title={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
+                      >
+                        <WhatsappIcon
+                          size={40}
+                          round={true}
+                          className="absolute top-0 left-0 rounded-full shadow-black shadow-md pointer-events-auto"
+                          style={{ backgroundColor: "#25D366" }}
+                        />
+                      </WhatsappShareButton>
+                    </motion.div>
+                    <motion.div
+                      variants={animationShare.item3}
+                      className="absolute"
+                    >
+                      <FacebookShareButton
+                        url={`TheChefBook.com/recipe/${post_id}`}
+                        quote={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
+                      >
+                        <FacebookIcon
+                          size={40}
+                          round={true}
+                          className="absolute top-0 left-0 rounded-full shadow-black shadow-md pointer-events-auto"
+                          style={{ backgroundColor: "#3B5998" }}
+                        />
+                      </FacebookShareButton>
+                    </motion.div>
+                    <motion.div
+                      variants={animationShare.item4}
+                      className="absolute"
+                    >
+                      <button
+                        onClick={() => {
+                          copy();
+                          toast.success("URL copied to clipboard!", {
+                            position: "top-center",
+                            theme: "colored",
+                            style: { backgroundColor: "#3A7D44" },
+                          });
+                        }}
+                        className="h-10 w-10 rounded-full  overflow-hidden  bg-merah shadow-black shadow-md focus:outline-none pointer-events-auto"
+                      >
+                        <LinkIcon className="h-full w-full p-2 text-putih" />
+                      </button>
+                    </motion.div>
+                  </Popover.Panel>
+                )}
+              </AnimatePresence>
+            </>
+          )}
+        </Popover>
       </div>
     </div>
   );

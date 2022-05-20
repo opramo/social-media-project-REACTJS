@@ -1,14 +1,13 @@
 import kiss from "../Assets/kiss.png";
 // import cat from "../Assets/cat.jpg";
-
 import {
   PaperAirplaneIcon,
   ChevronLeftIcon,
   ChatAltIcon,
   DotsHorizontalIcon,
+  LinkIcon,
 } from "@heroicons/react/outline";
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ModalNewComment from "./ModalNewComment";
 import { Popover } from "@headlessui/react";
@@ -19,15 +18,22 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import ModalDelete from "./ModalDelete";
 import { toast } from "react-toastify";
+import Loading from "./Loading";
+import {
+  FacebookIcon,
+  FacebookShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+  WhatsappIcon,
+  WhatsappShareButton,
+} from "react-share";
 
 const Recipe = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { data, getFeeds } = props;
-  const { id, comment, deleted, is_verified, loading } = useSelector(
-    (state) => state.user
-  );
+  const { data } = props;
+  const { id, is_verified } = useSelector((state) => state.user);
   const {
     liked,
     likes: totalLikes,
@@ -41,10 +47,13 @@ const Recipe = (props) => {
 
   const [modalNewComment, setModalNewComment] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [kissed, setKissed] = useState(liked);
   const [likes, setLikes] = useState(totalLikes);
   const [likers, setLikers] = useState(0);
+  const [likersMore, setLikersMore] = useState({ more: false, total: 0 });
   const [comments, setComments] = useState([]);
+  const [commentsMore, setCommentsMore] = useState({ more: false, total: 0 });
   const [recipe, setRecipe] = useState({
     ingredients: [],
     instructions: [],
@@ -57,11 +66,63 @@ const Recipe = (props) => {
     comment: 0,
   });
 
+  // Animasi share button
+  const animationShare = {
+    item1: {
+      hidden: { x: 0, y: 0, opacity: 0 },
+      visible: {
+        x: 45,
+        y: -35,
+        opacity: 1,
+      },
+    },
+    item2: {
+      hidden: { x: 0, y: 0, opacity: 0 },
+      visible: {
+        x: -2,
+        y: -45,
+        opacity: 1,
+      },
+    },
+    item3: {
+      hidden: { x: 0, y: 0, opacity: 0 },
+      visible: {
+        x: -43,
+        y: -18,
+        opacity: 1,
+      },
+    },
+    item4: {
+      hidden: { x: 0, y: 0, opacity: 0 },
+      visible: {
+        x: -40,
+        y: 30,
+        opacity: 1,
+      },
+    },
+    container: {
+      hidden: { opacity: 0, x: 0 },
+      visible: {
+        opacity: 1,
+        x: 0,
+        transition: {
+          delayChildren: 0.5,
+          staggerChildren: 0.3,
+        },
+      },
+    },
+  };
+  //////////////////////
+
   const createdAtPost = new Date(updated_at).toLocaleDateString(undefined, {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+
+  function copy() {
+    navigator.clipboard.writeText(`localhost:3000/recipe/${post_id}`);
+  }
 
   const modalNewCommentHandler = () => {
     setModalNewComment(!modalNewComment);
@@ -70,59 +131,53 @@ const Recipe = (props) => {
     setModalDelete(!modalDelete);
   };
 
-  useEffect(() => {
-    printKissed();
-    if (comment) {
-      printComments();
-      dispatch({ type: "NOCOMMENT" });
-    }
-    if (deleted) {
-      getFeeds();
-      dispatch({ type: "NODELETE" });
-    }
-    // eslint-disable-next-line
-  }, [kissed, likes, modalNewComment, modalDelete]);
-
-  // const onKissed = async
-
-  // Fetching Methods/////////////////////
-  // Comments Fetching
+  ///////////////////////// Fetching Methods//////////////////////
+  ///////// Comments Fetching /////////////
   const getComments = async () => {
     try {
-      dispatch({ type: "LOADING" });
+      setLoading(true);
       setIsPage({ main: 0, recipe: 0, kisses: 0, comment: 1 });
       let res = await axios.post(`${API_URL}/recipe/recipe-comments`, {
         post_id: post_id,
       });
-      setComments(res.data);
-      dispatch({ type: "DONE" });
+      setComments(res.data.splice(0, 5));
+      if (res.data[0]) {
+        setCommentsMore({ more: true, total: res.data.length });
+      }
+      console.log(res.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
+  /////////////////////////////////////////
 
-  // Likers Fetching
+  ////////// Likers Fetching //////////////
   const getLikers = async () => {
     try {
-      dispatch({ type: "LOADING" });
+      setLoading(true);
       setIsPage({ main: 0, recipe: 0, kisses: 1, comment: 0 });
       let res = await axios.post(`${API_URL}/recipe/recipe-likers`, {
         post_id,
       });
-      setLikers(res.data);
-      dispatch({ type: "DONE" });
+      setLikers(res.data.splice(0, 5));
+      if (res.data[0]) {
+        setLikersMore({ more: true, total: res.data.length });
+      }
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
+  /////////////////////////////////////////
 
-  // Ingredients & Instructions Fetching
+  // Ingredients & Instructions Fetching //
   const getRecipe = async () => {
     try {
       if (recipeFetched) {
         setIsPage({ main: 0, recipe: 1, kisses: 0, comment: 0 });
       } else {
-        dispatch({ type: "LOADING" });
+        setLoading(true);
         setIsPage({ main: 0, recipe: 1, kisses: 0, comment: 0 });
         let res = await axios.post(`${API_URL}/recipe/recipe-recipe`, {
           post_id: post_id,
@@ -133,16 +188,17 @@ const Recipe = (props) => {
           instructions,
         });
         setRecipeFetched(true);
-        dispatch({ type: "DONE" });
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
     }
   };
   /////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
 
-  //Render Methods/////////////////////////
-  // Like Button Render
+  //////////////////// Render Functions ///////////////////////////
+  // Like Button Render ////////////////////
   const printKissed = () => {
     return (
       <button
@@ -180,8 +236,9 @@ const Recipe = (props) => {
       </button>
     );
   };
+  //////////////////////////////////////////
 
-  // Ingredients List Render
+  // Ingredients List Render ///////////////
   const printIngredients = () => {
     return (
       <ul className="max-w-full list-disc ml-5 break-words text-base bg-putih">
@@ -191,8 +248,9 @@ const Recipe = (props) => {
       </ul>
     );
   };
+  //////////////////////////////////////////
 
-  // Instructions List Render
+  // Instructions List Render //////////////
   const printInstructions = () => {
     return (
       <ol className="max-w-full list-decimal ml-5 break-words text-sm bg-putih">
@@ -202,8 +260,9 @@ const Recipe = (props) => {
       </ol>
     );
   };
+  //////////////////////////////////////////
 
-  // Likers List Render
+  // Likers List Render ////////////////////
   const printUserLikes = () => {
     return (
       <ul className="max-w-full ml-5 break-words text-xl bg-putih">
@@ -225,11 +284,20 @@ const Recipe = (props) => {
             </li>
           );
         })}
+        {likersMore.more ? (
+          <div
+            className="bg-merah flex justify-center py-3 rounded-xl my-3 items-center text-putih cursor-pointer"
+            onClick={() => navigate(`/recipe/${post_id}`)}
+          >
+            See {likersMore.total} more comments on recipe details
+          </div>
+        ) : null}
       </ul>
     );
   };
+  //////////////////////////////////////////
 
-  // Comments List Render
+  // Comments List Render //////////////////
   const printComments = () => {
     return (
       <ul className="max-w-full ml-5 break-words text-base bg-putih">
@@ -254,10 +322,18 @@ const Recipe = (props) => {
             </li>
           );
         })}
+        {commentsMore.more ? (
+          <div
+            className="bg-merah flex justify-center items-center text-putih py-3 rounded-xl my-3 cursor-pointer"
+            onClick={() => navigate(`/recipe/${post_id}`)}
+          >
+            See {commentsMore.total} more comments on recipe details
+          </div>
+        ) : null}
       </ul>
     );
   };
-  //////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////
 
   return (
     <div className="relative w-full min-h-[600px] mb-5 rounded bg-transparent shadow-black shadow-xl">
@@ -271,11 +347,15 @@ const Recipe = (props) => {
           setModalNewComment={setModalNewComment}
         />
       )}
-      <ModalDelete
-        modalDelete={modalDelete}
-        modalDeleteHandler={modalDeleteHandler}
-        post_id={post_id}
-      />
+
+      {modalDelete && (
+        <ModalDelete
+          setModalDelete={setModalDelete}
+          modalDelete={modalDelete}
+          modalDeleteHandler={modalDeleteHandler}
+          post_id={post_id}
+        />
+      )}
 
       {/* Nav Content */}
       <div className="absolute w-[6%] left-[94%] flex flex-col h-full z-10 bg-black/40 rounded-r">
@@ -360,6 +440,8 @@ const Recipe = (props) => {
                 </div>
                 <div className="flex flex-col text-center items-end mb-1">
                   <div className="text-xs">{createdAtPost}</div>
+
+                  {/* Popover Button Settings */}
                   {id === user_id ? (
                     <Popover className="relative mt-2">
                       {({ open }) => (
@@ -417,11 +499,11 @@ const Recipe = (props) => {
               <div className="h-[80%] w-full relative">
                 <div className="w-20 h-6 origin-center rotate-[-45deg] absolute top-4 bg-white/50"></div>
                 <div className="w-20 h-6 origin-center rotate-[-45deg] absolute bottom-10 right-0 bg-white/50"></div>
-                <div
-                  className="h-full w-full p-5 -mt-3 cursor-pointer"
-                  onClick={() => navigate(`/recipe/${post_id}`)}
-                >
-                  <div className="h-5/6 p-2 pb-0 bg-white">
+                <div className="h-full w-full p-5 -mt-3">
+                  <div
+                    className="h-5/6 p-2 pb-0 bg-white cursor-pointer"
+                    onClick={() => navigate(`/recipe/${post_id}`)}
+                  >
                     <img
                       src={`${API_URL}${photo}`}
                       alt=""
@@ -429,7 +511,10 @@ const Recipe = (props) => {
                       style={{ objectPosition: "0 0" }}
                     />
                   </div>
-                  <div className="h-1/6 flex items-center justify-center text-center text-2xl bg-white">
+                  <div
+                    className="h-1/6 flex items-center justify-center text-center text-2xl bg-white cursor-pointer"
+                    onClick={() => navigate(`/recipe/${post_id}`)}
+                  >
                     "{title}"
                   </div>
                 </div>
@@ -443,80 +528,111 @@ const Recipe = (props) => {
                       : "No chef likes this recipe :<"}
                   </span>
                 </div>
-                <button className="h-14 w-14 rounded-full  border-2 border-biru ml-1 overflow-hidden  hover:bg-biru duration-500 hover:shadow-black shadow-md focus:outline-none">
-                  <PaperAirplaneIcon className="h-full w-full p-2 hover:text-white " />
-                </button>
-                {/* <Popover as="div" className="relative h-14 w-14">
-                  {({ open, close }) => (
+
+                {/* Popover Button Share */}
+                <Popover className="relative overflow-visible w-14 h-14 mt-2 rounded-full">
+                  {({ open }) => (
                     <>
-                      <Popover.Button className="absolute h-14 w-14 rounded-full  border-2 border-biru overflow-hidden  hover:bg-biru duration-500 hover:shadow-black shadow-md focus:outline-none">
-                        Solutions
+                      <Popover.Button
+                        className={`${
+                          open ? "bg-biru" : "bg-putih"
+                        } h-14 w-14 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none`}
+                      >
+                        <PaperAirplaneIcon
+                          className={`${
+                            open ? "text-putih" : ""
+                          } h-full w-full p-2`}
+                        />
                       </Popover.Button>
-                      const container =
-                       hidden: { opacity: 1, scale: 0 },
-                        visible: {
-                          opacity: 1,
-                          scale: 1,
-                          transition: {
-                            delayChildren: 0.3,
-                            staggerChildren: 0.2
-                          }
-                        }
-                      }
-
-                      const item = {
-                        hidden: { y: 20, opacity: 0 },
-                        visible: {
-                          y: 0,
-                          opacity: 1
-                        }
-                      {open && (
-                        <Popover.Panel
-                          static
-                          as={motion.div}
-                          className="relative border-2 border-merah w-36 h-32 -translate-y-16 -translate-x-[32%] pointer-events-none"
-                          transition={{
-                            hidden: { opacity: 1, scale: 0 },
-                            visible: {
-                              opacity: 1,
-                              scale: 1,
-                              transition: {
-                                delayChildren: 0.3,
-                                staggerChildren: 0.2,
-                              },
-                            },
-                          }}
-                        >
-                          <motion.button
-                            hidden={{ opacity: 0 }}
-                            visible={{ opacity: 1 }}
-                            className="bg-kuning z-50 h-14 w-14 rounded-full overflow-hidden  duration-500 hover:shadow-black shadow-md focus:outline-none pointer-events-auto"
-                            onClick={() => {
-                              close();
-                            }}
+                      <AnimatePresence>
+                        {open && (
+                          <Popover.Panel
+                            as={motion.div}
+                            static
+                            variants={animationShare.container}
+                            initial="hidden"
+                            animate="visible"
+                            exit="hidden"
+                            className="absolute top-0 focus:outline-none flex flex-col gap-y-2 h-14 w-14 pointer-events-none"
                           >
-                            Edit
-                          </motion.button>
-
-                          <button
-                            as="button"
-                            className="absolute top-0 right-0 bg-merah z-10 h-14 w-14 rounded-full overflow-hidden  duration-500 hover:shadow-black shadow-md focus:outline-none pointer-events-auto"
-                            onClick={() => {
-                              close();
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </Popover.Panel>
-                      )}
+                            <motion.div
+                              variants={animationShare.item1}
+                              className="absolute"
+                            >
+                              <TwitterShareButton
+                                url={`TheChefBook.com/recipe/${post_id}`}
+                                title={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
+                              >
+                                <TwitterIcon
+                                  size={40}
+                                  round={true}
+                                  className="absolute top-0 left-0 rounded-full shadow-black shadow-md pointer-events-auto"
+                                  style={{ backgroundColor: "#00ACED" }}
+                                />
+                              </TwitterShareButton>
+                            </motion.div>
+                            <motion.div
+                              variants={animationShare.item2}
+                              className="absolute"
+                            >
+                              <WhatsappShareButton
+                                url={`TheChefBook.com/recipe/${post_id}`}
+                                title={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
+                              >
+                                <WhatsappIcon
+                                  size={40}
+                                  round={true}
+                                  className="absolute top-0 left-0 rounded-full shadow-black shadow-md pointer-events-auto"
+                                  style={{ backgroundColor: "#25D366" }}
+                                />
+                              </WhatsappShareButton>
+                            </motion.div>
+                            <motion.div
+                              variants={animationShare.item3}
+                              className="absolute"
+                            >
+                              <FacebookShareButton
+                                url={`TheChefBook.com/recipe/${post_id}`}
+                                quote={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
+                              >
+                                <FacebookIcon
+                                  size={40}
+                                  round={true}
+                                  className="absolute top-0 left-0 rounded-full shadow-black shadow-md pointer-events-auto"
+                                  style={{ backgroundColor: "#3B5998" }}
+                                />
+                              </FacebookShareButton>
+                            </motion.div>
+                            <motion.div
+                              variants={animationShare.item4}
+                              className="absolute"
+                            >
+                              <button
+                                onClick={() => {
+                                  copy();
+                                  toast.success("URL copied to clipboard!", {
+                                    position: "top-center",
+                                    theme: "colored",
+                                    style: { backgroundColor: "#3A7D44" },
+                                  });
+                                }}
+                                className="h-10 w-10 rounded-full  overflow-hidden  bg-merah shadow-black shadow-md focus:outline-none pointer-events-auto"
+                              >
+                                <LinkIcon className="h-full w-full p-2 text-putih" />
+                              </button>
+                            </motion.div>
+                          </Popover.Panel>
+                        )}
+                      </AnimatePresence>
                     </>
                   )}
-                </Popover> */}
+                </Popover>
               </div>
             </div>
           </div>
         </>
       )}
+
       {/* Recipe Page */}
       {isPage.recipe === 1 && (
         <>
@@ -525,19 +641,34 @@ const Recipe = (props) => {
               <div className="w-full h-[250px] bg-putih h mb-7">
                 Ingredients:
                 <div className="w-full h-full overflow-y-scroll border-y border-merah">
-                  {loading ? "Loading..." : printIngredients()}
+                  {loading ? (
+                    <div className="py-20 flex flex-col justify-center items-center">
+                      <Loading className="h-14 w-14 animate-spin" />
+                      <div>Please wait...</div>
+                    </div>
+                  ) : (
+                    printIngredients()
+                  )}
                 </div>
               </div>
               <div className="w-full h-[250px] bg-putih">
                 Instructions:
                 <div className="w-full h-full overflow-y-scroll border-y border-merah">
-                  {loading ? "Loading..." : printInstructions()}
+                  {loading ? (
+                    <div className="py-20 flex flex-col justify-center items-center">
+                      <Loading className="h-14 w-14 animate-spin" />
+                      <div>Please wait...</div>
+                    </div>
+                  ) : (
+                    printInstructions()
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </>
       )}
+
       {/* Kisses Page */}
       {isPage.kisses === 1 && (
         <>
@@ -548,17 +679,23 @@ const Recipe = (props) => {
               </div>
               {
                 <div className="h-full w-full relative bg-putih border-y border-merah  overflow-y-scroll mt-5">
-                  {loading
-                    ? "Loading..."
-                    : likers[0]
-                    ? printUserLikes()
-                    : "No chef likes this recipe :<"}
+                  {loading ? (
+                    <div className="py-20 flex flex-col justify-center items-center">
+                      <Loading className="h-14 w-14 animate-spin" />
+                      <div>Please wait...</div>
+                    </div>
+                  ) : likers[0] ? (
+                    printUserLikes()
+                  ) : (
+                    "No chef likes this recipe :<"
+                  )}
                 </div>
               }
             </div>
           </div>
         </>
       )}
+
       {/* Comments Page */}
       {isPage.comment === 1 && (
         <>
@@ -568,12 +705,18 @@ const Recipe = (props) => {
                 Comments from other chefs:
               </div>
               <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah mt-5">
-                {loading
-                  ? "Loading.."
-                  : comments[0]
-                  ? printComments()
-                  : "No chef commented here :<"}
+                {loading ? (
+                  <div className="py-20 flex flex-col justify-center items-center">
+                    <Loading className="h-14 w-14 animate-spin" />
+                    <div>Please wait...</div>
+                  </div>
+                ) : comments[0] ? (
+                  printComments()
+                ) : (
+                  "No chef commented here :<"
+                )}
               </div>
+
               <div className="w-full relative bg-putih text-3xl">
                 <div className="flex items-center">
                   <button

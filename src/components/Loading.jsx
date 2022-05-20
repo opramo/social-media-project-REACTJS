@@ -1,9 +1,9 @@
 import React from "react";
 import Logo1 from "../Assets/chefputih.png";
 
-function Spinner() {
+function Loading({ className }) {
   return (
-    <div className="rounded-full w-14 h-14 bg-merah animate-spin animate-bounce">
+    <div className={`rounded-full bg-merah ${className} `}>
       <img
         src={Logo1}
         alt="TheChefBook"
@@ -13,4 +13,4 @@ function Spinner() {
   );
 }
 
-export default Spinner;
+export default Loading;
