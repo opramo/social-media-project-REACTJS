@@ -16,6 +16,7 @@ import { logoutAction } from "../Redux/Actions/userActions";
 import Cookies from "js-cookie";
 import API_URL from "../Helpers/apiurl";
 import { toast } from "react-toastify";
+import { root } from "postcss";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -207,7 +208,13 @@ const NavBar = () => {
                   `}
                   >
                     Profile
-                    <ChevronDownIcon className="h-4 w-4 ml-3" />
+                    <div
+                      className={`${
+                        open ? "rotate-180" : null
+                      } ml-3 duration-500`}
+                    >
+                      <ChevronDownIcon className={`h-4 w-4 `} />
+                    </div>
                   </Menu.Button>
                   <AnimatePresence>
                     {open && (
@@ -222,10 +229,11 @@ const NavBar = () => {
                           // ease: "easeInOut",
                           type: "spring",
                         }}
-                        className="absolute right-0 mt-4 w-56 bg-merah shadow-xl shadow-black rounded -z-10 pointer-events-auto"
+                        className="absolute right-0 mt-5 w-56 bg-merah shadow-xl shadow-black rounded-lg overflow-hidden -z-10 pointer-events-auto cursor-pointer"
+                        onClick={() => navigate("/account")}
                       >
-                        <Menu.Item as="div" className="p-2">
-                          <div className="items-center relative flex flex-col justify-end w-full text-center h-48 rounded overflow-hidden">
+                        <Menu.Item as="div" className="">
+                          <div className="items-center relative flex flex-col justify-end w-full text-center h-48 overflow-hidden">
                             <img
                               src={
                                 profile_cover ? API_URL + profile_cover : cover
@@ -258,32 +266,32 @@ const NavBar = () => {
                             </div>
                           </div>
                         </Menu.Item>
-                        <Menu.Item as="div" className="pb-2 px-2">
+                        <Menu.Item as="div" className="">
                           <motion.button
                             whileTap={{ scale: 0.8 }}
                             onClick={() => navigate("/account")}
-                            className="border-2 w-full bg-putih border-merah block text-center rounded-full hover:text-putih hover:border-putih hover:bg-merah duration-500"
+                            className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
                           >
                             My Kitchen
                           </motion.button>
                         </Menu.Item>
-                        <Menu.Item as="div" className="px-2">
+                        <Menu.Item as="div" className="">
                           <motion.button
                             whileTap={{ scale: 0.8 }}
                             onClick={() => navigate("/accountsettings")}
-                            className="border-2 w-full bg-putih border-merah block text-center rounded-full hover:text-putih hover:border-putih hover:bg-merah duration-500"
+                            className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
                           >
                             Account Settings
                           </motion.button>
                         </Menu.Item>
-                        <Menu.Item as="div" className="p-2">
+                        <Menu.Item as="div" className="">
                           <motion.button
                             whileTap={{ scale: 0.8 }}
                             onClick={() => {
                               logoutHandler();
                               dispatch({ type: "LOGOUT" });
                             }}
-                            className="border-2 w-full bg-putih border-merah block text-center rounded-full hover:text-putih hover:border-putih hover:bg-merah duration-500"
+                            className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
                           >
                             Log Out
                           </motion.button>

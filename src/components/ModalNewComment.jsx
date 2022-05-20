@@ -8,9 +8,11 @@ import axios from "axios";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 
 const ModalNewComment = (props) => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const {
     modalNewComment,
     modalNewCommentHandler,
@@ -51,6 +53,9 @@ const ModalNewComment = (props) => {
       });
       setTimeout(() => {
         modalNewCommentHandler();
+        if (location.pathname === `/recipe/${post_id}`) {
+          window.location.reload();
+        }
       }, 250);
     } catch (error) {
       console.log(error);

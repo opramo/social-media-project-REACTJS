@@ -55,7 +55,7 @@ const RecipeDetails = () => {
   const post_id = params.post_id;
 
   const animationShare = {
-    item1: {
+    item4: {
       hidden: { x: 0, y: 0, opacity: 0 },
       visible: {
         x: -55,
@@ -63,7 +63,7 @@ const RecipeDetails = () => {
         opacity: 1,
       },
     },
-    item2: {
+    item3: {
       hidden: { x: 0, y: 0, opacity: 0 },
       visible: {
         x: -60,
@@ -71,7 +71,7 @@ const RecipeDetails = () => {
         opacity: 1,
       },
     },
-    item3: {
+    item2: {
       hidden: { x: 0, y: 0, opacity: 0 },
       visible: {
         x: -40,
@@ -79,7 +79,7 @@ const RecipeDetails = () => {
         opacity: 1,
       },
     },
-    item4: {
+    item1: {
       hidden: { x: 0, y: 0, opacity: 0 },
       visible: {
         x: 0,
@@ -93,8 +93,8 @@ const RecipeDetails = () => {
         opacity: 1,
         x: 0,
         transition: {
-          delayChildren: 0.5,
-          staggerChildren: 0.3,
+          delayChildren: 0,
+          staggerChildren: 0.1,
         },
       },
     },
@@ -254,7 +254,10 @@ const RecipeDetails = () => {
         modalDeleteHandler={modalDeleteHandler}
         post_id={post_id}
       />
+      {/* Div to center content */}
       <div className="h-60 sticky top-32 flex flex-col items-end w-20"></div>
+
+      {/* Content */}
       <div className="min-w-min flex my-5 justify-center overflow-hidden relative z-0  rounded-2xl shadow-lg shadow-black w-[600px]">
         <div className=" z-0 w-[600px] rounded-2xl relative ">
           <div>
@@ -264,7 +267,6 @@ const RecipeDetails = () => {
               className="h-[400px] w-[600px] rounded-t-2xl"
             />
           </div>
-          {/* user */}
           <div className="">
             <div className="w-full flex justify-between px-5 text-sm relative">
               <div
@@ -279,8 +281,8 @@ const RecipeDetails = () => {
                   <div>{data.fullname}</div>
                 </div>
               </div>
-              <div className="h-11 flex flex-col justify-between items-end">
-                <div className="text-xs">{createdAtPost}</div>
+              <div className="flex flex-col text-center items-end mb-1">
+                <div className="mb-1">{createdAtPost}</div>
                 {id === data.user_id ? (
                   <Popover className="relative h-5">
                     {({ open }) => (
@@ -348,23 +350,25 @@ const RecipeDetails = () => {
           <div className="flex flex-col w-full p-5 bg-putih">
             <div className="w-full bg-putih h mb-7 text-xl">
               Ingredients:
-              <div className="w-full border-merah">
-                <ul className="max-w-full list-disc ml-5 break-words text-base bg-putih">
+              <div className="w-full border-y border-merah">
+                <ul className="max-w-full list-disc ml-5 break-words text-lg bg-putih">
                   {data.ingredients.map((content) => {
                     return (
-                      <li key={content.ingredient_id}>{content.ingredient}</li>
+                      <li key={content.ingredient_id} className="mb-2">
+                        {content.ingredient}
+                      </li>
                     );
                   })}
                 </ul>
               </div>
             </div>
-            <div className="w-full bg-putih ">
+            <div className="w-full bg-putih text-xl ">
               Instructions:
-              <div className="w-full border-merah">
-                <ol className="max-w-full list-decimal ml-5 break-words text-sm bg-putih">
+              <div className="w-full border-y border-merah">
+                <ol className="max-w-full list-decimal ml-5 break-words text-lg bg-putih">
                   {data.instructions.map((content) => {
                     return (
-                      <li key={content.instruction_id}>
+                      <li key={content.instruction_id} className="mb-2">
                         {content.instruction}
                       </li>
                     );
@@ -464,9 +468,11 @@ const RecipeDetails = () => {
           </div>
         </div>
       </div>
-      {/* </div> */}
+
+      {/* Sidebar Nav */}
       <div className="h-80 sticky top-32 flex flex-col items-end w-20">
         <>{printKissed()}</>
+
         <button
           type="button"
           className={`${
@@ -499,7 +505,9 @@ const RecipeDetails = () => {
                 focus:outline-none`}
               >
                 <PaperAirplaneIcon
-                  className={`${open ? "text-putih" : ""} h-full w-full p-2`}
+                  className={`${
+                    open ? "text-putih rotate-[310deg]" : "rotate-180"
+                  } h-full w-full scale-75 duration-500 z-30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
                 />
               </Popover.Button>
               <AnimatePresence>

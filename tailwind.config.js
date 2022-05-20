@@ -10,6 +10,15 @@ module.exports = {
         biru: "#1F609E",
         hijau: "#3A7D44",
       },
+      animation: {
+        "spin-share": "spin-share 1s linear",
+      },
+      keyframes: {
+        "spin-share": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(300deg)" },
+        },
+      },
     },
   },
   plugins: [],

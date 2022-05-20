@@ -73,31 +73,29 @@ const MyKitchen = () => {
 
   return (
     <div className="min-h-screen flex pt-20 bg-putih justify-center">
-      <div className=" w-[600px] relative ">
+      <div className="w-[600px] relative my-5 rounded-2xl overflow-hidden shadow-lg shadow-black">
         {/* Jumbotron Profile */}
-        <div className="h-72 w-full relative">
-          <div className="bg-black/30 py-3 text-center text-lg font-bold text-putih absolute w-full tracking-wider">
-            {`${username}'s Kitchen`}
-          </div>
-          <div className="w-full block h-full">
+        <div className=" w-full relative flex flex-col min-h-min items-center">
+          <div className="w-full block h-full absolute top-0 min-h-[300px]">
             <img
               src={profile_cover ? API_URL + profile_cover : cover}
               alt=""
               className="h-full w-full"
             />
           </div>
-          <div className="absolute top-16 flex flex-col items-center w-1/2 left-[50%] translate-x-[-50%]">
+          <div className="bg-black/30 py-2 text-center text-lg font-bold text-putih w-full tracking-wider z-10">
+            {`${username}'s Kitchen`}
+          </div>
+          <div className="flex flex-col items-center w-1/2 z-10 my-2">
             <div className="w-36 h-36 rounded-full overflow-hidden">
               <img
                 src={profile_picture ? API_URL + profile_picture : Cat}
                 alt=""
               />
             </div>
-            <div className="mt-3 text-center py-1 shadow-lg bg-black/30 text-putih px-5">
-              {fullname}
-            </div>
           </div>
-          <div className="border-putih border-2 text-white bg-black/50 w-[200px] h-[200px] absolute right-0 top-1/2 -translate-y-1/2">
+          <div className="text-white bg-black/30 w-full text-center flex flex-col items-center pb-10 z-10">
+            <div className="text-center py-1 text-putih">{fullname}</div>
             {bio}
           </div>
 
@@ -106,7 +104,7 @@ const MyKitchen = () => {
             <button
               className={`${
                 myRecipes
-                  ? "bg-putih text-black shadow-all-md shadow-black"
+                  ? "bg-putih text-black"
                   : "bg-merah text-putih brightness-75 hover:brightness-100"
               } mr-5 p-1 px-2 rounded-t-lg focus:outline-none duration-500`}
               onClick={() => {
@@ -119,7 +117,7 @@ const MyKitchen = () => {
             <button
               className={`${
                 !myRecipes
-                  ? "bg-putih text-black shadow-all-md shadow-black"
+                  ? "bg-putih text-black"
                   : "bg-merah text-putih brightness-75 hover:brightness-100"
               } p-1 px-2 rounded-t-lg focus:outline-none duration-500 z-0`}
               onClick={() => {
@@ -142,7 +140,9 @@ const MyKitchen = () => {
               ) : posts[0] ? (
                 printRecipe()
               ) : (
-                "You have not posted any recipe yet :<"
+                <div className="py-20 flex flex-col justify-center items-center">
+                  You have not posted any recipe yet :&#60;
+                </div>
               )}
             </div>
           </div>
@@ -156,7 +156,9 @@ const MyKitchen = () => {
             ) : likedPosts[0] ? (
               printLikedRecipe()
             ) : (
-              "You have not liked any recipe yet :<"
+              <div className="py-20 flex flex-col justify-center items-center">
+                You have not liked any recipe yet :&#60;
+              </div>
             )}
           </div>
         )}

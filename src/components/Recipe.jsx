@@ -66,9 +66,9 @@ const Recipe = (props) => {
     comment: 0,
   });
 
-  // Animasi share button
+  // Animation share button
   const animationShare = {
-    item1: {
+    item4: {
       hidden: { x: 0, y: 0, opacity: 0 },
       visible: {
         x: 45,
@@ -76,7 +76,7 @@ const Recipe = (props) => {
         opacity: 1,
       },
     },
-    item2: {
+    item3: {
       hidden: { x: 0, y: 0, opacity: 0 },
       visible: {
         x: -2,
@@ -84,7 +84,7 @@ const Recipe = (props) => {
         opacity: 1,
       },
     },
-    item3: {
+    item2: {
       hidden: { x: 0, y: 0, opacity: 0 },
       visible: {
         x: -43,
@@ -92,7 +92,7 @@ const Recipe = (props) => {
         opacity: 1,
       },
     },
-    item4: {
+    item1: {
       hidden: { x: 0, y: 0, opacity: 0 },
       visible: {
         x: -40,
@@ -106,8 +106,8 @@ const Recipe = (props) => {
         opacity: 1,
         x: 0,
         transition: {
-          delayChildren: 0.5,
-          staggerChildren: 0.3,
+          delayChildren: 0,
+          staggerChildren: 0.1,
         },
       },
     },
@@ -144,7 +144,6 @@ const Recipe = (props) => {
       if (res.data[0]) {
         setCommentsMore({ more: true, total: res.data.length });
       }
-      console.log(res.data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -219,7 +218,6 @@ const Recipe = (props) => {
               );
               kissed ? setLikes(likes - 1) : setLikes(likes + 1);
               setKissed(!kissed);
-              console.log("liked!");
             } else {
               toast.error("Please verify your account!", {
                 theme: "colored",
@@ -253,7 +251,7 @@ const Recipe = (props) => {
   // Instructions List Render //////////////
   const printInstructions = () => {
     return (
-      <ol className="max-w-full list-decimal ml-5 break-words text-sm bg-putih">
+      <ol className="max-w-full list-decimal ml-5 break-words text-base bg-putih">
         {recipe.instructions.map((content) => {
           return <li key={content.instruction_id}>{content.instruction}</li>;
         })}
@@ -273,7 +271,7 @@ const Recipe = (props) => {
                 className="flex rounded-md hover:bg-white/50 cursor-pointer text-base py-2"
                 onClick={() => navigate("/account")}
               >
-                <div className="w-12 h-12 rounded-full mr-3 bg-merah overflow-hidden">
+                <div className="w-12 h-12 rounded-full mr-3 border border-merah overflow-hidden">
                   <img src={`${API_URL}${content.profile_picture}`} alt="" />
                 </div>
                 <div>
@@ -309,7 +307,7 @@ const Recipe = (props) => {
                   className="flex  rounded-md hover:bg-white/50 cursor-pointer text-base py-2"
                   onClick={() => navigate("/account")}
                 >
-                  <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
+                  <div className="w-12 h-12 rounded-full border border-merah mr-3 overflow-hidden">
                     <img src={`${API_URL}${content.profile_picture}`} alt="" />
                   </div>
                   <div>
@@ -383,11 +381,11 @@ const Recipe = (props) => {
         {/* Recipe Page Button */}
         <button
           type="button"
-          className={`w-full h-[30%] rounded-r break-words px-2 focus:outline-none  duration-500 ${
+          className={`${
             isPage.recipe
               ? " bg-merah text-putih "
-              : "bg-putih brightness-75 border-b border-merah hover:brightness-100 hover:border-transparent"
-          }`}
+              : "bg-putih brightness-75  hover:brightness-100 hover:border-transparent"
+          } w-full h-[30%] rounded-r break-words px-2 focus:outline-none  duration-500  border-b border-merah `}
           onClick={() => getRecipe()}
         >
           REC I PE
@@ -427,7 +425,7 @@ const Recipe = (props) => {
             <div className="h-full flex flex-col w-full py-5 bg-putih">
               <div className="h-[10%] w-full flex justify-between px-5 text-sm">
                 <div
-                  className="flex  rounded-md hover:bg-white/50 cursor-pointer"
+                  className="flex rounded-md hover:bg-white/50 cursor-pointer duration-500"
                   onClick={() => navigate("/account")}
                 >
                   <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
@@ -439,11 +437,11 @@ const Recipe = (props) => {
                   </div>
                 </div>
                 <div className="flex flex-col text-center items-end mb-1">
-                  <div className="text-xs">{createdAtPost}</div>
+                  <div className="mb-1">{createdAtPost}</div>
 
                   {/* Popover Button Settings */}
                   {id === user_id ? (
-                    <Popover className="relative mt-2">
+                    <Popover className="relative">
                       {({ open }) => (
                         <>
                           <Popover.Button className="">
@@ -535,13 +533,15 @@ const Recipe = (props) => {
                     <>
                       <Popover.Button
                         className={`${
-                          open ? "bg-biru" : "bg-putih"
-                        } h-14 w-14 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none`}
+                          open
+                            ? "bg-biru"
+                            : "bg-putih grayscale hover:grayscale-0"
+                        } h-14 w-14 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none relative`}
                       >
                         <PaperAirplaneIcon
                           className={`${
-                            open ? "text-putih" : ""
-                          } h-full w-full p-2`}
+                            open ? "text-putih rotate-[45deg]" : "-rotate-180"
+                          } h-full w-full scale-75 duration-500 z-30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
                         />
                       </Popover.Button>
                       <AnimatePresence>
@@ -722,7 +722,9 @@ const Recipe = (props) => {
                   <button
                     type="button"
                     className={`${
-                      modalNewComment ? "bg-hijau" : "bg-putih"
+                      modalNewComment
+                        ? "bg-hijau"
+                        : "bg-putih grayscale hover:grayscale-0"
                     } h-14 w-14 mt-2 rounded-full border-2 border-hijau ml-1 
                     overflow-hidden duration-500 hover:shadow-black 
                     shadow-md focus:outline-none`}
