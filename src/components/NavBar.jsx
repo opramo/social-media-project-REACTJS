@@ -16,7 +16,6 @@ import { logoutAction } from "../Redux/Actions/userActions";
 import Cookies from "js-cookie";
 import API_URL from "../Helpers/apiurl";
 import { toast } from "react-toastify";
-import { root } from "postcss";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -76,6 +75,7 @@ const NavBar = () => {
       !token &&
       (location.pathname === "/home" ||
         location.pathname === "/account" ||
+        location.pathname === "/accountsettings" ||
         location.pathname === "/newrecipe" ||
         location.pathname === "/editrecipe" ||
         location.pathname === "/verifyaccount")
@@ -86,32 +86,37 @@ const NavBar = () => {
     // eslint-disable-next-line
   }, [token]);
 
-  // React.useEffect(() => console.log("isverified!"), [is_verified]);
   return (
     <>
-      <ModalLogIn
-        modalLogIn={modalLogIn}
-        passVis={passVis}
-        setPassVis={setPassVis}
-        setModalLogIn={setModalLogIn}
-        modalForgotPasswordHandler={modalForgotPasswordHandler}
-        modalLogInHandler={modalLogInHandler}
-        modalSignUpHandler={modalSignUpHandler}
-      />
-      <ModalSignUp
-        setPassVis={setPassVis}
-        setPassConfVis={setPassConfVis}
-        setModalSignUp={setModalSignUp}
-        passVis={passVis}
-        passConfVis={passConfVis}
-        modalSignUp={modalSignUp}
-        modalSignUpHandler={modalSignUpHandler}
-        modalLogInHandler={modalLogInHandler}
-      />
-      <ModalForgotPassword
-        modalForgotPassword={modalForgotPassword}
-        modalForgotPasswordHandler={modalForgotPasswordHandler}
-      />
+      {modalLogIn && (
+        <ModalLogIn
+          modalLogIn={modalLogIn}
+          passVis={passVis}
+          setPassVis={setPassVis}
+          setModalLogIn={setModalLogIn}
+          modalForgotPasswordHandler={modalForgotPasswordHandler}
+          modalLogInHandler={modalLogInHandler}
+          modalSignUpHandler={modalSignUpHandler}
+        />
+      )}
+      {modalSignUp && (
+        <ModalSignUp
+          setPassVis={setPassVis}
+          setPassConfVis={setPassConfVis}
+          setModalSignUp={setModalSignUp}
+          passVis={passVis}
+          passConfVis={passConfVis}
+          modalSignUp={modalSignUp}
+          modalSignUpHandler={modalSignUpHandler}
+          modalLogInHandler={modalLogInHandler}
+        />
+      )}
+      {modalForgotPassword && (
+        <ModalForgotPassword
+          modalForgotPassword={modalForgotPassword}
+          modalForgotPasswordHandler={modalForgotPasswordHandler}
+        />
+      )}
 
       <div className="z-50 fixed w-screen h-20 flex justify-center bg-putih shadow-lg">
         <div className="px-10 flex items-center justify-center  relative bg-putih pointer-events-none">
@@ -229,72 +234,70 @@ const NavBar = () => {
                           // ease: "easeInOut",
                           type: "spring",
                         }}
-                        className="absolute right-0 mt-5 w-56 bg-merah shadow-xl shadow-black rounded-lg overflow-hidden -z-10 pointer-events-auto cursor-pointer"
-                        onClick={() => navigate("/account")}
+                        className="absolute right-0 mt-5 w-56 shadow-xl bg-putih shadow-black rounded-lg overflow-hidden -z-10 pointer-events-auto cursor-pointer"
                       >
-                        <Menu.Item as="div" className="">
-                          <div className="items-center relative flex flex-col justify-end w-full text-center h-48 overflow-hidden">
+                        <Menu.Item
+                          as="button"
+                          className="items-center relative flex flex-col justify-end w-full text-center h-48 overflow-hidden"
+                          onClick={() => navigate("/account")}
+                        >
+                          <img
+                            src={
+                              profile_cover ? API_URL + profile_cover : cover
+                            }
+                            alt="cover"
+                            className="h-full w-full absolute z-0"
+                          />
+                          <div className=" absolute top-6 left-29 origin-center h-14 w-14">
+                            <img
+                              src={hat}
+                              alt="hat"
+                              className="object-cover absolute bottom-0 "
+                            />
+                          </div>
+                          <div className="my-3 rounded-full h-20 w-20 overflow-hidden border-2 border-merah z-10">
                             <img
                               src={
-                                profile_cover ? API_URL + profile_cover : cover
+                                profile_picture
+                                  ? API_URL + profile_picture
+                                  : cat
                               }
-                              alt="cover"
-                              className="h-full w-full absolute z-0"
+                              alt="pp"
                             />
-                            <div className=" absolute -top-1 left-1/2 -translate-x-1/2 origin-center h-14 w-14">
-                              <img
-                                src={hat}
-                                alt="hat"
-                                className="object-cover absolute bottom-0 "
-                              />
-                            </div>
-                            <div className="my-3 rounded-full h-20 w-20 overflow-hidden border-2 border-merah z-10">
-                              <img
-                                src={
-                                  profile_picture
-                                    ? API_URL + profile_picture
-                                    : cat
-                                }
-                                alt="pp"
-                              />
-                            </div>
-                            <div className="h-auto w-full z-10 bg-black/30 text-white">
-                              {username} {is_verified ? null : `unverified`}
-                            </div>
-                            <div className="h-auto w-full z-10 bg-black/30 text-white">
-                              {fullname}
-                            </div>
+                          </div>
+                          <div className="h-auto w-full z-10 bg-black/30 text-white">
+                            {username} {is_verified ? null : `unverified`}
+                          </div>
+                          <div className="h-auto w-full z-10 bg-black/30 text-white">
+                            {fullname}
                           </div>
                         </Menu.Item>
-                        <Menu.Item as="div" className="">
-                          <motion.button
-                            whileTap={{ scale: 0.8 }}
-                            onClick={() => navigate("/account")}
-                            className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
-                          >
-                            My Profile
-                          </motion.button>
+                        <Menu.Item
+                          as={motion.button}
+                          className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
+                          whileTap={{ scale: 0.8 }}
+                          onClick={() => navigate("/account")}
+                        >
+                          My Profile
                         </Menu.Item>
-                        <Menu.Item as="div" className="">
-                          <motion.button
-                            whileTap={{ scale: 0.8 }}
-                            onClick={() => navigate("/accountsettings")}
-                            className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
-                          >
-                            Account Settings
-                          </motion.button>
+                        <Menu.Item
+                          as={motion.button}
+                          whileTap={{ scale: 0.8 }}
+                          onClick={() => navigate("/accountsettings")}
+                          className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
+                        >
+                          Account Settings
                         </Menu.Item>
-                        <Menu.Item as="div" className="">
-                          <motion.button
-                            whileTap={{ scale: 0.8 }}
-                            onClick={() => {
-                              logoutHandler();
-                              dispatch({ type: "LOGOUT" });
-                            }}
-                            className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
-                          >
-                            Log Out
-                          </motion.button>
+                        <Menu.Item
+                          as={motion.button}
+                          className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
+                          whileTap={{ scale: 0.8 }}
+                          onClick={() => {
+                            logoutHandler();
+                            dispatch({ type: "LOGOUT" });
+                          }}
+                        >
+                          Log Out
                         </Menu.Item>
                       </Menu.Items>
                     )}

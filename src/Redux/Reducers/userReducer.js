@@ -44,8 +44,6 @@ const userReducer = (state = INITIAL_STATE, action) => {
       return (state = INITIAL_STATE);
     case "NEWEDIT":
       return { ...state, edit: action.payload };
-    case "NOEDIT":
-      return { ...state, edit: null };
     case "DONE":
       return { ...state, loading: false };
     case "CLEARERROR":

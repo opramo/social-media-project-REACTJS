@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Logo1 from "../Assets/chefputih.png";
+import Loading from "../components/Loading";
 import API_URL from "../Helpers/apiurl";
 
 function Verification() {
@@ -11,6 +12,7 @@ function Verification() {
   const dispatch = useDispatch();
   const { token } = useParams();
   const [loading, setLoading] = useState(false);
+  const [loadingEmail, setLoadingEmail] = useState(false);
   const [verified, setVerified] = useState(false);
   const { username, id, email, is_verified } = useSelector(
     (state) => state.user
@@ -43,7 +45,7 @@ function Verification() {
   };
   const sendEmail = async () => {
     try {
-      setLoading(true);
+      setLoadingEmail(true);
       await axios.post(`${API_URL}/auth/email-verification`, {
         id,
         username,
@@ -56,10 +58,11 @@ function Verification() {
       });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoadingEmail(false);
     }
   };
 
-  //   ubah auto redirect setelah selesai verifikasi
   useEffect(() => {
     is_verified && navigate("/");
     // eslint-disable-next-line
@@ -138,13 +141,19 @@ function Verification() {
             </div>
           </div>
           <div className="mt-6 flex flex-col">
-            <button
-              type="button"
-              className="hover:text-white shadow-md hover:shadow-black inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md  focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-              onClick={() => sendEmail()}
-            >
-              Re-send Email Verification
-            </button>
+            {loadingEmail ? (
+              <div className="flex justify-center">
+                <Loading className={"animate-spin h-10 w-10 ml-5"} />
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="hover:text-white shadow-md hover:shadow-black inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md  focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
+                onClick={() => sendEmail()}
+              >
+                Re-send Email Verification
+              </button>
+            )}
           </div>
         </div>
       </div>

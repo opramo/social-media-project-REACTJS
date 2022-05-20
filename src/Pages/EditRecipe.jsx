@@ -12,11 +12,12 @@ import { useNavigate } from "react-router-dom";
 const EditRecipe = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, edit } = useSelector((state) => state.user);
+  const { loading, edit, id } = useSelector((state) => state.user);
   const [data, setData] = useState(null);
   const [photoRecipe, setPhotoRecipe] = useState(null);
 
-  console.log(data);
+  console.log("edit:", edit);
+  console.log("id:", id);
 
   let editTitle = data ? data.post.title : "";
 
@@ -72,10 +73,9 @@ const EditRecipe = () => {
     try {
       dispatch({ type: "LOADING" });
       let token = Cookies.get("token");
-      let res = await axios.patch(`${API_URL}/recipe/edit-recipe`, formData, {
+      await axios.patch(`${API_URL}/recipe/edit-recipe`, formData, {
         headers: { authorization: token },
       });
-      dispatch({ type: "LOGIN", payload: res.data });
       toast.success("Post edited!", {
         theme: "colored",
         position: "top-center",
@@ -105,6 +105,8 @@ const EditRecipe = () => {
       setPhotoRecipe(`${API_URL}${res.data.post.photo}`);
     } catch (error) {
       console.log(error);
+    } finally {
+      dispatch({ type: "DONE" });
     }
   };
 
@@ -117,28 +119,18 @@ const EditRecipe = () => {
         style: { backgroundColor: "#A90409" },
       });
       setTimeout(() => {
-        navigate("/home");
+        navigate(-1);
       }, 3000);
     }
     // eslint-disable-next-line
   }, []);
-
-  useEffect(() => {
-    if (loading) {
-      dispatch({ type: "NOEDIT" });
-    }
-    dispatch({ type: "DONE" });
-    // eslint-disable-next-line
-  }, [loading]);
 
   return (
     <div className="min-h-screen flex pt-20 bg-putih justify-center">
       <div className="shadow-lg shadow-black w-[600px]">
         <Formik
           initialValues={initialValues}
-          // isValid
           validateOnMount
-          // validateOnBlur={false}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
           enableReinitialize

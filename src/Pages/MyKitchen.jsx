@@ -129,9 +129,9 @@ const MyKitchen = () => {
             </button>
           </div>
         </div>
-        {myRecipes ? (
-          <div className="bg-putih w-[600px] h-auto  py-5 relative z-10">
-            <div className="">
+        <div className="w-full flex justify-center bg-putih z-10">
+          {myRecipes ? (
+            <div className="bg-putih w-[600px] h-auto py-5 relative z-10">
               {loadingPosts ? (
                 <div className="py-20 flex flex-col justify-center items-center">
                   <Loading className="h-20 w-20 animate-bounce" />
@@ -145,23 +145,23 @@ const MyKitchen = () => {
                 </div>
               )}
             </div>
-          </div>
-        ) : (
-          <div className="bg-putih w-[600px] h-auto py-5 relative z-10">
-            {loadingPosts ? (
-              <div className="py-20 flex flex-col justify-center items-center">
-                <Loading className="h-20 w-20 animate-bounce" />
-                <div>Please wait...</div>
-              </div>
-            ) : likedPosts[0] ? (
-              printLikedRecipe()
-            ) : (
-              <div className="py-20 flex flex-col justify-center items-center">
-                You have not liked any recipe yet :&#60;
-              </div>
-            )}
-          </div>
-        )}
+          ) : (
+            <div className="bg-putih w-[600px] h-auto py-5 relative z-10">
+              {loadingPosts ? (
+                <div className="py-20 flex flex-col justify-center items-center">
+                  <Loading className="h-20 w-20 animate-bounce" />
+                  <div>Please wait...</div>
+                </div>
+              ) : likedPosts[0] ? (
+                printLikedRecipe()
+              ) : (
+                <div className="py-20 flex flex-col justify-center items-center">
+                  You have not liked any recipe yet :&#60;
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
