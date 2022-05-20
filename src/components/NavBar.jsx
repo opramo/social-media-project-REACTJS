@@ -241,11 +241,11 @@ const NavBar = () => {
                               alt="cover"
                               className="h-full w-full absolute z-0"
                             />
-                            <div className=" absolute top-3 left-32 origin-center rotate-[40deg]  h-10 w-10">
+                            <div className=" absolute -top-1 left-1/2 -translate-x-1/2 origin-center h-14 w-14">
                               <img
                                 src={hat}
                                 alt="hat"
-                                className="object-cover absolute bottom-0 bg-merah/50 rounded"
+                                className="object-cover absolute bottom-0 "
                               />
                             </div>
                             <div className="my-3 rounded-full h-20 w-20 overflow-hidden border-2 border-merah z-10">
@@ -272,7 +272,7 @@ const NavBar = () => {
                             onClick={() => navigate("/account")}
                             className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
                           >
-                            My Kitchen
+                            My Profile
                           </motion.button>
                         </Menu.Item>
                         <Menu.Item as="div" className="">

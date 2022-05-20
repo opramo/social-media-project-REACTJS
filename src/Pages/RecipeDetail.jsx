@@ -3,6 +3,7 @@ import {
   DotsHorizontalIcon,
   PaperAirplaneIcon,
   LinkIcon,
+  TrashIcon,
 } from "@heroicons/react/outline";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,9 +23,10 @@ import {
   WhatsappIcon,
   WhatsappShareButton,
 } from "react-share";
-import ModalNewComment from "../components/ModalNewComment";
 import Loading from "../components/Loading";
 import ModalDelete from "../components/ModalDelete";
+import ModalNewComment from "../components/ModalNewComment";
+import ModalDeleteComment from "../components/ModalDeleteComment";
 
 const RecipeDetails = () => {
   const navigate = useNavigate();
@@ -35,6 +37,7 @@ const RecipeDetails = () => {
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [modalNewComment, setModalNewComment] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
+  const [modalDeleteComment, setModalDeleteComment] = useState(false);
   const [data, setData] = useState({
     title: "",
     user_id: 0,
@@ -52,8 +55,9 @@ const RecipeDetails = () => {
   const [likersRender, setLikersRender] = useState([]);
   const [comments, setComments] = useState([]);
   const [commentsRender, setCommentsRender] = useState([]);
+  const [comment_id, setComment_id] = useState(0);
   const post_id = params.post_id;
-
+  console.log(comments);
   const animationShare = {
     item4: {
       hidden: { x: 0, y: 0, opacity: 0 },
@@ -105,6 +109,9 @@ const RecipeDetails = () => {
   };
   const modalDeleteHandler = () => {
     setModalDelete(!modalDelete);
+  };
+  const modalDeleteCommentHandler = () => {
+    setModalDeleteComment(!modalDeleteComment);
   };
 
   const printKissed = () => {
@@ -253,6 +260,12 @@ const RecipeDetails = () => {
         modalDelete={modalDelete}
         modalDeleteHandler={modalDeleteHandler}
         post_id={post_id}
+      />
+      <ModalDeleteComment
+        setModalDeleteComment={setModalDeleteComment}
+        modalDeleteComment={modalDeleteComment}
+        modalDeleteCommentHandler={modalDeleteCommentHandler}
+        comment_id={comment_id}
       />
       {/* Div to center content */}
       <div className="h-60 sticky top-32 flex flex-col items-end w-20"></div>
@@ -411,7 +424,7 @@ const RecipeDetails = () => {
                       className="bg-merah flex justify-center items-center text-putih py-3 rounded-xl my-3 cursor-pointer text-base"
                       onClick={() => moreLikers()}
                     >
-                      See More
+                      See {likers.length} more
                     </div>
                   ) : null}
                 </ul>
@@ -431,22 +444,37 @@ const RecipeDetails = () => {
                   {commentsRender.map((content) => {
                     return (
                       <li className="flex flex-col" key={content.id}>
-                        <div className="h-[10%] w-full flex justify-between">
-                          <div
-                            className="flex  rounded-md hover:bg-white/50 cursor-pointer text-base py-2"
-                            onClick={() => navigate("/account")}
-                          >
-                            <div className="w-12 h-12 rounded-full mr-3 overflow-hidden border border-merah">
-                              <img
-                                src={`${API_URL}${content.profile_picture}`}
-                                alt=""
-                              />
-                            </div>
-                            <div className="text-sm">
-                              <div className="mb-1">{content.username}</div>
-                              <div>{content.fullname}</div>
+                        <div className="flex justify-between items-center">
+                          <div className="w-full flex justify-between">
+                            <div
+                              className="flex rounded-md hover:bg-white/50 cursor-pointer text-base"
+                              onClick={() => navigate("/account")}
+                            >
+                              <div className="w-12 h-12 rounded-full mr-3 overflow-hidden border border-merah">
+                                <img
+                                  src={`${API_URL}${content.profile_picture}`}
+                                  alt=""
+                                />
+                              </div>
+                              <div className="text-sm">
+                                <div className="mb-1">{content.username}</div>
+                                <div>{content.fullname}</div>
+                              </div>
                             </div>
                           </div>
+                          {id === content.user_id ? (
+                            <button
+                              onClick={() => {
+                                setComment_id(content.id);
+                                modalDeleteCommentHandler();
+                              }}
+                              className={`cursor-pointer text-merah/50 duration-500 border-2 rounded-full mr-3 p-1 focus:outline-none hover:bg-merah/30 hover:border-transparent border-merah/30`}
+                            >
+                              <TrashIcon className="h-5 w-5" />
+                            </button>
+                          ) : (
+                            ""
+                          )}
                         </div>
                         <div className="ml-16">{content.comment}</div>
                       </li>
@@ -457,7 +485,7 @@ const RecipeDetails = () => {
                       className="bg-merah flex justify-center items-center text-putih py-3 rounded-xl my-3 cursor-pointer"
                       onClick={() => moreComments()}
                     >
-                      See More
+                      See {comments.length} more comments
                     </div>
                   ) : null}
                 </ul>
@@ -476,7 +504,9 @@ const RecipeDetails = () => {
         <button
           type="button"
           className={`${
-            modalNewComment ? "bg-hijau" : "bg-putih"
+            modalNewComment
+              ? "bg-hijau"
+              : "bg-putih grayscale hover:grayscale-0"
           } z-40 h-14 w-14 mt-2 rounded-full  border-2 border-hijau overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none`}
           onClick={() => {
             is_verified
@@ -500,7 +530,7 @@ const RecipeDetails = () => {
             <>
               <Popover.Button
                 className={`${
-                  open ? "bg-biru" : "bg-putih"
+                  open ? "bg-biru" : "bg-putih grayscale hover:grayscale-0"
                 } h-14 w-14 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 hover:shadow-black shadow-md 
                 focus:outline-none`}
               >

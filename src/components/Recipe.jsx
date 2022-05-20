@@ -8,7 +8,7 @@ import {
   LinkIcon,
 } from "@heroicons/react/outline";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ModalNewComment from "./ModalNewComment";
 import { Popover } from "@headlessui/react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -31,6 +31,7 @@ import {
 const Recipe = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { data } = props;
   const { id, is_verified } = useSelector((state) => state.user);
@@ -334,7 +335,10 @@ const Recipe = (props) => {
   ////////////////////////////////////////////////////////////////
 
   return (
-    <div className="relative w-full min-h-[600px] mb-5 rounded bg-transparent shadow-black shadow-xl">
+    <div
+      className={`
+       relative w-full min-h-[600px] mb-5 rounded bg-transparent shadow-black shadow-xl`}
+    >
       {modalNewComment && (
         <ModalNewComment
           modalNewComment={modalNewComment}

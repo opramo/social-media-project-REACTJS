@@ -73,7 +73,7 @@ const MyKitchen = () => {
 
   return (
     <div className="min-h-screen flex pt-20 bg-putih justify-center">
-      <div className="w-[600px] relative my-5 rounded-2xl overflow-hidden shadow-lg shadow-black">
+      <div className="w-[650px] relative my-5 rounded-2xl overflow-hidden shadow-lg shadow-black flex flex-col items-center">
         {/* Jumbotron Profile */}
         <div className=" w-full relative flex flex-col min-h-min items-center">
           <div className="w-full block h-full absolute top-0 min-h-[300px]">
@@ -130,7 +130,7 @@ const MyKitchen = () => {
           </div>
         </div>
         {myRecipes ? (
-          <div className="bg-putih w-full h-auto  py-5 relative z-10">
+          <div className="bg-putih w-[600px] h-auto  py-5 relative z-10">
             <div className="">
               {loadingPosts ? (
                 <div className="py-20 flex flex-col justify-center items-center">
@@ -147,7 +147,7 @@ const MyKitchen = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-putih w-[full] h-auto py-5 relative z-10">
+          <div className="bg-putih w-[600px] h-auto py-5 relative z-10">
             {loadingPosts ? (
               <div className="py-20 flex flex-col justify-center items-center">
                 <Loading className="h-20 w-20 animate-bounce" />
