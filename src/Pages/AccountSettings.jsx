@@ -8,9 +8,11 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
+import ModalImageCropper from "../components/ModalImageCropper";
 
 const AccountSettings = () => {
   const dispatch = useDispatch();
+  const [modalImageCropper, setModalImageCropper] = useState(false);
   let {
     profile_picture,
     profile_cover,
@@ -31,13 +33,13 @@ const AccountSettings = () => {
     fullname = "";
   }
 
-  const [profilePicture, setProfilePicture] = useState(
-    profile_picture ? API_URL + profile_picture : cat
-  );
-  const [profileCover, setProfileCover] = useState(
-    profile_cover ? API_URL + profile_cover : cover
-  );
+  const [profilePicture, setProfilePicture] = useState({
+    ava: { url: profile_picture ? API_URL + profile_picture : cat, file: null },
+    cover: { url: profile_cover ? API_URL + profile_cover : cover, file: null },
+  });
+
   const [changed, setChanged] = useState(false);
+  const [cropping, setCropping] = useState(null);
 
   const initialValues = {
     profile_picture: null,
@@ -48,6 +50,9 @@ const AccountSettings = () => {
   };
   // let [selectedImage, setSelectedImage] = useState(cat);
 
+  const modalImageCropperHandler = () => {
+    setModalImageCropper(!modalImageCropper);
+  };
   const validationSchema = Yup.object({
     fullname: Yup.string().max(50, "Must be 50 characters or fewer"),
     username: Yup.string()
@@ -61,9 +66,11 @@ const AccountSettings = () => {
   const onSubmit = async (values) => {
     let formData = new FormData();
     if (values.profile_picture) {
+      values.profile_picture[0] = profilePicture.ava.file;
       formData.append("profile_picture", values.profile_picture[0]);
     }
     if (values.profile_cover) {
+      values.profile_picture[0] = profilePicture.cover.file;
       formData.append("profile_cover", values.profile_cover[0]);
     }
 
@@ -128,111 +135,151 @@ const AccountSettings = () => {
   //     dispatch({ type: "CLEARERROR" });
   //   };
   // }, []);
-
+  console.log(profilePicture.ava.url);
   return (
-    <div className="min-h-screen flex pt-20 bg-putih justify-center ">
-      <div className="min-w-[600px] flex flex-col items-center shadow-lg rounded-2xl  my-5 shadow-black bg-putih py-5">
-        <div className="my-3">Account Settings</div>
-        <div className="my-3">
-          <span
-            className={`text-sm mr-5 ${
-              is_verified ? `text-hijau` : `text-merah`
-            }`}
-          >
-            {is_verified ? "Already verified!" : "Not yet verified!"}
-          </span>
-          <button
-            type="button"
-            disabled={is_verified || loading}
-            className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md
+    <>
+      {modalImageCropper && (
+        <ModalImageCropper
+          image={cropping}
+          cropInit={cropping.crop}
+          zoomInit={cropping.zoom}
+          setPicture={setProfilePicture}
+          picture={profilePicture}
+          // onCancel={onCancel}
+          // setCroppedImageFor={setCroppedImageFor}
+          // resetImage={resetImage}
+          modalImageCropper={modalImageCropper}
+          setModalImageCropper={setModalImageCropper}
+          modalImageCropperHandler={modalImageCropperHandler}
+        />
+      )}
+      <div className="min-h-screen flex pt-20 bg-putih justify-center ">
+        <div className="min-w-[600px] flex flex-col items-center shadow-lg rounded-2xl  my-5 shadow-black bg-putih py-5">
+          <div className="my-3">Account Settings</div>
+          <div className="my-3">
+            <span
+              className={`text-sm mr-5 ${
+                is_verified ? `text-hijau` : `text-merah`
+              }`}
+            >
+              {is_verified ? "Already verified!" : "Not yet verified!"}
+            </span>
+            <button
+              type="button"
+              disabled={is_verified || loading}
+              className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md
             disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
             hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-            onClick={() => sendEmail()}
-          >
-            Send Email Verification
-          </button>
-        </div>
-        {!is_verified && (
-          <div className="text-sm mr-5 text-merah">
-            Please verify your account to be able to change User Details.
+              onClick={() => sendEmail()}
+            >
+              Send Email Verification
+            </button>
           </div>
-        )}
-        <Formik
-          initialValues={initialValues}
-          // isValid
-          // validateOnMount
-          // validateOnBlur={false}
-          validationSchema={validationSchema}
-          onSubmit={onSubmit}
-        >
-          {(formik) => {
-            const {
-              handleChange,
-              errors,
-              touched,
-              isSubmitting,
-              isValid,
-              values,
-              dirty,
-              handleBlur,
-            } = formik;
-            return (
-              <Form className="flex flex-col items-center gap-y-3">
-                <div className="flex flex-col relative w-full items-center">
-                  <div className="rounded-full h-44 w-44  border-2 border-black overflow-hidden">
-                    <img src={profilePicture} alt="" />
-                  </div>
-                  <input
-                    type="file"
-                    disabled={!is_verified}
-                    className="disabled:cursor-not-allowed"
-                    name="profile_picture"
-                    accept=".gif,.jpg,.jpeg,.JPG,.JPEG,.png"
-                    // style={{ display: "none" }}
-                    // className="text-center"
-                    // ref={(fileInput) => (fileInput = fileInput)}
-                    onChange={(event) => {
-                      if (event.target.files[0]) {
-                        setProfilePicture(
-                          URL.createObjectURL(event.target.files[0])
-                        );
-                        formik.setFieldValue("profile_picture", [
-                          event.target.files[0],
-                        ]);
-                        setChanged(true);
-                      } else {
-                        setProfilePicture(cat);
-                      }
-                    }}
-                  />
-                  <div className="rounded-full h-[200px]  w-[500px] border-2 border-black overflow-hidden">
-                    <img src={profileCover} alt="" />
-                  </div>
-                  <input
-                    type="file"
-                    disabled={!is_verified}
-                    className="disabled:cursor-not-allowed"
-                    name="profile_cover"
-                    accept=".gif,.jpg,.jpeg,.JPG,.JPEG,.png"
-                    // style={{ display: "none" }}
-                    // className="text-center"
-                    // ref={(fileInput) => (fileInput = fileInput)}
-                    onChange={(event) => {
-                      if (event.target.files[0]) {
-                        setProfileCover(
-                          URL.createObjectURL(event.target.files[0])
-                        );
-                        formik.setFieldValue("profile_cover", [
-                          event.target.files[0],
-                        ]);
-                        setChanged(true);
-                      } else {
-                        setProfileCover(cat);
-                      }
-                    }}
-                  />
-                  {/* <button onClick={() => fileInput.click()}>Pick File</button> */}
-                  {/* <button
+          {!is_verified && (
+            <div className="text-sm mr-5 text-merah">
+              Please verify your account to be able to change User Details.
+            </div>
+          )}
+          <Formik
+            initialValues={initialValues}
+            // isValid
+            // validateOnMount
+            // validateOnBlur={false}
+            validationSchema={validationSchema}
+            onSubmit={onSubmit}
+          >
+            {(formik) => {
+              const {
+                handleChange,
+                errors,
+                touched,
+                isSubmitting,
+                isValid,
+                values,
+                dirty,
+                handleBlur,
+              } = formik;
+              return (
+                <Form className="flex flex-col items-center gap-y-3">
+                  <div className="flex flex-col relative w-full items-center">
+                    <div className="rounded-full h-44 w-44  border-2 border-black overflow-hidden">
+                      <img
+                        src={profilePicture.ava.url}
+                        alt=""
+                        className="object-cover"
+                      />
+                    </div>
+                    <input
+                      type="file"
+                      disabled={!is_verified}
+                      className="disabled:cursor-not-allowed"
+                      name="profile_picture"
+                      accept=".gif,.jpg,.jpeg,.JPG,.JPEG,.png"
+                      // style={{ display: "none" }}
+                      // className="text-center"
+                      // ref={(fileInput) => (fileInput = fileInput)}
+                      onChange={(event) => {
+                        if (event.target.files[0]) {
+                          setCropping({
+                            type: "ava",
+                            value: URL.createObjectURL(event.target.files[0]),
+                          });
+                          formik.setFieldValue("profile_picture", [
+                            event.target.files[0],
+                          ]);
+                          setChanged(true);
+                          setModalImageCropper(true);
+                        } else {
+                          setProfilePicture({
+                            ...profilePicture,
+                            ava: {
+                              url: profile_picture
+                                ? API_URL + profile_picture
+                                : cat,
+                              file: null,
+                            },
+                          });
+                        }
+                      }}
+                    />
+                    <div className="rounded-full h-[200px]  w-[500px] border-2 border-black overflow-hidden">
+                      <img src={profilePicture.cover.url} alt="" />
+                    </div>
+                    <input
+                      type="file"
+                      disabled={!is_verified}
+                      className="disabled:cursor-not-allowed"
+                      name="profile_cover"
+                      accept=".gif,.jpg,.jpeg,.JPG,.JPEG,.png"
+                      // style={{ display: "none" }}
+                      // className="text-center"
+                      // ref={(fileInput) => (fileInput = fileInput)}
+                      onChange={(event) => {
+                        if (event.target.files[0]) {
+                          setCropping({
+                            type: "cover",
+                            value: URL.createObjectURL(event.target.files[0]),
+                          });
+                          formik.setFieldValue("profile_cover", [
+                            event.target.files[0],
+                          ]);
+                          setModalImageCropper(true);
+                          setChanged(true);
+                        } else {
+                          setProfilePicture({
+                            ...profilePicture,
+                            cover: {
+                              url: profile_cover
+                                ? API_URL + profile_cover
+                                : cover,
+                              file: null,
+                            },
+                          });
+                        }
+                      }}
+                    />
+                    {/* <button onClick={() => fileInput.click()}>Pick File</button> */}
+                    {/* <button
                     type="submit"
                     disabled={
                       !formik.dirty ||
@@ -241,173 +288,176 @@ const AccountSettings = () => {
                       loading
                     }
                     className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
-                               disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
-                              hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
+                    disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
+                    hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
                     onClick={(e) => {
                       e.preventDefault();
                       onSubmitPhoto();
                     }}
-                  >
+                    >
                     Save Changes
                   </button> */}
-                </div>
-                <div className="flex flex-col relative w-full items-center">
-                  <div className="flex justify-between w-full items-end">
-                    <label htmlFor="fullname">Full Name</label>
-                    <div
-                      className={`${
-                        errors.fullname ? "text-merah" : "text-black"
-                      } text-xs`}
-                    >
-                      {values.fullname.length}/50
-                    </div>
                   </div>
-                  <input
-                    name="fullname"
-                    placeholder="Full Name"
-                    type="text"
-                    onChange={(e) => {
-                      setChanged(true);
-                      handleChange(e);
-                    }}
-                    disabled={!is_verified}
-                    onBlur={handleBlur}
-                    value={values.fullname}
-                    className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
-                      errors.fullname
-                        ? "outline outline-2 outline-merah"
-                        : "focus:outline focus:outline-biru focus:outline-2"
-                    }`}
-                  />
-                  {errors.fullname && dirty && values.fullname.length ? (
-                    <div
+                  <div className="flex flex-col relative w-full items-center">
+                    <div className="flex justify-between w-full items-end">
+                      <label htmlFor="fullname">Full Name</label>
+                      <div
+                        className={`${
+                          errors.fullname ? "text-merah" : "text-black"
+                        } text-xs`}
+                      >
+                        {values.fullname.length}/50
+                      </div>
+                    </div>
+                    <input
                       name="fullname"
-                      className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
-                    >
-                      {errors.fullname}
-                    </div>
-                  ) : null}
-                </div>
-
-                {/* Username */}
-                <div className="flex flex-col relative w-full items-center">
-                  <div className="flex justify-between w-full items-end">
-                    <label htmlFor="username">Username</label>
-                    <div
-                      className={`${
-                        errors.username ? "text-merah" : "text-black"
-                      } text-xs`}
-                    >
-                      {values.username.length}/15
-                    </div>
+                      placeholder="Full Name"
+                      type="text"
+                      onChange={(e) => {
+                        setChanged(true);
+                        handleChange(e);
+                      }}
+                      disabled={!is_verified}
+                      onBlur={handleBlur}
+                      value={values.fullname}
+                      className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
+                        errors.fullname
+                          ? "outline outline-2 outline-merah"
+                          : "focus:outline focus:outline-biru focus:outline-2"
+                      }`}
+                    />
+                    {errors.fullname && dirty && values.fullname.length ? (
+                      <div
+                        name="fullname"
+                        className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                      >
+                        {errors.fullname}
+                      </div>
+                    ) : null}
                   </div>
-                  <input
-                    name="username"
-                    placeholder="Username*"
-                    type="text"
-                    onChange={(e) => {
-                      setChanged(true);
-                      handleChange(e);
-                    }}
-                    disabled={!is_verified}
-                    onBlur={handleBlur}
-                    value={values.username}
-                    className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
-                      errors.username
-                        ? "outline outline-2 outline-merah"
-                        : "focus:outline focus:outline-biru focus:outline-2"
-                    }`}
-                  />
 
-                  {errors.username && dirty ? (
-                    <div
+                  {/* Username */}
+                  <div className="flex flex-col relative w-full items-center">
+                    <div className="flex justify-between w-full items-end">
+                      <label htmlFor="username">Username</label>
+                      <div
+                        className={`${
+                          errors.username ? "text-merah" : "text-black"
+                        } text-xs`}
+                      >
+                        {values.username.length}/15
+                      </div>
+                    </div>
+                    <input
                       name="username"
-                      className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
-                    >
-                      {errors.username}
-                    </div>
-                  ) : null}
-                  {error_mes && !errors.username && (
-                    <div className="text-merah -mt-5 mx-2 text-xs absolute bottom-0">
-                      {error_mes}
-                    </div>
-                  )}
-                </div>
+                      placeholder="Username*"
+                      type="text"
+                      onChange={(e) => {
+                        setChanged(true);
+                        handleChange(e);
+                      }}
+                      disabled={!is_verified}
+                      onBlur={handleBlur}
+                      value={values.username}
+                      className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
+                        errors.username
+                          ? "outline outline-2 outline-merah"
+                          : "focus:outline focus:outline-biru focus:outline-2"
+                      }`}
+                    />
 
-                {/* Bio */}
-                <div className="flex flex-col relative w-full items-center">
-                  <div className="flex justify-between w-full items-end">
-                    <label htmlFor="bio">Bio</label>
-                    <div
-                      className={`${
-                        errors.bio && touched.bio ? "text-merah" : "text-black"
-                      } text-xs`}
-                    >
-                      {values.bio.length}/160
-                    </div>
+                    {errors.username && dirty ? (
+                      <div
+                        name="username"
+                        className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                      >
+                        {errors.username}
+                      </div>
+                    ) : null}
+                    {error_mes && !errors.username && (
+                      <div className="text-merah -mt-5 mx-2 text-xs absolute bottom-0">
+                        {error_mes}
+                      </div>
+                    )}
                   </div>
 
-                  <textarea
-                    name="bio"
-                    placeholder="Tell us about yourself"
-                    type="text"
-                    onChange={(e) => {
-                      setChanged(true);
-                      handleChange(e);
-                    }}
-                    cols="30"
-                    rows="5"
-                    disabled={!is_verified}
-                    onBlur={handleBlur}
-                    value={values.bio}
-                    className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
-                      errors.bio
-                        ? "outline outline-2 outline-merah"
-                        : "focus:outline focus:outline-biru focus:outline-2"
-                    }`}
-                  />
-                  {errors.bio && dirty && values.bio.length ? (
-                    <div
+                  {/* Bio */}
+                  <div className="flex flex-col relative w-full items-center">
+                    <div className="flex justify-between w-full items-end">
+                      <label htmlFor="bio">Bio</label>
+                      <div
+                        className={`${
+                          errors.bio && touched.bio
+                            ? "text-merah"
+                            : "text-black"
+                        } text-xs`}
+                      >
+                        {values.bio.length}/160
+                      </div>
+                    </div>
+
+                    <textarea
                       name="bio"
-                      className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
-                    >
-                      {errors.bio}
-                    </div>
-                  ) : null}
-                </div>
-                <div className="flex flex-col relative w-full items-center">
-                  <div className="flex justify-between w-full items-end">
-                    <label htmlFor="">Email</label>
-                    <div className={`text-merah text-xs`}>
-                      Email cannot be changed.
-                    </div>
+                      placeholder="Tell us about yourself"
+                      type="text"
+                      onChange={(e) => {
+                        setChanged(true);
+                        handleChange(e);
+                      }}
+                      cols="30"
+                      rows="5"
+                      disabled={!is_verified}
+                      onBlur={handleBlur}
+                      value={values.bio}
+                      className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
+                        errors.bio
+                          ? "outline outline-2 outline-merah"
+                          : "focus:outline focus:outline-biru focus:outline-2"
+                      }`}
+                    />
+                    {errors.bio && dirty && values.bio.length ? (
+                      <div
+                        name="bio"
+                        className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                      >
+                        {errors.bio}
+                      </div>
+                    ) : null}
                   </div>
-                  <input
-                    type="email"
-                    name=""
-                    id=""
-                    className="p-2 outline outline-gray-600 outline-2 rounded bg-putih w-full cursor-not-allowed"
-                    value={email}
-                    disabled
-                  />
-                </div>
-                <div className="">
-                  <button
-                    type="submit"
-                    disabled={!isValid || isSubmitting || loading || !changed}
-                    className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
-                               disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
-                              hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
+                  <div className="flex flex-col relative w-full items-center">
+                    <div className="flex justify-between w-full items-end">
+                      <label htmlFor="">Email</label>
+                      <div className={`text-merah text-xs`}>
+                        Email cannot be changed.
+                      </div>
+                    </div>
+                    <input
+                      type="email"
+                      name=""
+                      id=""
+                      className="p-2 outline outline-gray-600 outline-2 rounded bg-putih w-full cursor-not-allowed"
+                      value={email}
+                      disabled
+                    />
+                  </div>
+                  <div className="">
+                    <button
+                      type="submit"
+                      disabled={!isValid || isSubmitting || loading || !changed}
+                      className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+                    disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
+                    hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </Form>
+              );
+            }}
+          </Formik>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

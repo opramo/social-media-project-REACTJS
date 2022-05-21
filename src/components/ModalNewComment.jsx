@@ -45,7 +45,7 @@ const ModalNewComment = (props) => {
         }
       );
       dispatch({ type: "NEWCOMMENT" });
-      setComments(res.data);
+      setComments(res.data.splice(0, 5));
       toast.success("Comment Sent!", {
         theme: "colored",
         position: "top-center",

@@ -39,8 +39,8 @@ const ModalForgotPassword = (props) => {
         style: { backgroundColor: "#3A7D44" },
       });
       setTimeout(() => {
-        modalForgotPasswordHandler();
         setSucceed(false);
+        modalForgotPasswordHandler();
       }, 3000);
     } catch (error) {
       console.log(error);

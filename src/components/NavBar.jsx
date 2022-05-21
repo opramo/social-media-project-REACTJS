@@ -59,32 +59,18 @@ const NavBar = () => {
     navigate("/");
   };
 
-  React.useEffect(() => {
-    if (modalSignUp && token) {
-      console.log(`Berhasil Sign Up`);
-      navigate("/verifyaccount");
-      setModalSignUp(false);
-    }
-
-    if (modalLogIn && token && !is_verified) {
-      console.log(`Berhasil Log In`);
-      navigate("/verifyaccount");
-      setModalLogIn(false);
-    }
-    if (
-      !token &&
-      (location.pathname === "/home" ||
-        location.pathname === "/account" ||
-        location.pathname === "/accountsettings" ||
-        location.pathname === "/newrecipe" ||
-        location.pathname === "/editrecipe" ||
-        location.pathname === "/verifyaccount")
-    ) {
-      console.log(`Tidak ada Session`);
-      navigate("/");
-    }
-    // eslint-disable-next-line
-  }, [token]);
+  if (
+    !token &&
+    (location.pathname === "/home" ||
+      location.pathname === "/account" ||
+      location.pathname === "/accountsettings" ||
+      location.pathname === "/newrecipe" ||
+      location.pathname === "/editrecipe" ||
+      location.pathname === "/verifyaccount")
+  ) {
+    console.log(`Tidak ada Session`);
+    navigate("/");
+  }
 
   return (
     <>
@@ -118,7 +104,7 @@ const NavBar = () => {
         />
       )}
 
-      <div className="z-50 fixed w-screen h-20 flex justify-center bg-putih shadow-lg">
+      <div className="z-30 fixed w-screen h-20 flex justify-center bg-putih shadow-lg">
         <div className="px-10 flex items-center justify-center  relative bg-putih pointer-events-none">
           {/* Left Button */}
           {token ? (
@@ -248,13 +234,13 @@ const NavBar = () => {
                             alt="cover"
                             className="h-full w-full absolute z-0"
                           />
-                          <div className=" absolute top-6 left-29 origin-center h-14 w-14">
+                          {/* <div className=" absolute top-0 left-20 origin-center h-14 w-14">
                             <img
                               src={hat}
                               alt="hat"
                               className="object-cover absolute bottom-0 "
                             />
-                          </div>
+                          </div> */}
                           <div className="my-3 rounded-full h-20 w-20 overflow-hidden border-2 border-merah z-10">
                             <img
                               src={
@@ -274,7 +260,7 @@ const NavBar = () => {
                         </Menu.Item>
                         <Menu.Item
                           as={motion.button}
-                          className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
+                          className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-250"
                           whileTap={{ scale: 0.8 }}
                           onClick={() => navigate("/account")}
                         >
@@ -284,13 +270,13 @@ const NavBar = () => {
                           as={motion.button}
                           whileTap={{ scale: 0.8 }}
                           onClick={() => navigate("/accountsettings")}
-                          className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
+                          className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-250"
                         >
                           Account Settings
                         </Menu.Item>
                         <Menu.Item
                           as={motion.button}
-                          className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-500"
+                          className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-250"
                           whileTap={{ scale: 0.8 }}
                           onClick={() => {
                             logoutHandler();

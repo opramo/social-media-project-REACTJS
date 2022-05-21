@@ -21,10 +21,11 @@ function Verification() {
   useEffect(() => {
     verifying();
     // eslint-disable-next-line
-  }, [loading]);
+  }, []);
 
   const verifying = async () => {
     try {
+      setLoading(true);
       let res = await axios.get(`${API_URL}/auth/verification`, {
         headers: {
           authorization: token,

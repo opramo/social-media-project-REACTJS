@@ -60,7 +60,7 @@ const RecipeDetails = () => {
   console.log(comments);
   const animationShare = {
     item4: {
-      hidden: { x: 0, y: 0, opacity: 0 },
+      hidden: { x: 0, y: 10, opacity: 1 },
       visible: {
         x: -55,
         y: -35,
@@ -68,7 +68,7 @@ const RecipeDetails = () => {
       },
     },
     item3: {
-      hidden: { x: 0, y: 0, opacity: 0 },
+      hidden: { x: 0, y: 10, opacity: 1 },
       visible: {
         x: -60,
         y: 10,
@@ -76,7 +76,7 @@ const RecipeDetails = () => {
       },
     },
     item2: {
-      hidden: { x: 0, y: 0, opacity: 0 },
+      hidden: { x: 0, y: 10, opacity: 1 },
       visible: {
         x: -40,
         y: 50,
@@ -84,7 +84,7 @@ const RecipeDetails = () => {
       },
     },
     item1: {
-      hidden: { x: 0, y: 0, opacity: 0 },
+      hidden: { x: 0, y: 10, opacity: 1 },
       visible: {
         x: 0,
         y: 70,
@@ -92,7 +92,7 @@ const RecipeDetails = () => {
       },
     },
     container: {
-      hidden: { opacity: 0, x: 0 },
+      hidden: { opacity: 1, x: 0 },
       visible: {
         opacity: 1,
         x: 0,
@@ -532,7 +532,7 @@ const RecipeDetails = () => {
                 className={`${
                   open ? "bg-biru" : "bg-putih grayscale hover:grayscale-0"
                 } h-14 w-14 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 hover:shadow-black shadow-md 
-                focus:outline-none`}
+                focus:outline-none relative`}
               >
                 <PaperAirplaneIcon
                   className={`${

@@ -8,17 +8,32 @@ import * as Yup from "yup";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import Loading from "./Loading";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 // USE FORMIK ERRORMESSAGE CHILDREN PROPS TO RENDER VALIDATION FROM SERVER//
 const ModalSignUp = (props) => {
-  const { loading, error_mes } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const [changed, setChanged] = useState(false);
-  let message = [];
+  const navigate = useNavigate();
 
-  if (error_mes && props.modalSignUp) {
+  const {
+    modalSignUp,
+    setModalSignUp,
+    modalSignUpHandler,
+    modalLogInHandler,
+    passVis,
+    setPassVis,
+    setPassConfVis,
+    passConfVis,
+  } = props;
+  const { loading, error_mes } = useSelector((state) => state.user);
+  const [changed, setChanged] = useState(false);
+
+  let message = [];
+  if (error_mes && modalSignUp) {
     message = error_mes.split(",");
   }
+
   const initialValues = {
     username: "",
     email: "",
@@ -60,6 +75,15 @@ const ModalSignUp = (props) => {
       let res = await axios.post(`${API_URL}/auth/register`, values);
       dispatch({ type: "LOGIN", payload: res.data });
       Cookies.set("token", res.headers["x-token-access"]);
+      setTimeout(() => {
+        modalSignUpHandler();
+        navigate("/verifyaccount");
+        toast.success(`Welcome, ${res.data.username}!`, {
+          theme: "colored",
+          position: "top-center",
+          style: { backgroundColor: "#3A7D44" },
+        });
+      }, 1000);
     } catch (error) {
       console.log(`masuk error`);
       dispatch({
@@ -74,12 +98,12 @@ const ModalSignUp = (props) => {
 
   return (
     <>
-      <Transition appear show={props.modalSignUp} as={Fragment}>
+      <Transition appear show={modalSignUp} as={Fragment}>
         <Dialog
           as="div"
           className="fixed inset-0 z-50 overflow-y-auto bg-black/50"
           onClose={() => {
-            props.modalSignUpHandler();
+            modalSignUpHandler();
           }}
         >
           <div className="min-h-screen px-4 text-center">
@@ -123,7 +147,7 @@ const ModalSignUp = (props) => {
                     className="h-5 w-5 absolute top-1/2 right-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:text-white 
                     text-white/50 duration-500 border-2 border-white/30 rounded-full hover:bg-white/30 hover:border-transparent"
                     onClick={() => {
-                      props.modalSignUpHandler();
+                      modalSignUpHandler();
                       // dispatch({ type: "DONE" });
                     }}
                   />
@@ -239,7 +263,7 @@ const ModalSignUp = (props) => {
                           <input
                             name="password"
                             placeholder="Password*"
-                            type={props.passVis ? "text" : "password"}
+                            type={passVis ? "text" : "password"}
                             onChange={(e) => {
                               setChanged(true);
                               handleChange(e);
@@ -268,9 +292,9 @@ const ModalSignUp = (props) => {
                           ) : null}
                           <div
                             className="w-7 h-7 right-2  top-7 absolute cursor-pointer overflow-hidden"
-                            onClick={() => props.setPassVis(!props.passVis)}
+                            onClick={() => setPassVis(!passVis)}
                           >
-                            {props.passVis ? <EyeIcon /> : <EyeOffIcon />}
+                            {passVis ? <EyeIcon /> : <EyeOffIcon />}
                           </div>
                         </div>
 
@@ -282,7 +306,7 @@ const ModalSignUp = (props) => {
                           <input
                             name="passwordConfirm"
                             placeholder="Confirm Password"
-                            type={props.passConfVis ? "text" : "password"}
+                            type={passConfVis ? "text" : "password"}
                             onChange={(e) => {
                               setChanged(true);
                               handleChange(e);
@@ -312,10 +336,10 @@ const ModalSignUp = (props) => {
                           <div
                             className="w-7 h-7 right-2  top-7 absolute cursor-pointer overflow-hidden"
                             onClick={() => {
-                              props.setPassConfVis(!props.passConfVis);
+                              setPassConfVis(!passConfVis);
                             }}
                           >
-                            {props.passConfVis ? <EyeIcon /> : <EyeOffIcon />}
+                            {passConfVis ? <EyeIcon /> : <EyeOffIcon />}
                           </div>
                         </div>
                         {/* Button Submit */}
@@ -348,9 +372,9 @@ const ModalSignUp = (props) => {
                             <span
                               className="hover:underline hover:text-biru duration-500 cursor-pointer"
                               onClick={() => {
-                                props.modalSignUpHandler();
+                                modalSignUpHandler();
                                 setTimeout(() => {
-                                  props.modalLogInHandler();
+                                  modalLogInHandler();
                                 }, 500);
                               }}
                             >

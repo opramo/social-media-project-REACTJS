@@ -26,11 +26,7 @@ function App() {
     <>
       <NavBar />
       {!is_verified &&
-      (location.pathname === "/home" ||
-        location.pathname === "/account" ||
-        location.pathname === "/newrecipe" ||
-        location.pathname === "/editrecipe" ||
-        location.pathname === "/verifyaccount") ? (
+      (location.pathname === "/home" || location.pathname === "/account") ? (
         <ModalRestriction />
       ) : null}
 

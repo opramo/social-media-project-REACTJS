@@ -51,7 +51,6 @@ const ModalLogIn = (props) => {
 
   const onSubmit = async (values, onSubmitProps) => {
     try {
-      console.log(values);
       setChanged(false);
       dispatch({ type: "LOADING" });
       let res = await axios.post(`${API_URL}/auth/login`, {
@@ -61,16 +60,15 @@ const ModalLogIn = (props) => {
       });
       Cookies.set("token", res.headers["x-token-access"]);
       dispatch({ type: "LOGIN", payload: res.data });
-      setModalLogIn(false);
-      console.log(`Berhasil Log In`);
       setTimeout(() => {
-        navigate("/home");
+        setModalLogIn(false);
+        res.data.is_verified ? navigate("/home") : navigate("/verifyaccount");
         toast.success(`Welcome back, ${res.data.username}!`, {
           theme: "colored",
           position: "top-center",
           style: { backgroundColor: "#3A7D44" },
         });
-      }, 1000);
+      }, 500);
     } catch (error) {
       dispatch({
         type: "ERROR",
@@ -128,10 +126,7 @@ const ModalLogIn = (props) => {
                   </h1>
                   <XIcon
                     className="h-5 w-5 absolute top-1/2 right-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:text-white text-white/50 duration-500 border-2 border-white/30 rounded-full hover:bg-white/30 hover:border-transparent"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setModalLogIn(false);
-                    }}
+                    onClick={modalLogInHandler}
                   />
                 </Dialog.Title>
                 <Formik

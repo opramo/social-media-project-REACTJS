@@ -69,7 +69,7 @@ const Recipe = (props) => {
   // Animation share button
   const animationShare = {
     item4: {
-      hidden: { x: 0, y: 0, opacity: 0 },
+      hidden: { x: 0, y: 5, opacity: 1 },
       visible: {
         x: 45,
         y: -35,
@@ -77,7 +77,7 @@ const Recipe = (props) => {
       },
     },
     item3: {
-      hidden: { x: 0, y: 0, opacity: 0 },
+      hidden: { x: 0, y: 5, opacity: 1 },
       visible: {
         x: -2,
         y: -45,
@@ -85,7 +85,7 @@ const Recipe = (props) => {
       },
     },
     item2: {
-      hidden: { x: 0, y: 0, opacity: 0 },
+      hidden: { x: 0, y: 5, opacity: 1 },
       visible: {
         x: -43,
         y: -18,
@@ -93,7 +93,7 @@ const Recipe = (props) => {
       },
     },
     item1: {
-      hidden: { x: 0, y: 0, opacity: 0 },
+      hidden: { x: 0, y: 5, opacity: 1 },
       visible: {
         x: -40,
         y: 30,
@@ -101,7 +101,7 @@ const Recipe = (props) => {
       },
     },
     container: {
-      hidden: { opacity: 0, x: 0 },
+      hidden: { opacity: 1, x: 0 },
       visible: {
         opacity: 1,
         x: 0,
