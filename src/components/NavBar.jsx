@@ -232,7 +232,7 @@ const NavBar = () => {
                               profile_cover ? API_URL + profile_cover : cover
                             }
                             alt="cover"
-                            className="h-full w-full absolute z-0"
+                            className="object-cover absolute h-full"
                           />
                           {/* <div className=" absolute top-0 left-20 origin-center h-14 w-14">
                             <img
@@ -249,6 +249,7 @@ const NavBar = () => {
                                   : cat
                               }
                               alt="pp"
+                              className="h-20 w-20"
                             />
                           </div>
                           <div className="h-auto w-full z-10 bg-black/30 text-white">

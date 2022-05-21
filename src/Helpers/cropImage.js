@@ -58,10 +58,10 @@ export default async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
   // return canvas.toDataURL('image/jpeg');
 
   // As a blob
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     canvas.toBlob((file) => {
-      console.log(file);
-      resolve(URL.createObjectURL(file));
+      file.name = "cropped.jpeg";
+      resolve({ file: file, url: URL.createObjectURL(file) });
     }, "image/jpeg");
   });
 }

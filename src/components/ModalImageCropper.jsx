@@ -14,7 +14,6 @@ function ModalImageCropper({
   setModalImageCropper,
   modalImageCropperHandler,
 }) {
-  console.log(image);
   const [zoom, setZoom] = useState(1);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [aspect, setAspect] = useState(0);
@@ -23,7 +22,7 @@ function ModalImageCropper({
 
   useEffect(() => {
     if (image.type === "ava") {
-      setAspect(1 / 1);
+      setAspect(1);
       setShape("round");
     } else {
       setAspect(16 / 9);
@@ -44,15 +43,17 @@ function ModalImageCropper({
   };
 
   const onCrop = async () => {
-    const { file, url } = await getCroppedImg(image.value, croppedAreaPixels);
-    var newFile = new File([file], "jpeg", { type: "image/jpeg" });
-    console.log(newFile, url);
+    const { url, file } = await getCroppedImg(image.value, croppedAreaPixels);
+    var newFile = new File([file], "image.jpeg", { type: "image/jpeg" });
+    console.log("URL:", url);
+    console.log(file);
+    console.log(newFile);
     if (image.type === "ava") {
-      setPicture({ ...picture, ava: { url, file: newFile } });
+      setPicture({ ...picture, ava: { file: newFile, url } });
     } else if (image.type === "cover") {
-      setPicture({ ...picture, cover: { url, file: newFile } });
+      setPicture({ ...picture, cover: { file: newFile, url } });
     } else {
-      setPicture({ url, file: newFile });
+      setPicture({ file: newFile, url });
     }
   };
 
@@ -126,6 +127,7 @@ function ModalImageCropper({
                   onCropChange={onCropChange}
                   onZoomChange={onZoomChange}
                   onCropComplete={onCropComplete}
+                  objectFit="horizontal-cover"
                 />
               </div>
               <div className="flex items-center flex-col">

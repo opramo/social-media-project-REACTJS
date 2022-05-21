@@ -2,16 +2,19 @@ import cat from "../Assets/cat.jpg";
 import cover from "../Assets/cover.jpg";
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import ModalImageCropper from "../components/ModalImageCropper";
+import { renderMatches } from "react-router-dom";
 
 const AccountSettings = () => {
   const dispatch = useDispatch();
+  const avaRef = useRef();
+  const coverRef = useRef();
   const [modalImageCropper, setModalImageCropper] = useState(false);
   let {
     profile_picture,
@@ -70,7 +73,7 @@ const AccountSettings = () => {
       formData.append("profile_picture", values.profile_picture[0]);
     }
     if (values.profile_cover) {
-      values.profile_picture[0] = profilePicture.cover.file;
+      values.profile_cover[0] = profilePicture.cover.file;
       formData.append("profile_cover", values.profile_cover[0]);
     }
 
@@ -135,7 +138,7 @@ const AccountSettings = () => {
   //     dispatch({ type: "CLEARERROR" });
   //   };
   // }, []);
-  console.log(profilePicture.ava.url);
+  // console.log(profilePicture.ava.url);
   return (
     <>
       {modalImageCropper && (
@@ -202,33 +205,40 @@ const AccountSettings = () => {
               return (
                 <Form className="flex flex-col items-center gap-y-3">
                   <div className="flex flex-col relative w-full items-center">
-                    <div className="rounded-full h-44 w-44  border-2 border-black overflow-hidden">
+                    {/* Profile Picture */}
+                    <div className="rounded-full h-44 w-44  border-2 border-black overflow-hidden relative">
                       <img
                         src={profilePicture.ava.url}
                         alt=""
-                        className="object-cover"
+                        className="object-cover h-full"
                       />
                     </div>
                     <input
                       type="file"
-                      disabled={!is_verified}
-                      className="disabled:cursor-not-allowed"
+                      ref={avaRef}
                       name="profile_picture"
                       accept=".gif,.jpg,.jpeg,.JPG,.JPEG,.png"
+                      className="hidden"
                       // style={{ display: "none" }}
                       // className="text-center"
                       // ref={(fileInput) => (fileInput = fileInput)}
                       onChange={(event) => {
+                        console.log(event.target.files[0]);
                         if (event.target.files[0]) {
-                          setCropping({
-                            type: "ava",
-                            value: URL.createObjectURL(event.target.files[0]),
+                          console.log("event :", event.target.files[0]);
+                          const reader = new FileReader();
+                          reader.readAsDataURL(event.target.files[0]);
+                          reader.addEventListener("load", () => {
+                            setCropping({
+                              type: "ava",
+                              value: reader.result,
+                            });
+                            setChanged(true);
+                            setModalImageCropper(true);
                           });
                           formik.setFieldValue("profile_picture", [
                             event.target.files[0],
                           ]);
-                          setChanged(true);
-                          setModalImageCropper(true);
                         } else {
                           setProfilePicture({
                             ...profilePicture,
@@ -242,13 +252,25 @@ const AccountSettings = () => {
                         }
                       }}
                     />
-                    <div className="rounded-full h-[200px]  w-[500px] border-2 border-black overflow-hidden">
-                      <img src={profilePicture.cover.url} alt="" />
+                    <button
+                      type="button"
+                      className="border border-hijau p-2 m-2 disabled:cursor-not-allowed"
+                      onClick={() => avaRef.current.click()}
+                      disabled={!is_verified}
+                    >
+                      Choose
+                    </button>
+                    <div className=" h-[300px] aspect-video border-2 border-black overflow-hidden">
+                      <img
+                        src={profilePicture.cover.url}
+                        alt=""
+                        className="object-cover w-full"
+                      />
                     </div>
                     <input
                       type="file"
-                      disabled={!is_verified}
-                      className="disabled:cursor-not-allowed"
+                      ref={coverRef}
+                      className="hidden"
                       name="profile_cover"
                       accept=".gif,.jpg,.jpeg,.JPG,.JPEG,.png"
                       // style={{ display: "none" }}
@@ -256,28 +278,41 @@ const AccountSettings = () => {
                       // ref={(fileInput) => (fileInput = fileInput)}
                       onChange={(event) => {
                         if (event.target.files[0]) {
-                          setCropping({
-                            type: "cover",
-                            value: URL.createObjectURL(event.target.files[0]),
+                          console.log("event :", event.target.files[0]);
+                          const reader = new FileReader();
+                          reader.readAsDataURL(event.target.files[0]);
+                          reader.addEventListener("load", () => {
+                            setCropping({
+                              type: "cover",
+                              value: reader.result,
+                            });
+                            setChanged(true);
+                            setModalImageCropper(true);
                           });
                           formik.setFieldValue("profile_cover", [
                             event.target.files[0],
                           ]);
-                          setModalImageCropper(true);
-                          setChanged(true);
                         } else {
                           setProfilePicture({
                             ...profilePicture,
                             cover: {
                               url: profile_cover
                                 ? API_URL + profile_cover
-                                : cover,
+                                : cat,
                               file: null,
                             },
                           });
                         }
                       }}
                     />
+                    <button
+                      type="button"
+                      className="border border-hijau p-2 m-2 disabled:cursor-not-allowed"
+                      onClick={() => coverRef.current.click()}
+                      disabled={!is_verified}
+                    >
+                      Choose
+                    </button>
                     {/* <button onClick={() => fileInput.click()}>Pick File</button> */}
                     {/* <button
                     type="submit"
