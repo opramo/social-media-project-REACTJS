@@ -6,6 +6,7 @@ import {
   ChatAltIcon,
   DotsHorizontalIcon,
   LinkIcon,
+  TrashIcon,
 } from "@heroicons/react/outline";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +28,7 @@ import {
   WhatsappIcon,
   WhatsappShareButton,
 } from "react-share";
+import ModalDeleteComment from "./ModalDeleteComment";
 
 const Recipe = (props) => {
   const dispatch = useDispatch();
@@ -53,6 +55,8 @@ const Recipe = (props) => {
   const [likers, setLikers] = useState(0);
   const [likersMore, setLikersMore] = useState({ more: false, total: 0 });
   const [comments, setComments] = useState([]);
+  const [comment_id, setComment_id] = useState(0);
+  const [modalDeleteComment, setModalDeleteComment] = useState(false);
   const [commentsMore, setCommentsMore] = useState({ more: false, total: 0 });
   const [recipe, setRecipe] = useState({
     ingredients: [],
@@ -129,6 +133,9 @@ const Recipe = (props) => {
   };
   const modalDeleteHandler = () => {
     setModalDelete(!modalDelete);
+  };
+  const modalDeleteCommentHandler = () => {
+    setModalDeleteComment(!modalDeleteComment);
   };
 
   ///////////////////////// Fetching Methods//////////////////////
@@ -263,7 +270,7 @@ const Recipe = (props) => {
   // Likers List Render ////////////////////
   const printUserLikes = () => {
     return (
-      <ul className="max-w-full ml-5 break-words text-xl bg-putih">
+      <ul className="max-w-full ml-5 break-words text-base bg-putih">
         {likers.map((content) => {
           return (
             <li key={content.id}>
@@ -284,7 +291,7 @@ const Recipe = (props) => {
         })}
         {likersMore.more ? (
           <div
-            className="bg-merah flex justify-center py-3 rounded-xl my-3 items-center text-putih cursor-pointer"
+            className="bg-merah flex justify-center py-3 rounded-xl items-center text-putih cursor-pointer"
             onClick={() => navigate(`/recipe/${post_id}`)}
           >
             See {likersMore.total} more comments on recipe details
@@ -298,31 +305,55 @@ const Recipe = (props) => {
   // Comments List Render //////////////////
   const printComments = () => {
     return (
-      <ul className="max-w-full ml-5 break-words text-base bg-putih">
+      <ul className="max-w-full ml-5 break-words text-base bg-putih py-2">
         {comments.map((content) => {
           return (
-            <li className="flex flex-col" key={content.id}>
-              <div className="h-[10%] w-full flex justify-between">
-                <div
-                  className="flex  rounded-md hover:bg-white/50 cursor-pointer text-base py-2"
-                  onClick={() => navigate("/account")}
-                >
-                  <div className="w-12 h-12 rounded-full border border-merah mr-3 overflow-hidden">
-                    <img src={`${API_URL}${content.profile_picture}`} alt="" />
-                  </div>
-                  <div>
-                    <div className="mb-1">{content.username}</div>
-                    <div>{content.fullname}</div>
+            <li className="flex flex-col mb-2" key={content.id}>
+              <div className="flex justify-between items-center">
+                <div className="w-full flex justify-between">
+                  <div
+                    className="flex rounded-md hover:bg-white/50 cursor-pointer text-base"
+                    onClick={() => navigate("/account")}
+                  >
+                    <div className="w-12 h-12 rounded-full mr-3 overflow-hidden border border-merah">
+                      <img
+                        src={`${API_URL}${content.profile_picture}`}
+                        alt=""
+                      />
+                    </div>
+                    <div className="text-sm">
+                      <div className="mb-1">{content.username}</div>
+                      <div>{content.fullname}</div>
+                    </div>
                   </div>
                 </div>
+                {id === content.user_id ? (
+                  <button
+                    onClick={() => {
+                      setComment_id(content.id);
+                      modalDeleteCommentHandler();
+                    }}
+                    className={`cursor-pointer text-merah/50 duration-500 border-2 rounded-full mr-3 p-1 focus:outline-none hover:bg-merah/30 hover:border-transparent border-merah/30`}
+                  >
+                    <TrashIcon className="h-5 w-5" />
+                  </button>
+                ) : (
+                  ""
+                )}
               </div>
-              <div className="ml-16">{content.comment}</div>
+              <div className="ml-16 relative">
+                <div className="absolute border-b border-hijau w-7 h-2 rotate-45 top-3 bg-putih "></div>
+                <div className="absolute border-t border-hijau w-5 h-2 rotate-[21deg] top-3"></div>
+                <div className="border-hijau border ml-5 p-2 inline-block rounded-lg bg-putih">
+                  {content.comment}
+                </div>
+              </div>
             </li>
           );
         })}
         {commentsMore.more ? (
           <div
-            className="bg-merah flex justify-center items-center text-putih py-3 rounded-xl my-3 cursor-pointer"
+            className="bg-merah flex justify-center items-center text-putih py-3 rounded-xl cursor-pointer"
             onClick={() => navigate(`/recipe/${post_id}`)}
           >
             See {commentsMore.total} more comments on recipe details
@@ -333,6 +364,7 @@ const Recipe = (props) => {
   };
   ////////////////////////////////////////////////////////////////
 
+  ///////////////////////// Component Render /////////////////////
   return (
     <div
       className={`
@@ -354,6 +386,18 @@ const Recipe = (props) => {
           setModalDelete={setModalDelete}
           modalDelete={modalDelete}
           modalDeleteHandler={modalDeleteHandler}
+          post_id={post_id}
+        />
+      )}
+
+      {modalDeleteComment && (
+        <ModalDeleteComment
+          setModalDeleteComment={setModalDeleteComment}
+          modalDeleteComment={modalDeleteComment}
+          modalDeleteCommentHandler={modalDeleteCommentHandler}
+          comment_id={comment_id}
+          getComments={getComments}
+          printComments={printComments}
           post_id={post_id}
         />
       )}
@@ -502,7 +546,7 @@ const Recipe = (props) => {
                 <div className="w-20 h-6 origin-center rotate-[-45deg] absolute bottom-10 right-0 bg-white/50"></div>
                 <div className="h-full w-full p-5 -mt-3">
                   <div
-                    className="h-5/6 p-2 pb-0 bg-white cursor-pointer"
+                    className="w-full aspect-video p-2 pb-0 bg-white cursor-pointer"
                     onClick={() => navigate(`/recipe/${post_id}`)}
                   >
                     <img
@@ -680,20 +724,24 @@ const Recipe = (props) => {
               <div className="w-full relative bg-putih text-3xl">
                 {likes} Chefs loved this recipe:
               </div>
-              {
-                <div className="h-full w-full relative bg-putih border-y border-merah  overflow-y-scroll mt-5">
-                  {loading ? (
-                    <div className="py-20 flex flex-col justify-center items-center">
-                      <Loading className="h-14 w-14 animate-spin" />
-                      <div>Please wait...</div>
-                    </div>
-                  ) : likers[0] ? (
-                    printUserLikes()
-                  ) : (
-                    "No chef likes this recipe :<"
-                  )}
+
+              <div className="h-full w-full relative bg-putih border-y border-merah  overflow-y-scroll mt-5">
+                {loading ? (
+                  <div className="py-20 flex flex-col justify-center items-center">
+                    <Loading className="h-14 w-14 animate-spin" />
+                    <div>Please wait...</div>
+                  </div>
+                ) : likers[0] ? (
+                  printUserLikes()
+                ) : (
+                  "No chef likes this recipe :<"
+                )}
+              </div>
+              <div className="w-full relative bg-putih text-3xl">
+                <div className="flex items-center">
+                  <div className="h-14 mt-2"></div>
                 </div>
-              }
+              </div>
             </div>
           </div>
         </>
@@ -758,6 +806,7 @@ const Recipe = (props) => {
       )}
     </div>
   );
+  ////////////////////////////////////////////////////////////////
 };
 
 export default Recipe;

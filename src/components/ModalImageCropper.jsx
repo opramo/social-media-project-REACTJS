@@ -5,16 +5,19 @@ import Cropper from "react-easy-crop";
 import getCroppedImg from "../Helpers/cropImage.js";
 
 function ModalImageCropper({
+  resetValue,
   image,
   cropInit,
   zoomInit,
   picture,
   setPicture,
   modalImageCropper,
+  onCancel,
   setModalImageCropper,
   modalImageCropperHandler,
 }) {
   const [zoom, setZoom] = useState(1);
+  const [objectFit, setObjectFit] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [aspect, setAspect] = useState(0);
   const [shape, setShape] = useState("");
@@ -22,9 +25,11 @@ function ModalImageCropper({
 
   useEffect(() => {
     if (image.type === "ava") {
+      setObjectFit("vertical-cover");
       setAspect(1);
       setShape("round");
     } else {
+      setObjectFit("horizontal-cover");
       setAspect(16 / 9);
       setShape("rect");
     }
@@ -57,9 +62,6 @@ function ModalImageCropper({
     }
   };
 
-  const onResetImage = () => {
-    // resetImage(id);
-  };
   return (
     <>
       <Transition appear show={modalImageCropper} as={Fragment}>
@@ -67,13 +69,14 @@ function ModalImageCropper({
           as="div"
           className="fixed inset-0 z-50 overflow-y-auto bg-black/50"
           onClose={() => {
-            if (image.type === "ava") {
-              setPicture({ ...picture, ava: null });
-            } else if (image.type === "cover") {
-              setPicture({ ...picture, ava: null });
-            } else {
-              setPicture(null);
-            }
+            // if (image.type === "ava") {
+            //   setPicture({ ...picture, ava: null });
+            // } else if (image.type === "cover") {
+            //   setPicture({ ...picture, ava: null });
+            // } else {
+            //   setPicture(null);
+            // }
+            onCrop();
             modalImageCropperHandler();
           }}
         >
@@ -112,10 +115,6 @@ function ModalImageCropper({
                 <h1 className="h-20 w-100 flex justify-center items-center text-xl">
                   Edit image
                 </h1>
-                <XIcon
-                  className="h-5 w-5 absolute top-1/2 right-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:text-white text-white/50 duration-500 border-2 border-white/30 rounded-full hover:bg-white/30 hover:border-transparent"
-                  onClick={() => modalImageCropperHandler()}
-                />
               </Dialog.Title>
               <div className="border border-merah h-64 relative">
                 <Cropper
@@ -127,7 +126,7 @@ function ModalImageCropper({
                   onCropChange={onCropChange}
                   onZoomChange={onZoomChange}
                   onCropComplete={onCropComplete}
-                  objectFit="horizontal-cover"
+                  objectFit={objectFit}
                 />
               </div>
               <div className="flex items-center flex-col">
@@ -146,15 +145,15 @@ function ModalImageCropper({
                 </div>
                 <div className="button-area">
                   <button
-                    onClick={
-                      () => {}
-                      //   onCancel
-                    }
+                    type="button"
+                    className="hover:text-white shadow-md hover:shadow-black inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md  focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
+                    onClick={() => {
+                      onCrop();
+                      modalImageCropperHandler();
+                    }}
                   >
-                    Cancel
+                    Crop
                   </button>
-                  <button onClick={onResetImage}>Reset</button>
-                  <button onClick={onCrop}>Crop</button>
                 </div>
               </div>
             </div>

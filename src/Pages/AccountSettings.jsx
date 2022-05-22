@@ -9,12 +9,13 @@ import { useDispatch, useSelector } from "react-redux";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import ModalImageCropper from "../components/ModalImageCropper";
-import { renderMatches } from "react-router-dom";
 
 const AccountSettings = () => {
   const dispatch = useDispatch();
   const avaRef = useRef();
+  console.log("ava ref:", avaRef);
   const coverRef = useRef();
+  console.log("cover ref:", coverRef);
   const [modalImageCropper, setModalImageCropper] = useState(false);
   let {
     profile_picture,
@@ -55,6 +56,10 @@ const AccountSettings = () => {
 
   const modalImageCropperHandler = () => {
     setModalImageCropper(!modalImageCropper);
+  };
+
+  const resetValue = () => {
+    avaRef.current.value = "";
   };
   const validationSchema = Yup.object({
     fullname: Yup.string().max(50, "Must be 50 characters or fewer"),
@@ -131,6 +136,9 @@ const AccountSettings = () => {
     }
   };
 
+  const onCancel = () => {
+    setCropping(null);
+  };
   // useEffect(() => {
   //   dispatch({ type: "CLEARERROR" });
 
@@ -148,7 +156,8 @@ const AccountSettings = () => {
           zoomInit={cropping.zoom}
           setPicture={setProfilePicture}
           picture={profilePicture}
-          // onCancel={onCancel}
+          resetValue={resetValue}
+          onCancel={onCancel}
           // setCroppedImageFor={setCroppedImageFor}
           // resetImage={resetImage}
           modalImageCropper={modalImageCropper}
@@ -206,7 +215,13 @@ const AccountSettings = () => {
                 <Form className="flex flex-col items-center gap-y-3">
                   <div className="flex flex-col relative w-full items-center">
                     {/* Profile Picture */}
-                    <div className="rounded-full h-44 w-44  border-2 border-black overflow-hidden relative">
+                    <label
+                      htmlFor="profile_picture"
+                      className="py-2 inline-block"
+                    >
+                      Profile Picture
+                    </label>
+                    <div className="rounded-full h-44 aspect-square  border border-merah overflow-hidden relative">
                       <img
                         src={profilePicture.ava.url}
                         alt=""
@@ -222,8 +237,9 @@ const AccountSettings = () => {
                       // style={{ display: "none" }}
                       // className="text-center"
                       // ref={(fileInput) => (fileInput = fileInput)}
+                      onClick={(event) => (event.target.value = null)}
                       onChange={(event) => {
-                        console.log(event.target.files[0]);
+                        console.log("event :", event.target.files[0]);
                         if (event.target.files[0]) {
                           console.log("event :", event.target.files[0]);
                           const reader = new FileReader();
@@ -254,13 +270,23 @@ const AccountSettings = () => {
                     />
                     <button
                       type="button"
-                      className="border border-hijau p-2 m-2 disabled:cursor-not-allowed"
+                      className="shadow-md my-2 inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+                      disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
+                     hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
                       onClick={() => avaRef.current.click()}
                       disabled={!is_verified}
                     >
-                      Choose
+                      Change Picture
                     </button>
-                    <div className=" h-[300px] aspect-video border-2 border-black overflow-hidden">
+
+                    {/* Profile Cover */}
+                    <label
+                      htmlFor="profile_cover"
+                      className="py-2 inline-block"
+                    >
+                      Profile Cover
+                    </label>
+                    <div className=" h-[300px] aspect-video border rounded-lg border-merah overflow-hidden">
                       <img
                         src={profilePicture.cover.url}
                         alt=""
@@ -276,6 +302,7 @@ const AccountSettings = () => {
                       // style={{ display: "none" }}
                       // className="text-center"
                       // ref={(fileInput) => (fileInput = fileInput)}
+                      onClick={(event) => (event.target.value = null)}
                       onChange={(event) => {
                         if (event.target.files[0]) {
                           console.log("event :", event.target.files[0]);
@@ -307,34 +334,19 @@ const AccountSettings = () => {
                     />
                     <button
                       type="button"
-                      className="border border-hijau p-2 m-2 disabled:cursor-not-allowed"
+                      className="shadow-md my-2 inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+                      disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
+                     hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
                       onClick={() => coverRef.current.click()}
                       disabled={!is_verified}
                     >
-                      Choose
+                      Change Cover
                     </button>
-                    {/* <button onClick={() => fileInput.click()}>Pick File</button> */}
-                    {/* <button
-                    type="submit"
-                    disabled={
-                      !formik.dirty ||
-                      !formik.isValid ||
-                      formik.isSubmitting ||
-                      loading
-                    }
-                    className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
-                    disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
-                    hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onSubmitPhoto();
-                    }}
-                    >
-                    Save Changes
-                  </button> */}
                   </div>
+                  {/* Personal Data */}
                   <div className="flex flex-col relative w-full items-center">
                     <div className="flex justify-between w-full items-end">
+                      {/* Full Name */}
                       <label htmlFor="fullname">Full Name</label>
                       <div
                         className={`${

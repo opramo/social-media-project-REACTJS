@@ -4,9 +4,11 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import API_URL from "../Helpers/apiurl";
 import Loading from "./Loading";
+import { useNavigate } from "react-router-dom";
 
 const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
@@ -26,6 +28,7 @@ const AuthProvider = ({ children }) => {
       dispatch({ type: "DONE" });
       dispatch({ type: "LOGOUT" });
       Cookies.remove("token");
+      navigate("/");
     } finally {
       setLoading(false);
     }

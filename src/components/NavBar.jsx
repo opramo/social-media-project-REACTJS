@@ -59,18 +59,20 @@ const NavBar = () => {
     navigate("/");
   };
 
-  if (
-    !token &&
-    (location.pathname === "/home" ||
-      location.pathname === "/account" ||
-      location.pathname === "/accountsettings" ||
-      location.pathname === "/newrecipe" ||
-      location.pathname === "/editrecipe" ||
-      location.pathname === "/verifyaccount")
-  ) {
-    console.log(`Tidak ada Session`);
-    navigate("/");
-  }
+  React.useEffect(() => {
+    if (
+      !token &&
+      (location.pathname === "/home" ||
+        location.pathname === "/account" ||
+        location.pathname === "/accountsettings" ||
+        location.pathname === "/newrecipe" ||
+        location.pathname === "/editrecipe" ||
+        location.pathname === "/verifyaccount")
+    ) {
+      console.log(`Tidak ada Session`);
+      navigate("/");
+    }
+  }, []);
 
   return (
     <>

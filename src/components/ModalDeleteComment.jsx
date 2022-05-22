@@ -1,12 +1,11 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
-import { Fragment } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Fragment, useState } from "react";
 import axios from "axios";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const ModalDeleteComment = (props) => {
   const {
@@ -14,33 +13,37 @@ const ModalDeleteComment = (props) => {
     modalDeleteCommentHandler,
     comment_id,
     setModalDeleteComment,
+    getComments,
+    post_id,
   } = props;
-  const { loading } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
   const location = useLocation();
-  const navigate = useNavigate();
-  console.log(comment_id);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async () => {
     try {
-      dispatch({ type: "LOADING" });
+      setLoading(true);
       let token = Cookies.get("token");
       await axios.delete(`${API_URL}/recipe/delete-comment`, {
         headers: { authorization: token },
         params: { comment_id },
       });
-      toast.success("Deleted!", {
+      toast.success("Comment deleted!", {
         theme: "colored",
         position: "top-center",
+        style: { backgroundColor: "#3A7D44" },
       });
-      setModalDeleteComment(false);
       setTimeout(() => {
-        location.pathname === "/home"
-          ? navigate("/home")
-          : window.location.reload();
-      }, 1000);
+        if (location.pathname === `/recipe/${post_id}`) {
+          window.location.reload();
+        } else {
+          setModalDeleteComment(false);
+          getComments();
+        }
+      }, 250);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
   return (

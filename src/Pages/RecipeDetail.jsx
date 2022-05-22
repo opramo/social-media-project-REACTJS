@@ -57,7 +57,7 @@ const RecipeDetails = () => {
   const [commentsRender, setCommentsRender] = useState([]);
   const [comment_id, setComment_id] = useState(0);
   const post_id = params.post_id;
-  console.log(comments);
+
   const animationShare = {
     item4: {
       hidden: { x: 0, y: 10, opacity: 1 },
@@ -247,26 +247,33 @@ const RecipeDetails = () => {
   }
   return (
     <div className="h-full flex pt-20 bg-putih justify-center">
-      <ModalNewComment
-        modalNewComment={modalNewComment}
-        modalNewCommentHandler={modalNewCommentHandler}
-        post_id={post_id}
-        comments={comments}
-        setComments={setComments}
-        setModalNewComment={setModalNewComment}
-      />
-      <ModalDelete
-        setModalDelete={setModalDelete}
-        modalDelete={modalDelete}
-        modalDeleteHandler={modalDeleteHandler}
-        post_id={post_id}
-      />
-      <ModalDeleteComment
-        setModalDeleteComment={setModalDeleteComment}
-        modalDeleteComment={modalDeleteComment}
-        modalDeleteCommentHandler={modalDeleteCommentHandler}
-        comment_id={comment_id}
-      />
+      {modalNewComment && (
+        <ModalNewComment
+          modalNewComment={modalNewComment}
+          modalNewCommentHandler={modalNewCommentHandler}
+          post_id={post_id}
+          comments={comments}
+          setComments={setComments}
+          setModalNewComment={setModalNewComment}
+        />
+      )}
+      {modalDelete && (
+        <ModalDelete
+          setModalDelete={setModalDelete}
+          modalDelete={modalDelete}
+          modalDeleteHandler={modalDeleteHandler}
+          post_id={post_id}
+        />
+      )}
+      {modalDeleteComment && (
+        <ModalDeleteComment
+          setModalDeleteComment={setModalDeleteComment}
+          modalDeleteComment={modalDeleteComment}
+          modalDeleteCommentHandler={modalDeleteCommentHandler}
+          comment_id={comment_id}
+          post_id={post_id}
+        />
+      )}
       {/* Div to center content */}
       <div className="h-60 sticky top-32 flex flex-col items-end w-20"></div>
 
@@ -440,7 +447,7 @@ const RecipeDetails = () => {
             </div>
             <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah mt-5">
               {commentsRender[0] ? (
-                <ul className="max-w-full ml-5 break-words text-base bg-putih">
+                <ul className="max-w-full ml-5 break-words text-base bg-putih py-2">
                   {commentsRender.map((content) => {
                     return (
                       <li className="flex flex-col" key={content.id}>
