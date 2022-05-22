@@ -29,6 +29,7 @@ const ModalForgotPassword = (props) => {
   const onSubmit = async (values) => {
     try {
       setLoading(true);
+      dispatch({ type: "LOADING" });
       await axios.post(`${API_URL}/auth/forgot-password`, {
         email: values.email,
       });

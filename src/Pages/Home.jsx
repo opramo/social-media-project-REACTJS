@@ -3,12 +3,10 @@ import { useEffect, useState } from "react";
 import Recipe from "../components/Recipe";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
-import { useDispatch, useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from "../components/Loading";
 
 const Home = () => {
-  const dispatch = useDispatch();
   const initialPage = 0;
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);

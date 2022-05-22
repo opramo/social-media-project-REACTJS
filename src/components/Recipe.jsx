@@ -363,7 +363,7 @@ const Recipe = (props) => {
               <div className="ml-16 relative">
                 <div className="absolute border-b border-hijau w-7 h-2 rotate-45 top-3 bg-putih "></div>
                 <div className="absolute border-t border-hijau w-5 h-2 rotate-[21deg] top-3"></div>
-                <div className="border-hijau border ml-5 p-2 inline-block rounded-lg bg-putih">
+                <div className="border-hijau border ml-5 p-2 block rounded-lg bg-putih">
                   {content.comment}
                 </div>
               </div>
@@ -387,7 +387,7 @@ const Recipe = (props) => {
   return (
     <div
       className={`
-       relative w-full min-h-[550px] mb-5 rounded bg-transparent shadow-black shadow-xl`}
+       relative w-full min-h-[550px] mb-5 rounded bg-transparent shadow-black shadow-lg`}
     >
       {modalNewComment && (
         <ModalNewComment

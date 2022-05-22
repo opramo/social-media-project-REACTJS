@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import Logo1 from "../Assets/chefputih.png";
 import Loading from "../components/Loading";
 import API_URL from "../Helpers/apiurl";
 
@@ -74,17 +73,11 @@ function Verification() {
       <>
         <div className="min-h-screen flex flex-col pt-20 bg-putih items-center justify-center">
           <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-putih shadow-2xl rounded-2xl">
-            <div className="text-lg font-medium leading-6 text-putih bg-merah rounded text-center mb-5 -mt-7 -mx-10 flex justify-center">
-              <img
-                src={Logo1}
-                alt="TheChefBook"
-                className="rounded-full w-14"
-              />
+            <div className="text-lg h-16 font-medium leading-6 text-putih bg-merah rounded text-center mb-5 -mt-7 -mx-10 flex justify-center items-center">
+              Please Wait...
             </div>
-            <div className="flex flex-col gap-y-5">
-              <div className="flex flex-col items-center text-sm">
-                <p>Please Wait</p>
-              </div>
+            <div className="flex justify-center items-centerflex-col gap-y-5">
+              <Loading className={`w-10 h-10 animate-spin`} />
             </div>
           </div>
         </div>
@@ -136,7 +129,7 @@ function Verification() {
             </h1>
           </div>
           <div className="flex flex-col gap-y-5">
-            <div className="flex flex-col relative text-sm justify-center items-center">
+            <div className="flex flex-col relative text-sm justify-center items-center text-center">
               Something went wrong with your verification link, please click the
               button below to resend the email.
             </div>

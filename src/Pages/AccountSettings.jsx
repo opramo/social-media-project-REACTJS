@@ -89,6 +89,7 @@ const AccountSettings = () => {
     try {
       setChanged(false);
       setloadingSubmit(true);
+      dispatch({ type: "LOADING" });
       let token = Cookies.get("token");
       let res = await axios.patch(
         `${API_URL}/profile/profile-update`,
@@ -97,6 +98,7 @@ const AccountSettings = () => {
           headers: { authorization: token },
         }
       );
+      console.log(res);
 
       dispatch({ type: "LOGIN", payload: res.data });
       toast.success("Updated!", {
@@ -167,27 +169,29 @@ const AccountSettings = () => {
       <div className="min-h-screen flex pt-20 bg-putih justify-center ">
         <div className="min-w-[600px] flex flex-col items-center shadow-lg rounded-2xl  my-5 shadow-black bg-putih py-5">
           <div className="my-3">Account Settings</div>
-          <div className="my-3">
-            <span
-              className={`text-sm mr-5 ${
-                is_verified ? `text-hijau` : `text-merah`
-              }`}
-            >
-              {is_verified ? "Already verified!" : "Not yet verified!"}
-            </span>
+          <div className="my-3 flex flex-col items-center text-center">
             {loadingVerify ? (
-              <Loading className={"animate-spin h-10 w-10 ml-5"} />
+              <Loading className={"animate-spin h-10 w-10"} />
             ) : (
-              <button
-                type="button"
-                disabled={is_verified || loadingVerify}
-                className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md
-            disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
-            hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                onClick={() => sendEmail()}
-              >
-                Send Email Verification
-              </button>
+              <>
+                <div
+                  className={`text-sm ${
+                    is_verified ? `text-hijau` : `text-merah`
+                  }`}
+                >
+                  {is_verified ? "Already verified!" : "Not yet verified!"}
+                </div>
+                <button
+                  type="button"
+                  disabled={is_verified || loadingVerify}
+                  className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md
+                disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
+                hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
+                  onClick={() => sendEmail()}
+                >
+                  Send Email Verification
+                </button>
+              </>
             )}
           </div>
           {!is_verified && (

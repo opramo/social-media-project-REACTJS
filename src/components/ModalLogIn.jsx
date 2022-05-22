@@ -54,6 +54,7 @@ const ModalLogIn = (props) => {
     try {
       setChanged(false);
       setLoading(true);
+      dispatch({ type: "LOADING" });
       let res = await axios.post(`${API_URL}/auth/login`, {
         username: values.personId,
         email: values.personId,

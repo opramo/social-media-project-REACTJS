@@ -183,8 +183,6 @@ const RecipeDetails = () => {
           ingredients,
           instructions,
         });
-        console.log(post_id);
-        console.log(user_id);
         setLikes(likes);
         setLikers(likers);
         setComments(comments);
@@ -503,7 +501,13 @@ const RecipeDetails = () => {
                             ""
                           )}
                         </div>
-                        <div className="ml-16">{content.comment}</div>
+                        <div className="ml-16 relative">
+                          <div className="absolute border-b border-hijau w-7 h-2 rotate-45 top-3 bg-putih "></div>
+                          <div className="absolute border-t border-hijau w-5 h-2 rotate-[21deg] top-3"></div>
+                          <div className="border-hijau border ml-5 p-2 block rounded-lg bg-putih">
+                            {content.comment}
+                          </div>
+                        </div>
                       </li>
                     );
                   })}

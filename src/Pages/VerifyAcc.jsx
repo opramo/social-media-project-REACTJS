@@ -1,12 +1,11 @@
 import axios from "axios";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Loading from "../components/Loading";
 import API_URL from "../Helpers/apiurl";
 
 const VerifyAcc = () => {
-  const dispatch = useDispatch();
   const { id, username, email } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
 
@@ -41,25 +40,23 @@ const VerifyAcc = () => {
               </h1>
             </div>
             <div className="flex flex-col gap-y-5">
-              <div className="flex flex-col relative">
+              <div className="flex flex-col relative text-center">
                 <p>
                   It seems like you have not verified your account yet! Please
-                  verify your account by clicking the link that we have sent to
-                  your email! <br />
-                  Please kindly check your email!
+                  verify your account by clicking the link that has between sent
+                  to your email!
                 </p>
               </div>
             </div>
-            <div className="mt-6 flex flex-col">
-              Didn't get the email? click the button below to resend the
-              verification email!
+            <div className="mt-6 flex flex-col text-center items-center">
+              Didn't get the email? click the button below!
               {loading ? (
                 <Loading className={"animate-spin h-10 w-10 ml-5"} />
               ) : (
                 <button
                   type="button"
                   disabled={loading}
-                  className="hover:text-white shadow-md hover:shadow-black inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+                  className="hover:text-white shadow-md mt-2 hover:shadow-black inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
                 disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
                   onClick={() => sendEmail()}

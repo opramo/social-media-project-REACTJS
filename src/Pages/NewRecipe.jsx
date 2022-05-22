@@ -1,6 +1,6 @@
 import { MinusSmIcon, PlusSmIcon } from "@heroicons/react/outline";
 import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -14,6 +14,7 @@ import Loading from "../components/Loading";
 const NewRecipe = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { is_verified } = useSelector((state) => state.user);
   const photoRef = useRef();
 
   const initialValues = {
@@ -22,6 +23,12 @@ const NewRecipe = () => {
     ingredients: [""],
     instructions: [""],
   };
+  useEffect(() => {
+    if (!is_verified) {
+      navigate(-1);
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const [photoRecipe, setPhotoRecipe] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -336,7 +343,9 @@ const NewRecipe = () => {
                     </FieldArray>
                   </div>
                   {loading ? (
-                    <Loading className={"animate-spin h-10 w-10 ml-5"} />
+                    <div className="flex justify-center">
+                      <Loading className={"animate-spin h-10 w-10"} />
+                    </div>
                   ) : (
                     <button
                       type="submit"

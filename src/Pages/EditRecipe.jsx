@@ -15,7 +15,7 @@ const EditRecipe = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const photoRef = useRef();
-  const { edit, id } = useSelector((state) => state.user);
+  const { edit } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [photoRecipe, setPhotoRecipe] = useState(null);
@@ -104,8 +104,8 @@ const EditRecipe = () => {
   const getRecipe = async () => {
     try {
       setLoading(true);
-      let res = await axios.post(`${API_URL}/recipe/recipe-detail`, {
-        post_id: edit,
+      let res = await axios.get(`${API_URL}/recipe/recipe-detail`, {
+        params: { post_id: edit },
       });
       setData(res.data);
       setPhotoRecipe({ url: API_URL + res.data.post.photo, file: null });

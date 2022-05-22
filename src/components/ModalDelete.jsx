@@ -32,6 +32,7 @@ const ModalDelete = (props) => {
         position: "top-center",
         style: { backgroundColor: "#3A7D44" },
       });
+      setLoading(false);
       props.setModalDelete(false);
       setTimeout(() => {
         location.pathname === `/recipe/${props.post_id}`
@@ -40,7 +41,6 @@ const ModalDelete = (props) => {
       }, 1000);
     } catch (error) {
       console.log(error);
-    } finally {
       setLoading(false);
     }
   };

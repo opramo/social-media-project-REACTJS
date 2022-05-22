@@ -71,6 +71,7 @@ const NavBar = () => {
       console.log(`Tidak ada Session`);
       navigate("/");
     }
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -235,6 +236,11 @@ const NavBar = () => {
                             alt="cover"
                             className="object-cover absolute h-full"
                           />
+                          {is_verified ? null : (
+                            <div className="bg-merah text-putih text-center z-10 absolute top-0 w-full py-1">
+                              unverified
+                            </div>
+                          )}
                           {/* <div className=" absolute top-0 left-20 origin-center h-14 w-14">
                             <img
                               src={hat}
@@ -254,7 +260,7 @@ const NavBar = () => {
                             />
                           </div>
                           <div className="h-auto w-full z-10 bg-black/30 text-white">
-                            {username} {is_verified ? null : `unverified`}
+                            {username}
                           </div>
                           <div className="h-auto w-full z-10 bg-black/30 text-white">
                             {fullname}

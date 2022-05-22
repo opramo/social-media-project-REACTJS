@@ -127,7 +127,8 @@ const ModalNewComment = (props) => {
                   className="flex flex-col gap-y-5"
                 >
                   {(formik) => {
-                    const { errors, isSubmitting, dirty, isValid } = formik;
+                    const { errors, isSubmitting, dirty, isValid, values } =
+                      formik;
                     return (
                       <Form>
                         <div className="flex flex-col relative">
@@ -143,6 +144,13 @@ const ModalNewComment = (props) => {
                               errors.comment ? "outline-merah" : "outline-biru"
                             }`}
                           />
+                          <div
+                            className={`${
+                              errors.comment ? "text-merah" : "text-black"
+                            } absolute right-2 bottom-2 duration-500`}
+                          >
+                            {values.comment.length}/300
+                          </div>
                           {errors.comment ? (
                             <div
                               name="comment"

@@ -1,19 +1,13 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { XIcon } from "@heroicons/react/outline";
 import React, { Fragment, useEffect, useState } from "react";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../Helpers/cropImage.js";
 
 function ModalImageCropper({
-  resetValue,
   image,
-  cropInit,
-  zoomInit,
   picture,
   setPicture,
   modalImageCropper,
-  onCancel,
-  setModalImageCropper,
   modalImageCropperHandler,
 }) {
   const [zoom, setZoom] = useState(1);
@@ -33,6 +27,7 @@ function ModalImageCropper({
       setAspect(16 / 9);
       setShape("rect");
     }
+    // eslint-disable-next-line
   }, []);
 
   const onCropChange = (crop) => {

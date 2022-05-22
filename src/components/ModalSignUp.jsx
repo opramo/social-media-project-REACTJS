@@ -18,7 +18,6 @@ const ModalSignUp = (props) => {
 
   const {
     modalSignUp,
-    setModalSignUp,
     modalSignUpHandler,
     modalLogInHandler,
     passVis,
@@ -70,8 +69,10 @@ const ModalSignUp = (props) => {
 
   const onSubmit = async (values, { setSubmitting }) => {
     try {
+      message = [];
       setChanged(false);
       setLoading(true);
+      dispatch({ type: "LOADING" });
       let res = await axios.post(`${API_URL}/auth/register`, values);
       dispatch({ type: "LOGIN", payload: res.data });
       Cookies.set("token", res.headers["x-token-access"]);

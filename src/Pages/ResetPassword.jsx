@@ -12,7 +12,7 @@ import ModalForgotPassword from "../components/ModalForgotPassword";
 function ResetPassword() {
   const navigate = useNavigate();
   const { token } = useParams();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [succeed, setSucceed] = useState(false);
   const [passVis, setPassVis] = useState(false);
   const [tokenAlive, setTokenAlive] = useState(false);
@@ -53,17 +53,19 @@ function ResetPassword() {
           },
         }
       );
-      setLoading(false);
       setSucceed(true);
-      toast.success("Password Changed!", {
-        position: "top-center",
-        theme: "colored",
-        style: { backgroundColor: "#3A7D44" },
-      });
+      setTimeout(() => {
+        toast.success("Password Changed!", {
+          position: "top-center",
+          theme: "colored",
+          style: { backgroundColor: "#3A7D44" },
+        });
+      }, 250);
     } catch (error) {
       setLoading(false);
       console.log(error);
     } finally {
+      setLoading(false);
       setSubmitting(false);
     }
   };
@@ -85,6 +87,40 @@ function ResetPassword() {
     })();
     // eslint-disable-next-line
   }, []);
+
+  if (succeed) {
+    return (
+      <>
+        <div className="min-h-screen flex flex-col pt-20 bg-putih items-center justify-center">
+          <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-putih shadow-2xl rounded-2xl">
+            <div className="text-lg font-medium leading-6 text-putih bg-merah rounded text-center mb-5 -mt-7 -mx-10 flex justify-center">
+              <h1 className="h-20 w-100 flex justify-center items-center text-xl">
+                Your password has been changed!
+              </h1>
+            </div>
+            <div className="flex flex-col gap-y-5">
+              <div className="flex flex-col items-center justify-center text-center text-sm">
+                <p>
+                  You can continue log in your account by pressing the Log In
+                  Button on the navigation bar above!
+                </p>
+                <p>
+                  Or go back to the Landing Page by pressing the button below!
+                </p>
+              </div>
+              <button
+                type="button"
+                className="hover:text-white shadow-md hover:shadow-black inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md  focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
+                onClick={() => navigate("/")}
+              >
+                Go back to Landing Page
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   if (loading) {
     return (
@@ -139,39 +175,7 @@ function ResetPassword() {
       </>
     );
   }
-  if (succeed) {
-    return (
-      <>
-        <div className="min-h-screen flex flex-col pt-20 bg-putih items-center justify-center">
-          <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-putih shadow-2xl rounded-2xl">
-            <div className="text-lg font-medium leading-6 text-putih bg-merah rounded text-center mb-5 -mt-7 -mx-10 flex justify-center">
-              <h1 className="h-20 w-100 flex justify-center items-center text-xl">
-                Your password has been changed!
-              </h1>
-            </div>
-            <div className="flex flex-col gap-y-5">
-              <div className="flex flex-col items-center justify-center text-center text-sm">
-                <p>
-                  You can continue log in your account by pressing the Log In
-                  Button on the navigation bar above!
-                </p>
-                <p>
-                  Or go back to the Landing Page by pressing the button below!
-                </p>
-              </div>
-              <button
-                type="button"
-                className="hover:text-white shadow-md hover:shadow-black inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md  focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                onClick={() => navigate("/")}
-              >
-                Go back to Landing Page
-              </button>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
+
   return (
     <>
       <div className="min-h-screen flex flex-col pt-20 bg-putih items-center justify-center">
@@ -287,7 +291,7 @@ function ResetPassword() {
                   <div className="mt-4 flex items-center justify-between">
                     <button
                       type="submit"
-                      disabled={!dirty || !isValid || isSubmitting || loading}
+                      disabled={!dirty || !isValid || isSubmitting}
                       className={`justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
                           focus-visible:ring-biru duration-500
                           hover:text-putih shadow-md hover:shadow-black text-putih bg-hijau border-transparent 
