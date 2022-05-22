@@ -50,9 +50,6 @@ function ModalImageCropper({
   const onCrop = async () => {
     const { url, file } = await getCroppedImg(image.value, croppedAreaPixels);
     var newFile = new File([file], "image.jpeg", { type: "image/jpeg" });
-    console.log("URL:", url);
-    console.log(file);
-    console.log(newFile);
     if (image.type === "ava") {
       setPicture({ ...picture, ava: { file: newFile, url } });
     } else if (image.type === "cover") {

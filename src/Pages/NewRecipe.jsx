@@ -9,12 +9,12 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import ModalImageCropper from "../components/ModalImageCropper";
+import Loading from "../components/Loading";
 
 const NewRecipe = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const photoRef = useRef();
-  const { loading } = useSelector((state) => state.user);
 
   const initialValues = {
     title: "",
@@ -24,6 +24,7 @@ const NewRecipe = () => {
   };
 
   const [photoRecipe, setPhotoRecipe] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [modalImageCropper, setModalImageCropper] = useState(false);
   const [cropping, setCropping] = useState(null);
 
@@ -35,7 +36,7 @@ const NewRecipe = () => {
     title: Yup.string()
       .max(50, "Recipe's name  must be 4 to 15 characters.")
       .required("Recipe's name is required!"),
-    // photo: Yup.string().required("Photo is required!"),
+    photo: Yup.array().required("Photo is required!"),
     // ingredients: Yup.array()
     //   .min(8, "Password is too short - minimimum of 8 characters.")
     //   .required("Password is required!"),
@@ -55,7 +56,7 @@ const NewRecipe = () => {
     };
     formData.append("data", JSON.stringify(dataInput));
     try {
-      dispatch({ type: "LOADING" });
+      setLoading(true);
       let token = Cookies.get("token");
       let res = await axios.post(`${API_URL}/recipe/post-recipe`, formData, {
         headers: { authorization: token },
@@ -75,7 +76,7 @@ const NewRecipe = () => {
         payload: error.response.data.message || "Network Error",
       });
     } finally {
-      dispatch({ type: "DONE" });
+      setLoading(false);
       setSubmitting(false);
     }
   };
@@ -134,7 +135,10 @@ const NewRecipe = () => {
                   {/* Upload photo */}
 
                   <div className="flex flex-col relative">
-                    <label htmlFor="photo" className="py-2 inline-block">
+                    <label
+                      htmlFor="photo"
+                      className="py-2 inline-block text-center"
+                    >
                       Recipe Photo
                     </label>
                     <div className=" h-[300px] aspect-video border rounded-lg border-merah overflow-hidden">
@@ -156,7 +160,6 @@ const NewRecipe = () => {
                       onClick={(event) => (event.target.value = null)}
                       onChange={(event) => {
                         if (event.target.files[0]) {
-                          console.log("event :", event.target.files[0]);
                           const reader = new FileReader();
                           reader.readAsDataURL(event.target.files[0]);
                           reader.addEventListener("load", () => {
@@ -186,40 +189,8 @@ const NewRecipe = () => {
                     >
                       Add Photo
                     </button>
-                    <div className="border-2 border-black w-100 h-72 overflow-hidden content-center">
-                      <img src={photoRecipe} alt="" />
-                    </div>
-                    {/* <div className="border-2 border-black w-100 mb-5">
-                    Upload Photo
-                  </div> */}
-                    <div className="flex justify-center items-center">
-                      <input
-                        type="file"
-                        name="photo"
-                        accept=".gif,.jpg,.jpeg,.JPG,.JPEG,.png"
-                        // style={{ display: "none" }}
-                        className="w-60"
-                        // ref={(fileInput) => (fileInput = fileInput)}
-                        onChange={(event) => {
-                          if (event.target.files[0]) {
-                            setPhotoRecipe(
-                              URL.createObjectURL(event.target.files[0])
-                            );
-                            formik.setFieldValue("photo", [
-                              event.target.files[0],
-                            ]);
-                          }
-                          // console.log(event.target.files[0]);
-                        }}
-                        onClick={(event) => (event.target.value = null)}
-                      />
-                      <ErrorMessage
-                        component="div"
-                        name="photo"
-                        className="text-merah -mt-5 ml-2 text-xs absolute bottom-0"
-                      />
-                    </div>
                   </div>
+
                   {/* Ingredients' list */}
                   <div className="flex flex-col relative">
                     <label htmlFor="ingredients" className="text-center">
@@ -364,17 +335,23 @@ const NewRecipe = () => {
                       }}
                     </FieldArray>
                   </div>
-                  <button
-                    type="submit"
-                    disabled={!formik.isValid || formik.isSubmitting || loading}
-                    className={`m-auto mt-3 justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
+                  {loading ? (
+                    <Loading className={"animate-spin h-10 w-10 ml-5"} />
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={
+                        !formik.isValid || formik.isSubmitting || loading
+                      }
+                      className={`m-auto mt-3 justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
                   focus-visible:ring-biru duration-500
                   shadow-md hover:shadow-black text-white bg-hijau border-transparent 
                   disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-white disabled:cursor-not-allowed
                 }`}
-                  >
-                    Submit Your Recipe
-                  </button>
+                    >
+                      Submit Your Recipe
+                    </button>
+                  )}
                 </Form>
               );
             }}

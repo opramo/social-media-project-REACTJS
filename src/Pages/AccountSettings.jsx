@@ -9,13 +9,12 @@ import { useDispatch, useSelector } from "react-redux";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import ModalImageCropper from "../components/ModalImageCropper";
+import Loading from "../components/Loading";
 
 const AccountSettings = () => {
   const dispatch = useDispatch();
   const avaRef = useRef();
-  console.log("ava ref:", avaRef);
   const coverRef = useRef();
-  console.log("cover ref:", coverRef);
   const [modalImageCropper, setModalImageCropper] = useState(false);
   let {
     profile_picture,
@@ -26,7 +25,6 @@ const AccountSettings = () => {
     is_verified,
     fullname,
     bio,
-    loading,
     error_mes,
   } = useSelector((state) => state.user);
 
@@ -37,6 +35,8 @@ const AccountSettings = () => {
     fullname = "";
   }
 
+  const [loadingVerify, setloadingVerify] = useState(false);
+  const [loadingSubmit, setloadingSubmit] = useState(false);
   const [profilePicture, setProfilePicture] = useState({
     ava: { url: profile_picture ? API_URL + profile_picture : cat, file: null },
     cover: { url: profile_cover ? API_URL + profile_cover : cover, file: null },
@@ -58,9 +58,6 @@ const AccountSettings = () => {
     setModalImageCropper(!modalImageCropper);
   };
 
-  const resetValue = () => {
-    avaRef.current.value = "";
-  };
   const validationSchema = Yup.object({
     fullname: Yup.string().max(50, "Must be 50 characters or fewer"),
     username: Yup.string()
@@ -91,7 +88,7 @@ const AccountSettings = () => {
     formData.append("data", JSON.stringify(dataInput));
     try {
       setChanged(false);
-      dispatch({ type: "LOADING" });
+      setloadingSubmit(true);
       let token = Cookies.get("token");
       let res = await axios.patch(
         `${API_URL}/profile/profile-update`,
@@ -113,13 +110,13 @@ const AccountSettings = () => {
         payload: error.response.data.message || "Network Error",
       });
     } finally {
-      dispatch({ type: "DONE" });
+      setloadingSubmit(false);
     }
   };
 
   const sendEmail = async () => {
     try {
-      dispatch({ type: "LOADING" });
+      setloadingVerify(true);
       await axios.post(`${API_URL}/auth/email-verification`, {
         id,
         username,
@@ -133,6 +130,8 @@ const AccountSettings = () => {
       });
     } catch (error) {
       alert(error);
+    } finally {
+      setloadingVerify(false);
     }
   };
 
@@ -156,7 +155,7 @@ const AccountSettings = () => {
           zoomInit={cropping.zoom}
           setPicture={setProfilePicture}
           picture={profilePicture}
-          resetValue={resetValue}
+          // resetValue={resetValue}
           onCancel={onCancel}
           // setCroppedImageFor={setCroppedImageFor}
           // resetImage={resetImage}
@@ -176,16 +175,20 @@ const AccountSettings = () => {
             >
               {is_verified ? "Already verified!" : "Not yet verified!"}
             </span>
-            <button
-              type="button"
-              disabled={is_verified || loading}
-              className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md
+            {loadingVerify ? (
+              <Loading className={"animate-spin h-10 w-10 ml-5"} />
+            ) : (
+              <button
+                type="button"
+                disabled={is_verified || loadingVerify}
+                className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md
             disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
             hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-              onClick={() => sendEmail()}
-            >
-              Send Email Verification
-            </button>
+                onClick={() => sendEmail()}
+              >
+                Send Email Verification
+              </button>
+            )}
           </div>
           {!is_verified && (
             <div className="text-sm mr-5 text-merah">
@@ -242,12 +245,16 @@ const AccountSettings = () => {
                         console.log("event :", event.target.files[0]);
                         if (event.target.files[0]) {
                           console.log("event :", event.target.files[0]);
+                          let format = event.target.files[0].name.split(".");
+                          format = format[format.length - 1];
                           const reader = new FileReader();
                           reader.readAsDataURL(event.target.files[0]);
                           reader.addEventListener("load", () => {
                             setCropping({
                               type: "ava",
                               value: reader.result,
+                              fileType: event.target.files[0].type,
+                              format,
                             });
                             setChanged(true);
                             setModalImageCropper(true);
@@ -488,15 +495,21 @@ const AccountSettings = () => {
                     />
                   </div>
                   <div className="">
-                    <button
-                      type="submit"
-                      disabled={!isValid || isSubmitting || loading || !changed}
-                      className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+                    {loadingSubmit ? (
+                      <Loading className={"animate-spin h-10 w-10 ml-5"} />
+                    ) : (
+                      <button
+                        type="submit"
+                        disabled={
+                          !isValid || isSubmitting || loadingSubmit || !changed
+                        }
+                        className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
                     disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                     hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                    >
-                      Save Changes
-                    </button>
+                      >
+                        Save Changes
+                      </button>
+                    )}
                   </div>
                 </Form>
               );

@@ -26,7 +26,8 @@ const ModalLogIn = (props) => {
   } = props;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error_mes } = useSelector((state) => state.user);
+  const { error_mes } = useSelector((state) => state.user);
+  const [loading, setLoading] = useState(false);
   const [changed, setChanged] = useState(false);
 
   let message = [];
@@ -52,7 +53,7 @@ const ModalLogIn = (props) => {
   const onSubmit = async (values, onSubmitProps) => {
     try {
       setChanged(false);
-      dispatch({ type: "LOADING" });
+      setLoading(true);
       let res = await axios.post(`${API_URL}/auth/login`, {
         username: values.personId,
         email: values.personId,
@@ -76,7 +77,7 @@ const ModalLogIn = (props) => {
       });
     } finally {
       onSubmitProps.setSubmitting(false);
-      dispatch({ type: "DONE" });
+      setLoading(false);
     }
   };
   return (

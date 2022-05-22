@@ -4,7 +4,6 @@ import Logo from "../Assets/chef.png";
 import Logo1 from "../Assets/chefputih.png";
 import cat from "../Assets/cat.jpg";
 import cover from "../Assets/cover.jpg";
-import hat from "../Assets/chefhat.png";
 import * as React from "react";
 import ModalLogIn from "../components/ModalLogIn";
 import ModalSignUp from "../components/ModalSignUp";
@@ -308,15 +307,6 @@ const NavBar = () => {
               Sign Up
             </motion.button>
           )}
-
-          {/* <button
-            className="bg-merah rounded-full p-2 w-36 text-center text-putih hover:bg-kuning hover:shadow-black shadow-md duration-500 focus:outline-none pointer-events-auto "
-            onClick={() => {
-              modalSignUpHandler();
-            }}
-          >
-            Sign Up
-          </button> */}
         </div>
       </div>
     </>

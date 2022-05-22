@@ -5,6 +5,7 @@ import {
   LinkIcon,
   TrashIcon,
 } from "@heroicons/react/outline";
+import cat from "../Assets/cat.jpg";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -33,7 +34,7 @@ const RecipeDetails = () => {
   const dispatch = useDispatch();
   const params = useParams();
 
-  const { is_verified, id } = useSelector((state) => state.user);
+  const { is_verified, id, username } = useSelector((state) => state.user);
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [modalNewComment, setModalNewComment] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
@@ -156,9 +157,8 @@ const RecipeDetails = () => {
     (async function fetchdata() {
       try {
         setLoadingPosts(true);
-        let res = await axios.post(`${API_URL}/recipe/recipe-detail`, {
-          post_id,
-          id,
+        let res = await axios.get(`${API_URL}/recipe/recipe-detail`, {
+          params: { post_id, id },
         });
         const {
           ingredients,
@@ -183,6 +183,8 @@ const RecipeDetails = () => {
           ingredients,
           instructions,
         });
+        console.log(post_id);
+        console.log(user_id);
         setLikes(likes);
         setLikers(likers);
         setComments(comments);
@@ -280,18 +282,18 @@ const RecipeDetails = () => {
       {/* Content */}
       <div className="min-w-min flex my-5 justify-center overflow-hidden relative z-0  rounded-2xl shadow-lg shadow-black w-[600px]">
         <div className=" z-0 w-[600px] rounded-2xl relative ">
-          <div>
-            <img
-              src={data.photo}
-              alt=""
-              className="h-[400px] w-[600px] rounded-t-2xl"
-            />
+          <div className="w-[600px] aspect-video rounded-t-2xl">
+            <img src={data.photo} alt="" className=" w-full object-cover" />
           </div>
           <div className="">
             <div className="w-full flex justify-between px-5 text-sm relative">
               <div
                 className="flex h-full rounded-md hover:bg-white/50 cursor-pointer"
-                onClick={() => navigate("/account")}
+                onClick={() => {
+                  data.username === username
+                    ? navigate("/account")
+                    : navigate(`/profile/${data.username}`);
+                }}
               >
                 <div className="w-20 h-20 rounded-full overflow-hidden absolute bottom-2 border-2 border-putih">
                   <img src={data.profile_picture} alt="" />
@@ -366,6 +368,7 @@ const RecipeDetails = () => {
                 : "No chef likes this recipe :<"}
             </div>
           </div>
+
           {/* Ingredients */}
           <div className="flex flex-col w-full p-5 bg-putih">
             <div className="w-full bg-putih h mb-7 text-xl">
@@ -397,6 +400,7 @@ const RecipeDetails = () => {
               </div>
             </div>
           </div>
+
           {/* Liked */}
           <div className="flex flex-col w-full p-5 bg-putih">
             <div className="w-full relative bg-putih text-xl">
@@ -410,11 +414,19 @@ const RecipeDetails = () => {
                       <li key={content.id}>
                         <div
                           className="flex rounded-md hover:bg-white/50 cursor-pointer text-base py-2 w-auto"
-                          onClick={() => navigate("/account")}
+                          onClick={() => {
+                            content.username === username
+                              ? navigate("/account")
+                              : navigate(`/profile/${content.username}`);
+                          }}
                         >
                           <div className="w-12 h-12 rounded-full mr-3 border border-merah overflow-hidden">
                             <img
-                              src={`${API_URL}${content.profile_picture}`}
+                              src={
+                                content.profile_picture
+                                  ? API_URL + content.profile_picture
+                                  : cat
+                              }
                               alt=""
                             />
                           </div>
@@ -455,11 +467,19 @@ const RecipeDetails = () => {
                           <div className="w-full flex justify-between">
                             <div
                               className="flex rounded-md hover:bg-white/50 cursor-pointer text-base"
-                              onClick={() => navigate("/account")}
+                              onClick={() => {
+                                content.username === username
+                                  ? navigate("/account")
+                                  : navigate(`/profile/${content.username}`);
+                              }}
                             >
                               <div className="w-12 h-12 rounded-full mr-3 overflow-hidden border border-merah">
                                 <img
-                                  src={`${API_URL}${content.profile_picture}`}
+                                  src={
+                                    content.profile_picture
+                                      ? API_URL + content.profile_picture
+                                      : cat
+                                  }
                                   alt=""
                                 />
                               </div>

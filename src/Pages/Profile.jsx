@@ -1,28 +1,29 @@
 import Recipe from "../components/Recipe";
 import cover from "../Assets/cover.jpg";
 import Cat from "../Assets/cat.jpg";
-import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import API_URL from "../Helpers/apiurl";
 import axios from "axios";
 import Loading from "../components/Loading";
+import { useParams } from "react-router-dom";
 
-const MyKitchen = () => {
-  const { username, fullname, profile_picture, profile_cover, bio, id } =
-    useSelector((state) => state.user);
+const Profile = () => {
+  const params = useParams();
   let [myRecipes, setMyRecipe] = useState(true);
+  const { id } = useSelector((state) => state.user);
+  const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(false);
+  const profile_username = params.profile_username;
+  console.log(profile_username);
 
   const getUserRecipes = async () => {
     try {
       setLoadingPosts(true);
-      let token = Cookies.get("token");
       let res = await axios.get(`${API_URL}/recipe/recipes-user`, {
-        headers: { authorization: token },
-        params: { id, user: id },
+        params: { id: profile?.id, user: id },
       });
       setPosts(res.data);
       setLoadingPosts(false);
@@ -34,10 +35,8 @@ const MyKitchen = () => {
   const getLikedRecipes = async () => {
     try {
       setLoadingPosts(true);
-      let token = Cookies.get("token");
       let res = await axios.get(`${API_URL}/recipe/recipes-liked`, {
-        headers: { authorization: token },
-        params: { id, user: id },
+        params: { id: profile?.id, user: id },
       });
       setLikedPosts(res.data);
       setLoadingPosts(false);
@@ -48,10 +47,26 @@ const MyKitchen = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    getUserRecipes();
+    (async function firstFetch() {
+      try {
+        setLoadingPosts(true);
+        let res = await axios.get(`${API_URL}/profile/chefs`, {
+          params: { profile_username },
+        });
+        setProfile(res.data);
+        let res1 = await axios.get(`${API_URL}/recipe/recipes-user`, {
+          params: { id: res.data.id, user: id },
+        });
+        setPosts(res1.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoadingPosts(false);
+      }
+    })();
     setMyRecipe(true);
     // eslint-disable-next-line
-  }, []);
+  }, [profile_username]);
 
   const printRecipe = () => {
     let dataRecipe = posts;
@@ -81,25 +96,35 @@ const MyKitchen = () => {
         <div className=" w-full relative flex flex-col min-h-min items-center">
           <div className="w-full block h-full absolute top-0 min-h-[300px]">
             <img
-              src={profile_cover ? API_URL + profile_cover : cover}
+              src={
+                profile?.profile_cover
+                  ? API_URL + profile?.profile_cover
+                  : cover
+              }
               alt=""
               className="h-full w-full"
             />
           </div>
           <div className="bg-black/30 py-2 text-center text-lg font-bold text-putih w-full tracking-wider z-10">
-            {`${username}'s Kitchen`}
+            {`${profile?.username}'s Kitchen`}
           </div>
           <div className="flex flex-col items-center w-1/2 z-10 my-2">
-            <div className="w-36 h-36 rounded-full overflow-hidden">
+            <div className="w-36 h-36 rounded-full overflow-hidden border border-merah">
               <img
-                src={profile_picture ? API_URL + profile_picture : Cat}
+                src={
+                  profile?.profile_picture
+                    ? API_URL + profile?.profile_picture
+                    : Cat
+                }
                 alt=""
               />
             </div>
           </div>
           <div className="text-white bg-black/30 w-full text-center flex flex-col items-center pb-10 z-10">
-            <div className="text-center py-1 text-putih">{fullname}</div>
-            {bio}
+            <div className="text-center py-1 text-putih">
+              {profile?.fullname}
+            </div>
+            {profile?.bio}
           </div>
 
           {/* account button pages */}
@@ -170,4 +195,4 @@ const MyKitchen = () => {
   );
 };
 
-export default MyKitchen;
+export default Profile;

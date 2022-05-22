@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import ModalRestriction from "./components/ModalRestriction";
 import RecipeDetails from "./Pages/RecipeDetail";
 import ResetPassword from "./Pages/ResetPassword";
+import Profile from "./Pages/Profile";
 
 // css
 
@@ -41,6 +42,7 @@ function App() {
         <Route path="/verifyaccount" element={<VerifyAcc />} />
         <Route path="/verification/:token" element={<Verification />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/profile/:profile_username" element={<Profile />} />
       </Routes>
       <ToastContainer
         pauseOnFocusLoss={false}

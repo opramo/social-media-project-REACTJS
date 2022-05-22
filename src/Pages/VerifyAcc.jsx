@@ -1,21 +1,23 @@
 import axios from "axios";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import Loading from "../components/Loading";
 import API_URL from "../Helpers/apiurl";
 
 const VerifyAcc = () => {
   const dispatch = useDispatch();
-  const { id, username, email, loading } = useSelector((state) => state.user);
+  const { id, username, email } = useSelector((state) => state.user);
+  const [loading, setLoading] = useState(false);
 
   const sendEmail = async () => {
     try {
-      dispatch({ type: "LOADING" });
+      setLoading(true);
       await axios.post(`${API_URL}/auth/email-verification`, {
         id,
         username,
         email,
       });
-      dispatch({ type: "DONE" });
       toast.success("Email sent!", {
         className: "bg-hijau",
         position: "bottom-center",
@@ -24,6 +26,8 @@ const VerifyAcc = () => {
       });
     } catch (error) {
       alert(error);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -49,16 +53,20 @@ const VerifyAcc = () => {
             <div className="mt-6 flex flex-col">
               Didn't get the email? click the button below to resend the
               verification email!
-              <button
-                type="button"
-                disabled={loading}
-                className="hover:text-white shadow-md hover:shadow-black inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+              {loading ? (
+                <Loading className={"animate-spin h-10 w-10 ml-5"} />
+              ) : (
+                <button
+                  type="button"
+                  disabled={loading}
+                  className="hover:text-white shadow-md hover:shadow-black inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
                 disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                onClick={() => sendEmail()}
-              >
-                Re-send Email Verification
-              </button>
+                  onClick={() => sendEmail()}
+                >
+                  Re-send Email Verification
+                </button>
+              )}
             </div>
           </div>
         </div>

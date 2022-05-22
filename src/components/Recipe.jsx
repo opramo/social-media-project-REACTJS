@@ -1,5 +1,5 @@
 import kiss from "../Assets/kiss.png";
-// import cat from "../Assets/cat.jpg";
+import cat from "../Assets/cat.jpg";
 import {
   PaperAirplaneIcon,
   ChevronLeftIcon,
@@ -35,7 +35,7 @@ const Recipe = (props) => {
   const navigate = useNavigate();
 
   const { data } = props;
-  const { id, is_verified } = useSelector((state) => state.user);
+  const { id, is_verified, username } = useSelector((state) => state.user);
   const {
     liked,
     likes: totalLikes,
@@ -276,10 +276,21 @@ const Recipe = (props) => {
             <li key={content.id}>
               <div
                 className="flex rounded-md hover:bg-white/50 cursor-pointer text-base py-2"
-                onClick={() => navigate("/account")}
+                onClick={() => {
+                  content.username === username
+                    ? navigate("/account")
+                    : navigate(`/profile/${content.username}`);
+                }}
               >
                 <div className="w-12 h-12 rounded-full mr-3 border border-merah overflow-hidden">
-                  <img src={`${API_URL}${content.profile_picture}`} alt="" />
+                  <img
+                    src={
+                      content.profile_picture
+                        ? API_URL + content.profile_picture
+                        : cat
+                    }
+                    alt=""
+                  />
                 </div>
                 <div>
                   <div className="mb-1">{content.username}</div>
@@ -313,11 +324,19 @@ const Recipe = (props) => {
                 <div className="w-full flex justify-between">
                   <div
                     className="flex rounded-md hover:bg-white/50 cursor-pointer text-base"
-                    onClick={() => navigate("/account")}
+                    onClick={() => {
+                      content.username === username
+                        ? navigate("/account")
+                        : navigate(`/profile/${content.username}`);
+                    }}
                   >
                     <div className="w-12 h-12 rounded-full mr-3 overflow-hidden border border-merah">
                       <img
-                        src={`${API_URL}${content.profile_picture}`}
+                        src={
+                          content.profile_picture
+                            ? API_URL + content.profile_picture
+                            : cat
+                        }
                         alt=""
                       />
                     </div>
@@ -368,7 +387,7 @@ const Recipe = (props) => {
   return (
     <div
       className={`
-       relative w-full min-h-[600px] mb-5 rounded bg-transparent shadow-black shadow-xl`}
+       relative w-full min-h-[550px] mb-5 rounded bg-transparent shadow-black shadow-xl`}
     >
       {modalNewComment && (
         <ModalNewComment
@@ -402,7 +421,7 @@ const Recipe = (props) => {
         />
       )}
 
-      {/* Nav Content */}
+      {/* Side Nav Buttons */}
       <div className="absolute w-[6%] left-[94%] flex flex-col h-full z-10 bg-black/40 rounded-r">
         {/* Front Page Button */}
         <button
@@ -432,7 +451,7 @@ const Recipe = (props) => {
             isPage.recipe
               ? " bg-merah text-putih "
               : "bg-putih brightness-75  hover:brightness-100 hover:border-transparent"
-          } w-full h-[30%] rounded-r break-words px-2 focus:outline-none  duration-500  border-b border-merah `}
+          } w-full h-[30%] rounded-r break-words px-3 focus:outline-none  duration-500  border-b border-merah text-sm`}
           onClick={() => getRecipe()}
         >
           REC I PE
@@ -441,20 +460,20 @@ const Recipe = (props) => {
         {/* Likes Page Button */}
         <button
           type="button"
-          className={`w-full h-[30%] rounded-r break-words px-2 focus:outline-none duration-500 ${
+          className={`w-full h-[30%] rounded-r break-words px-3 focus:outline-none duration-500 text-sm ${
             isPage.kisses
               ? "bg-merah text-putih"
-              : "bg-putih brightness-75 border-b border-merah hover:brightness-100 hover:border-transparent"
+              : "bg-putih brightness-75 border-b border-merah hover:brightness-100 hover:border-transparent "
           }`}
           onClick={() => getLikers()}
         >
-          K I<br /> S SES
+          K I S SES
         </button>
 
         {/* Comments Page Button */}
         <button
           type="button"
-          className={`w-full h-[30%] rounded-r break-words px-2 focus:outline-none duration-500 ${
+          className={`w-full h-[30%] rounded-r break-words px-3 focus:outline-none duration-500 text-sm ${
             isPage.comment
               ? "bg-merah text-putih"
               : "bg-putih brightness-75 hover:brightness-100 "
@@ -473,10 +492,21 @@ const Recipe = (props) => {
               <div className="h-[10%] w-full flex justify-between px-5 text-sm">
                 <div
                   className="flex rounded-md hover:bg-white/50 cursor-pointer duration-500"
-                  onClick={() => navigate("/account")}
+                  onClick={() => {
+                    user.username === username
+                      ? navigate("/account")
+                      : navigate(`/profile/${user.username}`);
+                  }}
                 >
                   <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
-                    <img src={`${API_URL}${user.profile_picture}`} alt="" />
+                    <img
+                      src={
+                        user.profile_picture
+                          ? API_URL + user.profile_picture
+                          : cat
+                      }
+                      alt=""
+                    />
                   </div>
                   <div>
                     <div className="mb-1">{user.username}</div>
@@ -541,9 +571,9 @@ const Recipe = (props) => {
                   ) : null}
                 </div>
               </div>
-              <div className="h-[80%] w-full relative">
+              <div className="h-[80%] w-full relative mt-3">
                 <div className="w-20 h-6 origin-center rotate-[-45deg] absolute top-4 bg-white/50"></div>
-                <div className="w-20 h-6 origin-center rotate-[-45deg] absolute bottom-10 right-0 bg-white/50"></div>
+                <div className="w-20 h-6 origin-center rotate-[-45deg] absolute bottom-14 right-0 bg-white/50"></div>
                 <div className="h-full w-full p-5 -mt-3">
                   <div
                     className="w-full aspect-video p-2 pb-0 bg-white cursor-pointer"
@@ -573,9 +603,8 @@ const Recipe = (props) => {
                       : "No chef likes this recipe :<"}
                   </span>
                 </div>
-
                 {/* Popover Button Share */}
-                <Popover className="relative overflow-visible w-14 h-14 mt-2 rounded-full">
+                <Popover className="relative overflow-visible w-14 h-14 -mt-1 rounded-full">
                   {({ open }) => (
                     <>
                       <Popover.Button

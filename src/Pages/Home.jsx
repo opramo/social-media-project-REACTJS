@@ -10,7 +10,7 @@ import Loading from "../components/Loading";
 const Home = () => {
   const dispatch = useDispatch();
   const initialPage = 0;
-  const { loading } = useSelector((state) => state.user);
+  const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(initialPage);
@@ -18,7 +18,7 @@ const Home = () => {
   const getFeeds = async () => {
     try {
       if (hasMore) {
-        dispatch({ type: "LOADING" });
+        setLoading(true);
         let token = Cookies.get("token");
         let res = await axios.get(`${API_URL}/recipe/recipes-feed`, {
           headers: { authorization: token },
@@ -33,7 +33,7 @@ const Home = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      dispatch({ type: "DONE" });
+      setLoading(false);
     }
   };
 

@@ -26,9 +26,9 @@ const ModalSignUp = (props) => {
     setPassConfVis,
     passConfVis,
   } = props;
-  const { loading, error_mes } = useSelector((state) => state.user);
+  const { error_mes } = useSelector((state) => state.user);
   const [changed, setChanged] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   let message = [];
   if (error_mes && modalSignUp) {
     message = error_mes.split(",");
@@ -71,7 +71,7 @@ const ModalSignUp = (props) => {
   const onSubmit = async (values, { setSubmitting }) => {
     try {
       setChanged(false);
-      dispatch({ type: "LOADING" });
+      setLoading(true);
       let res = await axios.post(`${API_URL}/auth/register`, values);
       dispatch({ type: "LOGIN", payload: res.data });
       Cookies.set("token", res.headers["x-token-access"]);
@@ -91,7 +91,7 @@ const ModalSignUp = (props) => {
         payload: error.response.data.message || "Network Error",
       });
     } finally {
-      dispatch({ type: "DONE" });
+      setLoading(false);
       setSubmitting(false);
     }
   };

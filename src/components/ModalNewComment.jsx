@@ -1,6 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { Field, Form, Formik } from "formik";
@@ -9,6 +9,7 @@ import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
+import Loading from "./Loading";
 
 const ModalNewComment = (props) => {
   const dispatch = useDispatch();
@@ -20,7 +21,7 @@ const ModalNewComment = (props) => {
     setComments,
     setModalNewComment,
   } = props;
-
+  const [loading, setLoading] = useState(false);
   const validationSchema = Yup.object({
     comment: Yup.string().max(
       300,
@@ -33,6 +34,7 @@ const ModalNewComment = (props) => {
 
   const onSubmit = async (values, { setSubmitting }) => {
     try {
+      setLoading(true);
       let token = Cookies.get("token");
       let res = await axios.post(
         `${API_URL}/recipe/comment-recipe`,
@@ -60,6 +62,7 @@ const ModalNewComment = (props) => {
     } catch (error) {
       console.log(error);
     } finally {
+      setLoading(false);
       setSubmitting(false);
     }
   };
@@ -150,15 +153,21 @@ const ModalNewComment = (props) => {
                           ) : null}
                         </div>
                         <div className="mt-4 flex justify-center">
-                          <button
-                            disabled={!dirty || !isValid || isSubmitting}
-                            type="input"
-                            className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+                          {loading ? (
+                            <Loading
+                              className={"animate-spin h-10 w-10 ml-5"}
+                            />
+                          ) : (
+                            <button
+                              disabled={!dirty || !isValid || isSubmitting}
+                              type="input"
+                              className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
                             disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                            hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                          >
-                            Submit Comment
-                          </button>
+                            >
+                              Submit Comment
+                            </button>
+                          )}
                         </div>
                       </Form>
                     );

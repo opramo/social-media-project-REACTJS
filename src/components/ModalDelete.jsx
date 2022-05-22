@@ -1,23 +1,22 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
-import { Fragment } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { Fragment, useState } from "react";
 import axios from "axios";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
+import Loading from "./Loading";
 
 const ModalDelete = (props) => {
   const { modalDelete, modalDeleteHandler } = props;
-  const { loading } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   const onSubmit = async () => {
     try {
-      dispatch({ type: "LOADING" });
+      setLoading(true);
       let token = Cookies.get("token");
       await axios.post(
         `${API_URL}/recipe/delete-recipe`,
@@ -31,15 +30,18 @@ const ModalDelete = (props) => {
       toast.success("Deleted!", {
         theme: "colored",
         position: "top-center",
+        style: { backgroundColor: "#3A7D44" },
       });
       props.setModalDelete(false);
       setTimeout(() => {
-        location.pathname === "/home"
-          ? window.location.reload()
-          : navigate("/home");
+        location.pathname === `/recipe/${props.post_id}`
+          ? navigate("/home")
+          : window.location.reload();
       }, 1000);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -97,16 +99,20 @@ const ModalDelete = (props) => {
                   Are you sure?
                 </div>
                 <div className="mt-2 flex justify-center">
-                  <button
-                    disabled={loading}
-                    type="button"
-                    className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+                  {loading ? (
+                    <Loading className={"animate-spin h-10 w-10 ml-5"} />
+                  ) : (
+                    <button
+                      disabled={loading}
+                      type="button"
+                      className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
                             disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                            hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                    onClick={() => onSubmit()}
-                  >
-                    Yes, delete this post
-                  </button>
+                      onClick={() => onSubmit()}
+                    >
+                      Yes, delete this post
+                    </button>
+                  )}
                 </div>
               </div>
             </Transition.Child>

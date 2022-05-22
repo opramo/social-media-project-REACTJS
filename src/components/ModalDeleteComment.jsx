@@ -6,6 +6,7 @@ import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
+import Loading from "./Loading";
 
 const ModalDeleteComment = (props) => {
   const {
@@ -101,16 +102,20 @@ const ModalDeleteComment = (props) => {
                   Are you sure?
                 </div>
                 <div className="mt-2 flex justify-center">
-                  <button
-                    disabled={loading}
-                    type="button"
-                    className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+                  {loading ? (
+                    <Loading className={"animate-spin h-10 w-10 ml-5"} />
+                  ) : (
+                    <button
+                      disabled={loading}
+                      type="button"
+                      className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
                             disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                            hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                    onClick={() => onSubmit()}
-                  >
-                    Yes, delete this comment
-                  </button>
+                      onClick={() => onSubmit()}
+                    >
+                      Yes, delete this comment
+                    </button>
+                  )}
                 </div>
               </div>
             </Transition.Child>
