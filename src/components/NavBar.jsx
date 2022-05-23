@@ -226,7 +226,7 @@ const NavBar = () => {
                       >
                         <Menu.Item
                           as="button"
-                          className="items-center relative flex flex-col justify-end w-full text-center h-48 overflow-hidden"
+                          className="items-center relative flex flex-col justify-end w-full text-center h-48 overflow-hidden border-b border-merah"
                           onClick={() => navigate("/account")}
                         >
                           <img
@@ -248,7 +248,7 @@ const NavBar = () => {
                               className="object-cover absolute bottom-0 "
                             />
                           </div> */}
-                          <div className="my-3 rounded-full h-20 w-20 overflow-hidden border-2 border-merah z-10">
+                          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full h-20 w-20 overflow-hidden shadow-md shadow-black  z-10">
                             <img
                               src={
                                 profile_picture
@@ -268,7 +268,7 @@ const NavBar = () => {
                         </Menu.Item>
                         <Menu.Item
                           as={motion.button}
-                          className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-250"
+                          className="border-y w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-250"
                           whileTap={{ scale: 0.8 }}
                           onClick={() => navigate("/account")}
                         >
@@ -278,13 +278,13 @@ const NavBar = () => {
                           as={motion.button}
                           whileTap={{ scale: 0.8 }}
                           onClick={() => navigate("/accountsettings")}
-                          className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-250"
+                          className="border-y w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-250"
                         >
                           Account Settings
                         </Menu.Item>
                         <Menu.Item
                           as={motion.button}
-                          className="border-b w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-250"
+                          className="border-t w-full bg-putih border-merah block text-center py-2 hover:text-putih hover:bg-merah duration-250"
                           whileTap={{ scale: 0.8 }}
                           onClick={() => {
                             logoutHandler();

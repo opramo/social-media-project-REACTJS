@@ -282,7 +282,7 @@ const Recipe = (props) => {
                     : navigate(`/profile/${content.username}`);
                 }}
               >
-                <div className="w-12 h-12 rounded-full mr-3 border border-merah overflow-hidden">
+                <div className="w-12 h-12 rounded-full mr-3  overflow-hidden">
                   <img
                     src={
                       content.profile_picture
@@ -330,7 +330,7 @@ const Recipe = (props) => {
                         : navigate(`/profile/${content.username}`);
                     }}
                   >
-                    <div className="w-12 h-12 rounded-full mr-3 overflow-hidden border border-merah">
+                    <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
                       <img
                         src={
                           content.profile_picture
@@ -360,7 +360,7 @@ const Recipe = (props) => {
                   ""
                 )}
               </div>
-              <div className="ml-16 relative">
+              <div className="ml-16 relative mr-2">
                 <div className="absolute border-b border-hijau w-7 h-2 rotate-45 top-3 bg-putih "></div>
                 <div className="absolute border-t border-hijau w-5 h-2 rotate-[21deg] top-3"></div>
                 <div className="border-hijau border ml-5 p-2 block rounded-lg bg-putih">

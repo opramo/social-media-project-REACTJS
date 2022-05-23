@@ -90,7 +90,7 @@ const MyKitchen = () => {
             {`${username}'s Kitchen`}
           </div>
           <div className="flex flex-col items-center w-1/2 z-10 my-2">
-            <div className="w-36 h-36 rounded-full overflow-hidden">
+            <div className="w-36 h-36 rounded-full overflow-hidden shadow-md shadow-black">
               <img
                 src={profile_picture ? API_URL + profile_picture : Cat}
                 alt=""

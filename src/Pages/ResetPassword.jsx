@@ -12,7 +12,7 @@ import ModalForgotPassword from "../components/ModalForgotPassword";
 function ResetPassword() {
   const navigate = useNavigate();
   const { token } = useParams();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [succeed, setSucceed] = useState(false);
   const [passVis, setPassVis] = useState(false);
   const [tokenAlive, setTokenAlive] = useState(false);

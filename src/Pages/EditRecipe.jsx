@@ -384,7 +384,9 @@ const EditRecipe = () => {
                     </FieldArray>
                   </div>
                   {loading ? (
-                    <Loading className={"animate-spin h-10 w-10 ml-5"} />
+                    <div className="flex justify-center">
+                      <Loading className={"animate-spin h-10 w-10"} />
+                    </div>
                   ) : (
                     <button
                       type="submit"
