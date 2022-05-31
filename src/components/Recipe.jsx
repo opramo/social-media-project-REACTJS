@@ -208,8 +208,8 @@ const Recipe = (props) => {
   const printKissed = () => {
     return (
       <button
-        className={`h-14 w-14 rounded-full border-2 border-merah mr-1 overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none ${
-          kissed ? "bg-merah" : "grayscale"
+        className={`h-14 w-14 rounded-full border-2 border-merah mr-1 overflow-hidden duration-500 hover:shadow-black shadow-md shadow-black/50 focus:outline-none ${
+          kissed ? "bg-merah" : "bg-putih"
         }`}
         onClick={async () => {
           try {
@@ -237,7 +237,11 @@ const Recipe = (props) => {
           }
         }}
       >
-        <img src={kiss} alt="" className="scale-90" />
+        <img
+          src={kiss}
+          alt=""
+          className={`${kissed ? null : "grayscale"} scale-90`}
+        />
       </button>
     );
   };
@@ -387,7 +391,7 @@ const Recipe = (props) => {
   return (
     <div
       className={`
-       relative w-full min-h-[550px] mb-5 rounded bg-transparent shadow-black shadow-lg`}
+       relative w-full min-h-[550px] mb-5 rounded-l-xl overflow-hidden bg-transparent shadow-black shadow-lg`}
     >
       {modalNewComment && (
         <ModalNewComment
@@ -427,9 +431,7 @@ const Recipe = (props) => {
         <button
           type="button"
           className={`w-full h-[10%]  rounded-r focus:outline-none duration-500 ${
-            isPage.main
-              ? "bg-merah "
-              : "bg-putih brightness-75 border-b border-merah hover:brightness-100 hover:border-transparent"
+            isPage.main ? "text-merah bg-putih" : "bg-putih brightness-75"
           }`}
           onClick={() => {
             return setIsPage({ main: 1, recipe: 0, kisses: 0, comment: 0 });
@@ -438,7 +440,7 @@ const Recipe = (props) => {
           <ChevronLeftIcon
             className={`${
               isPage.main
-                ? "w-full h-full text-putih duration-500"
+                ? "w-full h-full duration-500"
                 : "w-full h-full duration-500"
             }`}
           />
@@ -448,10 +450,8 @@ const Recipe = (props) => {
         <button
           type="button"
           className={`${
-            isPage.recipe
-              ? " bg-merah text-putih "
-              : "bg-putih brightness-75  hover:brightness-100 hover:border-transparent"
-          } w-full h-[30%] rounded-r break-words px-3 focus:outline-none  duration-500  border-b border-merah text-sm`}
+            isPage.recipe ? " text-merah bg-putih " : "bg-putih brightness-75"
+          } w-full h-[30%] rounded-r break-words px-3 focus:outline-none  duration-500   text-sm`}
           onClick={() => getRecipe()}
         >
           REC I PE
@@ -461,9 +461,7 @@ const Recipe = (props) => {
         <button
           type="button"
           className={`w-full h-[30%] rounded-r break-words px-3 focus:outline-none duration-500 text-sm ${
-            isPage.kisses
-              ? "bg-merah text-putih"
-              : "bg-putih brightness-75 border-b border-merah hover:brightness-100 hover:border-transparent "
+            isPage.kisses ? "text-merah bg-putih" : "bg-putih brightness-75"
           }`}
           onClick={() => getLikers()}
         >
@@ -474,9 +472,7 @@ const Recipe = (props) => {
         <button
           type="button"
           className={`w-full h-[30%] rounded-r break-words px-3 focus:outline-none duration-500 text-sm ${
-            isPage.comment
-              ? "bg-merah text-putih"
-              : "bg-putih brightness-75 hover:brightness-100 "
+            isPage.comment ? "text-merah bg-putih" : "bg-putih brightness-75"
           }`}
           onClick={() => getComments()}
         >
@@ -487,8 +483,8 @@ const Recipe = (props) => {
       {/* Front Page */}
       {isPage.main === 1 && (
         <>
-          <div className="h-full w-[95%] absolute pr-5  bg-merah rounded-l border-4 border-merah">
-            <div className="h-full flex flex-col w-full py-5 bg-putih">
+          <div className="h-full w-[95%] absolute pr-3 rounded-l-xl overflow-hidden">
+            <div className="h-full flex flex-col w-full py-5 bg-putih rounded-l">
               <div className="h-[10%] w-full flex justify-between px-5 text-sm">
                 <div
                   className="flex rounded-md hover:bg-white/50 cursor-pointer duration-500"
@@ -609,10 +605,8 @@ const Recipe = (props) => {
                     <>
                       <Popover.Button
                         className={`${
-                          open
-                            ? "bg-biru"
-                            : "bg-putih grayscale hover:grayscale-0"
-                        } h-14 w-14 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none relative`}
+                          open ? "bg-biru" : "bg-putih"
+                        } h-14 w-14 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 shadow-md shadow-black/50 hover:shadow-black focus:outline-none relative`}
                       >
                         <PaperAirplaneIcon
                           className={`${
@@ -712,9 +706,9 @@ const Recipe = (props) => {
       {/* Recipe Page */}
       {isPage.recipe === 1 && (
         <>
-          <div className="h-full w-[95%] absolute pr-5  bg-merah rounded-l border-4 border-merah">
-            <div className="h-full flex flex-col w-full p-5 bg-putih">
-              <div className="w-full h-[250px] bg-putih h mb-7">
+          <div className="h-full w-[95%] absolute pr-3 rounded-l">
+            <div className="h-full flex flex-col w-full p-5 bg-putih rounded-l">
+              <div className="w-full h-[225px] bg-putih h mb-7">
                 Ingredients:
                 <div className="w-full h-full overflow-y-scroll border-y border-merah">
                   {loading ? (
@@ -727,7 +721,7 @@ const Recipe = (props) => {
                   )}
                 </div>
               </div>
-              <div className="w-full h-[250px] bg-putih">
+              <div className="w-full h-[225px] bg-putih">
                 Instructions:
                 <div className="w-full h-full overflow-y-scroll border-y border-merah">
                   {loading ? (
@@ -748,8 +742,8 @@ const Recipe = (props) => {
       {/* Kisses Page */}
       {isPage.kisses === 1 && (
         <>
-          <div className="h-full w-[95%] absolute pr-5 flex bg-merah rounded-l border-4 border-merah">
-            <div className="h-full flex flex-col w-full p-5 bg-putih">
+          <div className="h-full w-[95%] absolute pr-3 flex rounded-l ">
+            <div className="h-full flex flex-col w-full p-5 bg-putih rounded-l">
               <div className="w-full relative bg-putih text-3xl">
                 {likes} Chefs loved this recipe:
               </div>
@@ -779,8 +773,8 @@ const Recipe = (props) => {
       {/* Comments Page */}
       {isPage.comment === 1 && (
         <>
-          <div className="h-full w-[95%] absolute pr-5 flex bg-merah rounded-l border-4 border-merah">
-            <div className="h-full flex flex-col w-full p-5 bg-putih">
+          <div className="h-full w-[95%] absolute pr-3 flex rounded-l">
+            <div className="h-full flex flex-col w-full p-5 bg-putih rounded-l">
               <div className="w-full relative bg-putih text-3xl">
                 Comments from other chefs:
               </div>
@@ -802,9 +796,7 @@ const Recipe = (props) => {
                   <button
                     type="button"
                     className={`${
-                      modalNewComment
-                        ? "bg-hijau"
-                        : "bg-putih grayscale hover:grayscale-0"
+                      modalNewComment ? "bg-hijau" : "bg-putih"
                     } h-14 w-14 mt-2 rounded-full border-2 border-hijau ml-1 
                     overflow-hidden duration-500 hover:shadow-black 
                     shadow-md focus:outline-none`}

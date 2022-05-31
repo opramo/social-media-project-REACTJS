@@ -201,13 +201,27 @@ const NavBar = () => {
                   `}
                   >
                     Profile
-                    <div
+                    <div className="h-8 w-8 rounded-full ml-2 overflow-hidden">
+                      <ChevronDownIcon
+                        className={`${
+                          open ? "translate-y-2" : "-translate-y-4"
+                        } h-4 w-4 rotate-180 mx-auto text-putih duration-300 `}
+                      />
+                      <img
+                        src={profile_picture ? API_URL + profile_picture : cat}
+                        alt="pp"
+                        className={`${
+                          open ? "translate-y-4" : "-translate-y-4"
+                        } h-8 w-8 rounded-full duration-300`}
+                      />
+                    </div>
+                    {/* <div
                       className={`${
                         open ? "rotate-180" : null
                       } ml-3 duration-500`}
                     >
                       <ChevronDownIcon className={`h-4 w-4 `} />
-                    </div>
+                    </div> */}
                   </Menu.Button>
                   <AnimatePresence>
                     {open && (

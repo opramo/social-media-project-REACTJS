@@ -53,8 +53,9 @@ function ResetPassword() {
           },
         }
       );
-      setSucceed(true);
+      setSubmitting(false);
       setTimeout(() => {
+        setSucceed(true);
         toast.success("Password Changed!", {
           position: "top-center",
           theme: "colored",
@@ -64,8 +65,6 @@ function ResetPassword() {
     } catch (error) {
       setLoading(false);
       console.log(error);
-    } finally {
-      setLoading(false);
       setSubmitting(false);
     }
   };
