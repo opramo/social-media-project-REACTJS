@@ -391,7 +391,7 @@ const Recipe = (props) => {
   return (
     <div
       className={`
-       relative w-full min-h-[550px] mb-5 rounded-l-xl overflow-hidden bg-transparent shadow-black shadow-lg`}
+       relative w-full min-h-[550px] mb-5 rounded-xl overflow-hidden bg-transparent shadow-black shadow-lg`}
     >
       {modalNewComment && (
         <ModalNewComment
@@ -430,7 +430,7 @@ const Recipe = (props) => {
         {/* Front Page Button */}
         <button
           type="button"
-          className={`w-full h-[10%]  rounded-r focus:outline-none duration-500 ${
+          className={`w-full h-[10%]  rounded-r focus:outline-none duration-500 border-b border-black/30 ${
             isPage.main ? "text-merah bg-putih" : "bg-putih brightness-75"
           }`}
           onClick={() => {
@@ -450,33 +450,37 @@ const Recipe = (props) => {
         <button
           type="button"
           className={`${
-            isPage.recipe ? " text-merah bg-putih " : "bg-putih brightness-75"
-          } w-full h-[30%] rounded-r break-words px-3 focus:outline-none  duration-500   text-sm`}
+            isPage.recipe ? " text-merah" : "brightness-75"
+          } w-full h-[30%] rounded-r bg-putih focus:outline-none  duration-500 text-sm border-b border-black/30`}
           onClick={() => getRecipe()}
         >
-          REC I PE
+          <p className="rotate-90 tracking-[1em] -mt-14">RECIPE</p>
         </button>
 
         {/* Likes Page Button */}
         <button
           type="button"
-          className={`w-full h-[30%] rounded-r break-words px-3 focus:outline-none duration-500 text-sm ${
-            isPage.kisses ? "text-merah bg-putih" : "bg-putih brightness-75"
+          className={`w-full h-[30%] bg-putih rounded-r focus:outline-none duration-500 text-sm border-b border-black/30 ${
+            isPage.kisses ? "text-merah" : "brightness-75"
           }`}
           onClick={() => getLikers()}
         >
-          K I S SES
+          <p className="rotate-90 tracking-[1em] -mt-14 translate-y-1">
+            KISSES
+          </p>
         </button>
 
         {/* Comments Page Button */}
         <button
           type="button"
-          className={`w-full h-[30%] rounded-r break-words px-3 focus:outline-none duration-500 text-sm ${
-            isPage.comment ? "text-merah bg-putih" : "bg-putih brightness-75"
+          className={`w-full h-[30%] rounded-r bg-putih focus:outline-none duration-500 text-sm ${
+            isPage.comment ? "text-merah" : "brightness-75"
           }`}
           onClick={() => getComments()}
         >
-          COMMENT
+          <p className="rotate-90 tracking-[0.5em] -mt-14 -translate-y-1 ">
+            COMMENTS
+          </p>
         </button>
       </div>
 

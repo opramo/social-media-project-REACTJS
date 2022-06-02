@@ -106,10 +106,8 @@ const MyKitchen = () => {
           <div className="w-full flex justify-center bg-transparent absolute bottom-0 z-10">
             <button
               className={`${
-                myRecipes
-                  ? "bg-putih text-black"
-                  : "bg-merah text-putih brightness-75 hover:brightness-100"
-              } mr-5 p-1 px-2 rounded-t-lg focus:outline-none duration-500`}
+                myRecipes ? "text-merah" : "text-black brightness-75"
+              } bg-putih  mr-5 p-1 px-2 rounded-t-lg focus:outline-none duration-500`}
               onClick={() => {
                 setMyRecipe(true);
                 return getUserRecipes();
@@ -119,10 +117,8 @@ const MyKitchen = () => {
             </button>
             <button
               className={`${
-                !myRecipes
-                  ? "bg-putih text-black"
-                  : "bg-merah text-putih brightness-75 hover:brightness-100"
-              } p-1 px-2 rounded-t-lg focus:outline-none duration-500 z-0`}
+                !myRecipes ? "text-merah" : "text-black brightness-75"
+              } bg-putih p-1 px-2 rounded-t-lg focus:outline-none duration-500 z-0`}
               onClick={() => {
                 setMyRecipe(false);
                 return getLikedRecipes();
