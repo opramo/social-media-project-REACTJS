@@ -1,19 +1,38 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { EyeIcon, EyeOffIcon, XIcon } from "@heroicons/react/outline";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import { Fragment } from "react";
+import axios from "axios";
+import { Form, Formik } from "formik";
+import { Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
-import { registerAction } from "../Redux/Actions/userActions";
+import API_URL from "../Helpers/apiurl";
+import Cookies from "js-cookie";
+import Loading from "./Loading";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 // USE FORMIK ERRORMESSAGE CHILDREN PROPS TO RENDER VALIDATION FROM SERVER//
 const ModalSignUp = (props) => {
-  const { loading, error_mes } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const {
+    modalSignUp,
+    modalSignUpHandler,
+    modalLogInHandler,
+    passVis,
+    setPassVis,
+    setPassConfVis,
+    passConfVis,
+  } = props;
+  const { error_mes } = useSelector((state) => state.user);
+  const [changed, setChanged] = useState(false);
+  const [loading, setLoading] = useState(false);
   let message = [];
-  if (error_mes && props.modalSignUp) {
+  if (error_mes && modalSignUp) {
     message = error_mes.split(",");
   }
+
   const initialValues = {
     username: "",
     email: "",
@@ -50,22 +69,42 @@ const ModalSignUp = (props) => {
 
   const onSubmit = async (values, { setSubmitting }) => {
     try {
-      dispatch(registerAction(values));
+      message = [];
+      setChanged(false);
+      setLoading(true);
+      dispatch({ type: "LOADING" });
+      let res = await axios.post(`${API_URL}/auth/register`, values);
+      dispatch({ type: "LOGIN", payload: res.data });
+      Cookies.set("token", res.headers["x-token-access"]);
+      setTimeout(() => {
+        modalSignUpHandler();
+        navigate("/verifyaccount");
+        toast.success(`Welcome, ${res.data.username}!`, {
+          theme: "colored",
+          position: "top-center",
+          style: { backgroundColor: "#3A7D44" },
+        });
+      }, 1000);
     } catch (error) {
-      console.log(error);
+      console.log(`masuk error`);
+      dispatch({
+        type: "ERROR",
+        payload: error.response.data.message || "Network Error",
+      });
     } finally {
+      setLoading(false);
       setSubmitting(false);
     }
   };
 
   return (
     <>
-      <Transition appear show={props.modalSignUp} as={Fragment}>
+      <Transition appear show={modalSignUp} as={Fragment}>
         <Dialog
           as="div"
           className="fixed inset-0 z-50 overflow-y-auto bg-black/50"
           onClose={() => {
-            props.modalSignUpHandler();
+            modalSignUpHandler();
           }}
         >
           <div className="min-h-screen px-4 text-center">
@@ -109,7 +148,8 @@ const ModalSignUp = (props) => {
                     className="h-5 w-5 absolute top-1/2 right-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:text-white 
                     text-white/50 duration-500 border-2 border-white/30 rounded-full hover:bg-white/30 hover:border-transparent"
                     onClick={() => {
-                      props.modalSignUpHandler();
+                      modalSignUpHandler();
+                      // dispatch({ type: "DONE" });
                     }}
                   />
                 </Dialog.Title>
@@ -123,132 +163,226 @@ const ModalSignUp = (props) => {
                   onSubmit={onSubmit}
                 >
                   {(formik) => {
-                    // console.log(formik);
-                    //try to use manual validation for unique email and username
-                    // try textinput formik
-                    //throttling the sign up button by using the isSubmitting value to the disabled condition
+                    const {
+                      handleChange,
+                      errors,
+                      touched,
+                      isSubmitting,
+                      isValid,
+                      values,
+                      dirty,
+                      handleBlur,
+                    } = formik;
                     return (
                       <Form className="flex flex-col gap-y-1">
                         {/* Username */}
                         <div className="flex flex-col relative">
                           <label htmlFor="username">Username</label>
-                          <Field
+                          <input
                             name="username"
                             placeholder="Username*"
                             type="text"
+                            onChange={(e) => {
+                              setChanged(true);
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            value={values.username}
                             className={
-                              formik.errors.username && formik.touched.username
-                                ? "p-2 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                              (errors.username &&
+                                touched.username &&
+                                values.username.length &&
+                                dirty) ||
+                              (message[0] && !changed)
+                                ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
+                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
                             }
                           />
-                          <ErrorMessage
-                            component="div"
-                            name="username"
-                            className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none"
-                          />
-                          {message[0] && (
-                            <div className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none">
+
+                          {errors.username &&
+                          touched.username &&
+                          dirty &&
+                          values.username.length ? (
+                            <div
+                              name="username"
+                              className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                            >
+                              {errors.username}
+                            </div>
+                          ) : null}
+                          {message[0] && !changed && (
+                            <div className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none">
                               {message[0]}
                             </div>
                           )}
                         </div>
+
                         {/* Email */}
                         <div className="flex flex-col relative">
                           <label htmlFor="email">Email</label>
-                          <Field
+                          <input
                             name="email"
                             placeholder="Email*"
                             type="text"
+                            onChange={(e) => {
+                              setChanged(true);
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            value={values.email}
                             className={
-                              formik.errors.email && formik.touched.email
-                                ? "p-2 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                              (errors.email &&
+                                touched.email &&
+                                values.email.length &&
+                                dirty) ||
+                              (message[1] && !changed)
+                                ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
+                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
                             }
                           />
-                          <ErrorMessage
-                            component="div"
-                            name="email"
-                            className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none"
-                          />
-                          {message[1] && (
-                            <div className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none">
+                          {errors.email &&
+                          touched.email &&
+                          dirty &&
+                          values.email.length ? (
+                            <div
+                              name="email"
+                              className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                            >
+                              {errors.email}
+                            </div>
+                          ) : null}
+                          {message[1] && !changed && (
+                            <div className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none">
                               {message[1]}
                             </div>
                           )}
                         </div>
+
                         {/* Password */}
                         <div className="flex flex-col relative">
                           <label htmlFor="password">Password</label>
-                          <Field
+                          <input
                             name="password"
                             placeholder="Password*"
-                            type={props.passVis ? "text" : "password"}
+                            type={passVis ? "text" : "password"}
+                            onChange={(e) => {
+                              setChanged(true);
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            value={values.password}
                             className={
-                              formik.errors.password && formik.touched.password
-                                ? "p-2 pr-10 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 pr-10 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                              errors.password &&
+                              touched.password &&
+                              values.password.length &&
+                              dirty
+                                ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
+                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
                             }
                           />
-                          <ErrorMessage
-                            component="div"
-                            name="password"
-                            className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none"
-                          />
+                          {errors.password &&
+                          touched.password &&
+                          dirty &&
+                          values.password.length ? (
+                            <div
+                              name="password"
+                              className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                            >
+                              {errors.password}
+                            </div>
+                          ) : null}
                           <div
                             className="w-7 h-7 right-2  top-7 absolute cursor-pointer overflow-hidden"
-                            onClick={() => props.setPassVis(!props.passVis)}
+                            onClick={() => setPassVis(!passVis)}
                           >
-                            {props.passVis ? <EyeIcon /> : <EyeOffIcon />}
+                            {passVis ? <EyeIcon /> : <EyeOffIcon />}
                           </div>
                         </div>
+
                         {/* Confirm Password */}
                         <div className="flex flex-col relative">
                           <label htmlFor="passwordConfirm">
                             Confirm Password
                           </label>
-                          <Field
+                          <input
                             name="passwordConfirm"
                             placeholder="Confirm Password"
-                            type={props.passConfVis ? "text" : "password"}
+                            type={passConfVis ? "text" : "password"}
+                            onChange={(e) => {
+                              setChanged(true);
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            value={values.passwordConfirm}
                             className={
-                              formik.errors.passwordConfirm &&
-                              formik.touched.passwordConfirm
-                                ? "p-2 pr-10 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 pr-10 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                              errors.passwordConfirm &&
+                              touched.passwordConfirm &&
+                              values.passwordConfirm.length &&
+                              dirty
+                                ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
+                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
                             }
                           />
+                          {errors.passwordConfirm &&
+                          touched.passwordConfirm &&
+                          dirty &&
+                          values.passwordConfirm.length ? (
+                            <div
+                              name="passwordConfirm"
+                              className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                            >
+                              {errors.passwordConfirm}
+                            </div>
+                          ) : null}
                           <div
                             className="w-7 h-7 right-2  top-7 absolute cursor-pointer overflow-hidden"
                             onClick={() => {
-                              props.setPassConfVis(!props.passConfVis);
+                              setPassConfVis(!passConfVis);
                             }}
                           >
-                            {props.passConfVis ? <EyeIcon /> : <EyeOffIcon />}
+                            {passConfVis ? <EyeIcon /> : <EyeOffIcon />}
                           </div>
-                          <ErrorMessage
-                            component="div"
-                            name="passwordConfirm"
-                            className="text-merah -mt-5 ml-2 text-xs absolute bottom-0 pointer-events-none"
-                          />
                         </div>
                         {/* Button Submit */}
-                        <button
-                          type="submit"
-                          disabled={
-                            !formik.dirty ||
-                            !formik.isValid ||
-                            formik.isSubmitting ||
-                            loading
-                          }
-                          className={`m-auto mt-3 justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
+                        <div className="mt-4 flex items-center justify-between">
+                          {loading ? (
+                            <Loading
+                              className={"animate-spin h-10 w-10 ml-5"}
+                            />
+                          ) : (
+                            <button
+                              type="submit"
+                              disabled={
+                                !dirty ||
+                                !isValid ||
+                                isSubmitting ||
+                                loading ||
+                                !changed
+                              }
+                              className={`justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
                           focus-visible:ring-biru duration-500
-                        hover:text-putih shadow-md hover:shadow-black text-putih bg-hijau border-transparent 
-                        disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-white disabled:cursor-not-allowed
+                          hover:text-putih shadow-md hover:shadow-black text-putih bg-hijau border-transparent 
+                          disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-white disabled:cursor-not-allowed
                         }`}
-                        >
-                          Sign Up
-                        </button>
+                            >
+                              Sign Up
+                            </button>
+                          )}
+                          <div className="text-xs">
+                            <span>Already have an account? </span>
+                            <span
+                              className="hover:underline hover:text-biru duration-500 cursor-pointer"
+                              onClick={() => {
+                                modalSignUpHandler();
+                                setTimeout(() => {
+                                  modalLogInHandler();
+                                }, 500);
+                              }}
+                            >
+                              Sign in here!
+                            </span>
+                          </div>
+                        </div>
                       </Form>
                     );
                   }}

@@ -11,6 +11,10 @@ const INITIAL_STATE = {
   bio: "",
   profile_picture: "",
   profile_cover: "",
+  comment: false,
+  deleted: false,
+  edit: null,
+  restriction: false,
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -37,7 +41,9 @@ const userReducer = (state = INITIAL_STATE, action) => {
         error_mes: action.payload,
       };
     case "LOGOUT":
-      return INITIAL_STATE;
+      return (state = INITIAL_STATE);
+    case "NEWEDIT":
+      return { ...state, edit: action.payload };
     case "DONE":
       return { ...state, loading: false };
     case "CLEARERROR":

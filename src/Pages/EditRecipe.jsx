@@ -3,47 +3,56 @@ import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import API_URL from "../Helpers/apiurl";
 import axios from "axios";
+import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import ModalImageCropper from "../components/ModalImageCropper";
 import Loading from "../components/Loading";
 
-const NewRecipe = () => {
-  const dispatch = useDispatch();
+const EditRecipe = () => {
   const navigate = useNavigate();
-  const { is_verified } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const photoRef = useRef();
-
-  const initialValues = {
-    title: "",
-    photo: null,
-    ingredients: [""],
-    instructions: [""],
-  };
-  useEffect(() => {
-    if (!is_verified) {
-      navigate(-1);
-    }
-    // eslint-disable-next-line
-  }, []);
-
-  const [photoRecipe, setPhotoRecipe] = useState(null);
+  const { edit } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const [photoRecipe, setPhotoRecipe] = useState(null);
   const [modalImageCropper, setModalImageCropper] = useState(false);
   const [cropping, setCropping] = useState(null);
+
+  let editTitle = data ? data.post.title : "";
+
+  let editIngredients = data
+    ? data.ingredients.map((val) => val.ingredient)
+    : [""];
+  let editInstructions = data
+    ? data.instructions.map((val) => val.instruction)
+    : [""];
 
   const modalImageCropperHandler = () => {
     setModalImageCropper(!modalImageCropper);
   };
 
+  const initialValues = {
+    title: editTitle,
+    photo: null,
+    ingredients: editIngredients,
+    instructions: editInstructions,
+  };
+  // const editValues = {
+  //   title: editTitle,
+  //   photo: editPhoto,
+  //   ingredients: editIngredients,
+  //   instructions: editInstructions,
+  // };
+
   const validationSchema = Yup.object({
     title: Yup.string()
       .max(50, "Recipe's name  must be 4 to 15 characters.")
       .required("Recipe's name is required!"),
-    photo: Yup.array().required("Photo is required!"),
+    // photo: Yup.string().required("Photo is required!"),
     // ingredients: Yup.array()
     //   .min(8, "Password is too short - minimimum of 8 characters.")
     //   .required("Password is required!"),
@@ -54,22 +63,26 @@ const NewRecipe = () => {
 
   const onSubmit = async (values, { setSubmitting }) => {
     let formData = new FormData();
-    values.photo[0] = photoRecipe?.file;
-    formData.append("photo", values.photo[0]);
+    if (values.photo) {
+      values.photo[0] = photoRecipe?.file;
+      formData.append("photo", values.photo[0]);
+    }
+
     let dataInput = {
       title: values.title,
       ingredients: values.ingredients,
       instructions: values.instructions,
+      post_id: edit,
     };
     formData.append("data", JSON.stringify(dataInput));
+
     try {
       setLoading(true);
       let token = Cookies.get("token");
-      let res = await axios.post(`${API_URL}/recipe/post-recipe`, formData, {
+      await axios.patch(`${API_URL}/recipe/edit-recipe`, formData, {
         headers: { authorization: token },
       });
-      dispatch({ type: "LOGIN", payload: res.data });
-      toast.success("submitted!", {
+      toast.success("Post edited!", {
         theme: "colored",
         position: "top-center",
         style: { backgroundColor: "#3A7D44" },
@@ -87,6 +100,36 @@ const NewRecipe = () => {
       setSubmitting(false);
     }
   };
+
+  const getRecipe = async () => {
+    try {
+      setLoading(true);
+      let res = await axios.get(`${API_URL}/recipe/recipe-detail`, {
+        params: { post_id: edit },
+      });
+      setData(res.data);
+      setPhotoRecipe({ url: API_URL + res.data.post.photo, file: null });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getRecipe();
+    if (!edit) {
+      toast.error("No post detected!", {
+        theme: "colored",
+        position: "top-center",
+        style: { backgroundColor: "#A90409" },
+      });
+      setTimeout(() => {
+        navigate(-1);
+      }, 2000);
+    }
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <>
@@ -109,11 +152,10 @@ const NewRecipe = () => {
         <div className="shadow-lg shadow-black w-[600px]">
           <Formik
             initialValues={initialValues}
-            // isValid
             validateOnMount
-            // validateOnBlur={false}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
+            enableReinitialize
           >
             {(formik) => {
               return (
@@ -140,7 +182,6 @@ const NewRecipe = () => {
                     />
                   </div>
                   {/* Upload photo */}
-
                   <div className="flex flex-col relative">
                     <label
                       htmlFor="photo"
@@ -167,6 +208,7 @@ const NewRecipe = () => {
                       onClick={(event) => (event.target.value = null)}
                       onChange={(event) => {
                         if (event.target.files[0]) {
+                          console.log("event :", event.target.files[0]);
                           const reader = new FileReader();
                           reader.readAsDataURL(event.target.files[0]);
                           reader.addEventListener("load", () => {
@@ -197,7 +239,6 @@ const NewRecipe = () => {
                       Add Photo
                     </button>
                   </div>
-
                   {/* Ingredients' list */}
                   <div className="flex flex-col relative">
                     <label htmlFor="ingredients" className="text-center">
@@ -358,7 +399,7 @@ const NewRecipe = () => {
                   disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-white disabled:cursor-not-allowed
                 }`}
                     >
-                      Submit Your Recipe
+                      Edit Your Recipe
                     </button>
                   )}
                 </Form>
@@ -371,4 +412,4 @@ const NewRecipe = () => {
   );
 };
 
-export default NewRecipe;
+export default EditRecipe;
