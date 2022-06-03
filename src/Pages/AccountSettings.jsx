@@ -179,18 +179,24 @@ const AccountSettings = () => {
                     is_verified ? `text-hijau` : `text-merah`
                   }`}
                 >
-                  {is_verified ? "Already verified!" : "Not yet verified!"}
-                </div>
-                <button
-                  type="button"
-                  disabled={is_verified || loadingVerify}
-                  className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md
+                  {is_verified ? (
+                    "Already verified!"
+                  ) : (
+                    <>
+                      "Not yet verified!"
+                      <button
+                        type="button"
+                        disabled={is_verified || loadingVerify}
+                        className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md
                 disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                 hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                  onClick={() => sendEmail()}
-                >
-                  Send Email Verification
-                </button>
+                        onClick={() => sendEmail()}
+                      >
+                        Send Email Verification
+                      </button>
+                    </>
+                  )}
+                </div>
               </>
             )}
           </div>
