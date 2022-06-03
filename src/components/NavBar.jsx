@@ -195,7 +195,7 @@ const NavBar = () => {
                     transition={{
                       duration: 0.1,
                     }}
-                    className={`border-2 border-merah rounded-full w-36 p-2 text-left pl-8 hover:shadow-black shadow-md duration-500 focus:outline-none pointer-events-auto flex items-center
+                    className={`border-2 border-merah rounded-full w-36 p-1 text-left pl-8 hover:shadow-black shadow-md duration-500 focus:outline-none pointer-events-auto flex items-center
                   ${location.pathname === "/account" && "bg-merah text-putih"}
                   ${open && "bg-merah text-putih scale-110"}
                   `}

@@ -83,7 +83,7 @@ const MyKitchen = () => {
             <img
               src={profile_cover ? API_URL + profile_cover : cover}
               alt=""
-              className="h-full w-full"
+              className="absolute bottom-0 w-full"
             />
           </div>
           <div className="bg-black/30 py-2 text-center text-lg font-bold text-putih w-full tracking-wider z-10">
@@ -97,8 +97,10 @@ const MyKitchen = () => {
               />
             </div>
           </div>
-          <div className="text-white bg-black/30 w-full text-center flex flex-col items-center pb-10 z-10">
-            <div className="text-center py-1 text-putih">{fullname}</div>
+          <div className="text-white bg-black/30 w-full text-center flex flex-col items-center pb-10 z-10 text-xs">
+            <div className="text-center py-1 text-putih text-base">
+              {fullname}
+            </div>
             {bio}
           </div>
 
@@ -107,7 +109,7 @@ const MyKitchen = () => {
             <button
               className={`${
                 myRecipes ? "text-merah" : "text-black brightness-75"
-              } bg-putih  mr-5 p-1 px-2 rounded-t-lg focus:outline-none duration-500`}
+              } bg-putih w-1/2 p-1 px-2 rounded-t-lg focus:outline-none duration-500`}
               onClick={() => {
                 setMyRecipe(true);
                 return getUserRecipes();
@@ -118,7 +120,7 @@ const MyKitchen = () => {
             <button
               className={`${
                 !myRecipes ? "text-merah" : "text-black brightness-75"
-              } bg-putih p-1 px-2 rounded-t-lg focus:outline-none duration-500 z-0`}
+              } bg-putih w-1/2 p-1 px-2 rounded-t-lg focus:outline-none duration-500 z-0`}
               onClick={() => {
                 setMyRecipe(false);
                 return getLikedRecipes();
