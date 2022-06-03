@@ -83,7 +83,7 @@ const MyKitchen = () => {
             <img
               src={profile_cover ? API_URL + profile_cover : cover}
               alt=""
-              className="h-full w-full"
+              className="absolute bottom-0 w-full"
             />
           </div>
           <div className="bg-black/30 py-2 text-center text-lg font-bold text-putih w-full tracking-wider z-10">
