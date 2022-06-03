@@ -118,8 +118,8 @@ const RecipeDetails = () => {
   const printKissed = () => {
     return (
       <button
-        className={`h-14 w-14 rounded-full border-2 border-merah mr-1 overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none ${
-          kissed ? "bg-merah" : "grayscale"
+        className={`h-14 w-14 rounded-full border-2 border-merah overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none ${
+          kissed ? "bg-merah" : "bg-putih"
         }`}
         onClick={async () => {
           try {
@@ -148,7 +148,11 @@ const RecipeDetails = () => {
           }
         }}
       >
-        <img src={kiss} alt="" className="scale-90" />
+        <img
+          src={kiss}
+          alt=""
+          className={`${kissed ? null : "grayscale"} scale-75`}
+        />
       </button>
     );
   };
@@ -275,10 +279,10 @@ const RecipeDetails = () => {
         />
       )}
       {/* Div to center content */}
-      <div className="h-60 sticky top-32 flex flex-col items-end w-20"></div>
+      <div className="h-60 sticky top-32 flex flex-col items-end w-20 pointer-events-none" />
 
       {/* Content */}
-      <div className="min-w-min flex my-5 justify-center overflow-hidden relative z-0  rounded-2xl shadow-lg shadow-black w-[600px]">
+      <div className="min-w-min flex my-5 justify-center overflow-hidden relative z-0  rounded-2xl shadow-lg shadow-black/50 w-[600px]">
         <div className=" z-0 w-[600px] rounded-2xl relative ">
           <div className="w-[600px] aspect-video rounded-t-2xl">
             <img src={data.photo} alt="" className=" w-full object-cover" />
@@ -535,9 +539,7 @@ const RecipeDetails = () => {
         <button
           type="button"
           className={`${
-            modalNewComment
-              ? "bg-hijau"
-              : "bg-putih grayscale hover:grayscale-0"
+            modalNewComment ? "bg-hijau" : "bg-putih"
           } z-40 h-14 w-14 mt-2 rounded-full  border-2 border-hijau overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none`}
           onClick={() => {
             is_verified
@@ -551,7 +553,7 @@ const RecipeDetails = () => {
         >
           <ChatAltIcon
             className={`${
-              modalNewComment ? "text-putih" : ""
+              modalNewComment ? "text-putih" : "text-black/60"
             } h-full w-full p-2`}
           />
         </button>
@@ -561,14 +563,16 @@ const RecipeDetails = () => {
             <>
               <Popover.Button
                 className={`${
-                  open ? "bg-biru" : "bg-putih grayscale hover:grayscale-0"
+                  open ? "bg-biru" : "bg-putih"
                 } h-14 w-14 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 hover:shadow-black shadow-md 
                 focus:outline-none relative`}
               >
                 <PaperAirplaneIcon
                   className={`${
-                    open ? "text-putih rotate-[310deg]" : "rotate-180"
-                  } h-full w-full scale-75 duration-500 z-30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
+                    open
+                      ? "text-putih rotate-[310deg]"
+                      : "text-black/60 rotate-180"
+                  } h-full w-full p-2 duration-500 z-30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
                 />
               </Popover.Button>
               <AnimatePresence>

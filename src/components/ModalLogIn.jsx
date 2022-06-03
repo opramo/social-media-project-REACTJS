@@ -151,10 +151,12 @@ const ModalLogIn = (props) => {
                       handleBlur,
                     } = formik;
                     return (
-                      <Form className="flex flex-col gap-y-1">
+                      <Form className="flex flex-col gap-y-2">
                         {/* Email/Username */}
                         <div className="flex flex-col relative">
-                          <label htmlFor="personId">Username/Email</label>
+                          <label htmlFor="personId" className="mb-1">
+                            Username/Email
+                          </label>
                           <input
                             name="personId"
                             placeholder="Username/Email"
@@ -197,7 +199,9 @@ const ModalLogIn = (props) => {
 
                         {/* Password */}
                         <div className="flex flex-col relative">
-                          <label htmlFor="password">Password</label>
+                          <label htmlFor="password" className="mb-1">
+                            Password
+                          </label>
                           <input
                             name="password"
                             placeholder="Password"
@@ -235,7 +239,7 @@ const ModalLogIn = (props) => {
                             </div>
                           )}
                           <div
-                            className="w-7 h-7 right-2  top-7 absolute cursor-pointer overflow-hidden"
+                            className="w-7 h-7 right-2 top-8 translate-y-[0.5] absolute cursor-pointer overflow-hidden"
                             onClick={() => setPassVis(!passVis)}
                           >
                             {passVis ? <EyeIcon /> : <EyeOffIcon />}
@@ -281,7 +285,7 @@ const ModalLogIn = (props) => {
                           </div>
 
                           <span
-                            className="hover:underline hover:text-biru duration-500 cursor-pointer"
+                            className="hover:underline hover:text-biru duration-500 cursor-pointer text-xs"
                             onClick={() => {
                               modalLogInHandler();
                               setTimeout(() => {

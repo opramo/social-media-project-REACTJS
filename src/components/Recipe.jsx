@@ -208,7 +208,7 @@ const Recipe = (props) => {
   const printKissed = () => {
     return (
       <button
-        className={`h-14 w-14 rounded-full border-2 border-merah mr-1 overflow-hidden duration-500 hover:shadow-black shadow-md shadow-black/50 focus:outline-none ${
+        className={`h-10 w-10 rounded-full border-2 border-merah mr-2 overflow-hidden duration-500 hover:shadow-black shadow-md shadow-black/50 focus:outline-none ${
           kissed ? "bg-merah" : "bg-putih"
         }`}
         onClick={async () => {
@@ -240,7 +240,7 @@ const Recipe = (props) => {
         <img
           src={kiss}
           alt=""
-          className={`${kissed ? null : "grayscale"} scale-90`}
+          className={`${kissed ? null : "grayscale"} scale-75`}
         />
       </button>
     );
@@ -508,14 +508,12 @@ const Recipe = (props) => {
                       alt=""
                     />
                   </div>
-                  <div>
-                    <div className="mb-1">{user.username}</div>
-                    <div>{user.fullname}</div>
+                  <div className="flex flex-col justify-around">
+                    <div className="text-base">{user.username}</div>
+                    <div className="text-xs">{createdAtPost}</div>
                   </div>
                 </div>
-                <div className="flex flex-col text-center items-end mb-1">
-                  <div className="mb-1">{createdAtPost}</div>
-
+                <div className="flex flex-col text-center items-end justify-end mb-1">
                   {/* Popover Button Settings */}
                   {id === user_id ? (
                     <Popover className="relative">
@@ -594,7 +592,7 @@ const Recipe = (props) => {
                   </div>
                 </div>
               </div>
-              <div className="h-[10%] w-full flex justify-between item px-10 -mt-3">
+              <div className="h-[10%] w-full flex justify-between item px-5 -mt-3">
                 <div className="flex items-center">
                   {printKissed()}
                   <span className="text-xs">
@@ -604,103 +602,105 @@ const Recipe = (props) => {
                   </span>
                 </div>
                 {/* Popover Button Share */}
-                <Popover className="relative overflow-visible w-14 h-14 -mt-1 rounded-full">
-                  {({ open }) => (
-                    <>
-                      <Popover.Button
-                        className={`${
-                          open ? "bg-biru" : "bg-putih"
-                        } h-14 w-14 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 shadow-md shadow-black/50 hover:shadow-black focus:outline-none relative`}
-                      >
-                        <PaperAirplaneIcon
+                <div className="flex items-center">
+                  <Popover className="relative overflow-visible w-10 h-10 rounded-full">
+                    {({ open }) => (
+                      <>
+                        <Popover.Button
                           className={`${
-                            open ? "text-putih rotate-[45deg]" : "-rotate-180"
-                          } h-full w-full scale-75 duration-500 z-30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
-                        />
-                      </Popover.Button>
-                      <AnimatePresence>
-                        {open && (
-                          <Popover.Panel
-                            as={motion.div}
-                            static
-                            variants={animationShare.container}
-                            initial="hidden"
-                            animate="visible"
-                            exit="hidden"
-                            className="absolute top-0 focus:outline-none flex flex-col gap-y-2 h-14 w-14 pointer-events-none"
-                          >
-                            <motion.div
-                              variants={animationShare.item1}
-                              className="absolute"
+                            open ? "bg-biru" : "bg-putih"
+                          } h-10 w-10 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 shadow-md shadow-black/50 hover:shadow-black focus:outline-none relative`}
+                        >
+                          <PaperAirplaneIcon
+                            className={`${
+                              open ? "text-putih rotate-[45deg]" : "-rotate-180"
+                            } h-full w-full scale-75 duration-500 z-30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
+                          />
+                        </Popover.Button>
+                        <AnimatePresence>
+                          {open && (
+                            <Popover.Panel
+                              as={motion.div}
+                              static
+                              variants={animationShare.container}
+                              initial="hidden"
+                              animate="visible"
+                              exit="hidden"
+                              className="absolute top-0 focus:outline-none flex flex-col gap-y-2 h-14 w-14 pointer-events-none"
                             >
-                              <TwitterShareButton
-                                url={`TheChefBook.com/recipe/${post_id}`}
-                                title={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
+                              <motion.div
+                                variants={animationShare.item1}
+                                className="absolute"
                               >
-                                <TwitterIcon
-                                  size={40}
-                                  round={true}
-                                  className="absolute top-0 left-0 rounded-full shadow-black shadow-md pointer-events-auto"
-                                  style={{ backgroundColor: "#00ACED" }}
-                                />
-                              </TwitterShareButton>
-                            </motion.div>
-                            <motion.div
-                              variants={animationShare.item2}
-                              className="absolute"
-                            >
-                              <WhatsappShareButton
-                                url={`TheChefBook.com/recipe/${post_id}`}
-                                title={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
+                                <TwitterShareButton
+                                  url={`TheChefBook.com/recipe/${post_id}`}
+                                  title={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
+                                >
+                                  <TwitterIcon
+                                    size={40}
+                                    round={true}
+                                    className="absolute top-0 left-0 rounded-full shadow-black shadow-md pointer-events-auto"
+                                    style={{ backgroundColor: "#00ACED" }}
+                                  />
+                                </TwitterShareButton>
+                              </motion.div>
+                              <motion.div
+                                variants={animationShare.item2}
+                                className="absolute"
                               >
-                                <WhatsappIcon
-                                  size={40}
-                                  round={true}
-                                  className="absolute top-0 left-0 rounded-full shadow-black shadow-md pointer-events-auto"
-                                  style={{ backgroundColor: "#25D366" }}
-                                />
-                              </WhatsappShareButton>
-                            </motion.div>
-                            <motion.div
-                              variants={animationShare.item3}
-                              className="absolute"
-                            >
-                              <FacebookShareButton
-                                url={`TheChefBook.com/recipe/${post_id}`}
-                                quote={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
+                                <WhatsappShareButton
+                                  url={`TheChefBook.com/recipe/${post_id}`}
+                                  title={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
+                                >
+                                  <WhatsappIcon
+                                    size={40}
+                                    round={true}
+                                    className="absolute top-0 left-0 rounded-full shadow-black shadow-md pointer-events-auto"
+                                    style={{ backgroundColor: "#25D366" }}
+                                  />
+                                </WhatsappShareButton>
+                              </motion.div>
+                              <motion.div
+                                variants={animationShare.item3}
+                                className="absolute"
                               >
-                                <FacebookIcon
-                                  size={40}
-                                  round={true}
-                                  className="absolute top-0 left-0 rounded-full shadow-black shadow-md pointer-events-auto"
-                                  style={{ backgroundColor: "#3B5998" }}
-                                />
-                              </FacebookShareButton>
-                            </motion.div>
-                            <motion.div
-                              variants={animationShare.item4}
-                              className="absolute"
-                            >
-                              <button
-                                onClick={() => {
-                                  copy();
-                                  toast.success("URL copied to clipboard!", {
-                                    position: "top-center",
-                                    theme: "colored",
-                                    style: { backgroundColor: "#3A7D44" },
-                                  });
-                                }}
-                                className="h-10 w-10 rounded-full  overflow-hidden  bg-merah shadow-black shadow-md focus:outline-none pointer-events-auto"
+                                <FacebookShareButton
+                                  url={`TheChefBook.com/recipe/${post_id}`}
+                                  quote={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
+                                >
+                                  <FacebookIcon
+                                    size={40}
+                                    round={true}
+                                    className="absolute top-0 left-0 rounded-full shadow-black shadow-md pointer-events-auto"
+                                    style={{ backgroundColor: "#3B5998" }}
+                                  />
+                                </FacebookShareButton>
+                              </motion.div>
+                              <motion.div
+                                variants={animationShare.item4}
+                                className="absolute"
                               >
-                                <LinkIcon className="h-full w-full p-2 text-putih" />
-                              </button>
-                            </motion.div>
-                          </Popover.Panel>
-                        )}
-                      </AnimatePresence>
-                    </>
-                  )}
-                </Popover>
+                                <button
+                                  onClick={() => {
+                                    copy();
+                                    toast.success("URL copied to clipboard!", {
+                                      position: "top-center",
+                                      theme: "colored",
+                                      style: { backgroundColor: "#3A7D44" },
+                                    });
+                                  }}
+                                  className="h-10 w-10 rounded-full  overflow-hidden  bg-merah shadow-black shadow-md focus:outline-none pointer-events-auto"
+                                >
+                                  <LinkIcon className="h-full w-full p-2 text-putih" />
+                                </button>
+                              </motion.div>
+                            </Popover.Panel>
+                          )}
+                        </AnimatePresence>
+                      </>
+                    )}
+                  </Popover>
+                </div>
               </div>
             </div>
           </div>
