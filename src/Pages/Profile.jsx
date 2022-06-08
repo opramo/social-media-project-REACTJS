@@ -16,8 +16,8 @@ const Profile = () => {
   const [posts, setPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(false);
+  const [loadingProfile, setLoadingProfile] = useState(true);
   const profile_username = params.profile_username;
-  console.log(profile_username);
 
   const getUserRecipes = async () => {
     try {
@@ -61,6 +61,7 @@ const Profile = () => {
       } catch (error) {
         console.log(error);
       } finally {
+        setLoadingProfile(false);
         setLoadingPosts(false);
       }
     })();
@@ -89,6 +90,17 @@ const Profile = () => {
     window.scrollTo(0, 0);
   };
 
+  if (loadingProfile) {
+    return (
+      <div className="min-h-screen flex pt-20 bg-putih justify-center">
+        <div className="shadow-lg my-10 shadow-black w-[600px] rounded-2xl overflow-hidden flex flex-col justify-center items-center">
+          <Loading className="h-20 w-20 animate-bounce" />
+          <div>Please wait...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex pt-20 bg-putih justify-center">
       <div className="w-[650px] relative my-5 rounded-2xl overflow-hidden shadow-lg shadow-black flex flex-col items-center">
@@ -97,44 +109,40 @@ const Profile = () => {
           <div className="w-full block h-full absolute top-0 min-h-[300px]">
             <img
               src={
-                profile?.profile_cover
-                  ? API_URL + profile?.profile_cover
-                  : cover
+                profile?.profile_cover ? API_URL + profile.profile_cover : cover
               }
               alt=""
               className="h-full w-full"
             />
           </div>
-          <div className="bg-black/30 py-2 text-center text-lg font-bold text-putih w-full tracking-wider z-10">
-            {`${profile?.username}'s Kitchen`}
+          <div className="bg-gradient-to-b from-black py-2 text-center text-lg font-bold text-putih w-full tracking-wider z-10">
+            {`${profile.username}'s Kitchen`}
           </div>
           <div className="flex flex-col items-center w-1/2 z-10 my-2">
-            <div className="w-36 h-36 rounded-full overflow-hidden border border-merah">
+            <div className="w-36 h-36 rounded-full overflow-hidden shadow-md shadow-black">
               <img
                 src={
                   profile?.profile_picture
-                    ? API_URL + profile?.profile_picture
+                    ? API_URL + profile.profile_picture
                     : Cat
                 }
                 alt=""
               />
             </div>
           </div>
-          <div className="text-white bg-black/30 w-full text-center flex flex-col items-center pb-10 z-10">
-            <div className="text-center py-1 text-putih">
-              {profile?.fullname}
+          <div className="text-white bg-gradient-to-t from-black w-full text-center flex flex-col items-center pb-10 z-10 text-xs">
+            <div className="text-center py-1 text-putih text-base">
+              {profile.fullname}
             </div>
-            {profile?.bio}
+            {profile.bio}
           </div>
 
           {/* account button pages */}
           <div className="w-full flex justify-center bg-transparent absolute bottom-0 z-10">
             <button
               className={`${
-                myRecipes
-                  ? "bg-putih text-black"
-                  : "bg-merah text-putih brightness-75 hover:brightness-100"
-              } mr-5 p-1 px-2 rounded-t-lg focus:outline-none duration-500`}
+                myRecipes ? "text-merah" : "text-black brightness-75"
+              } bg-putih w-1/2 p-1 px-2 rounded-t-lg focus:outline-none duration-500`}
               onClick={() => {
                 setMyRecipe(true);
                 return getUserRecipes();
@@ -144,10 +152,8 @@ const Profile = () => {
             </button>
             <button
               className={`${
-                !myRecipes
-                  ? "bg-putih text-black"
-                  : "bg-merah text-putih brightness-75 hover:brightness-100"
-              } p-1 px-2 rounded-t-lg focus:outline-none duration-500 z-0`}
+                !myRecipes ? "text-merah" : "text-black brightness-75"
+              } bg-putih w-1/2 p-1 px-2 rounded-t-lg focus:outline-none duration-500 z-0`}
               onClick={() => {
                 setMyRecipe(false);
                 return getLikedRecipes();

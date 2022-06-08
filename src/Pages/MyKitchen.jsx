@@ -86,7 +86,7 @@ const MyKitchen = () => {
               className="absolute bottom-0 w-full"
             />
           </div>
-          <div className="bg-black/30 py-2 text-center text-lg font-bold text-putih w-full tracking-wider z-10">
+          <div className="bg-gradient-to-b from-black py-2 text-center text-lg font-bold text-putih w-full tracking-wider z-10">
             {`${username}'s Kitchen`}
           </div>
           <div className="flex flex-col items-center w-1/2 z-10 my-2">
@@ -97,7 +97,7 @@ const MyKitchen = () => {
               />
             </div>
           </div>
-          <div className="text-white bg-black/30 w-full text-center flex flex-col items-center pb-10 z-10 text-xs">
+          <div className="text-white bg-gradient-to-t from-black w-full text-center flex flex-col items-center pb-10 z-10 text-xs">
             <div className="text-center py-1 text-putih text-base">
               {fullname}
             </div>

@@ -284,102 +284,104 @@ const RecipeDetails = () => {
       {/* Content */}
       <div className="min-w-min flex my-5 justify-center overflow-hidden relative z-0  rounded-2xl shadow-lg shadow-black/50 w-[600px]">
         <div className=" z-0 w-[600px] rounded-2xl relative ">
-          <div className="w-[600px] aspect-video rounded-t-2xl">
+          <div className="w-[600px] aspect-video rounded-t-2xl relative">
             <img src={data.photo} alt="" className=" w-full object-cover" />
+            <div className="w-full h-20 bg-gradient-to-t from-black/50 absolute bottom-0"></div>
           </div>
-          <div className="">
-            <div className="w-full flex justify-between px-5 text-sm relative">
-              <div
-                className="flex h-full rounded-md hover:bg-white/50 cursor-pointer"
-                onClick={() => {
-                  data.username === username
-                    ? navigate("/account")
-                    : navigate(`/profile/${data.username}`);
-                }}
-              >
-                <div className="w-20 h-20 rounded-full overflow-hidden absolute bottom-2 border-2 border-putih">
-                  <img src={data.profile_picture} alt="" />
-                </div>
-                <div className="pl-24 pr-2 flex flex-col justify-between">
-                  <div className="mb-1">{data.username}</div>
-                  <div>{data.fullname}</div>
-                </div>
+          <div className="w-full flex justify-between px-5 text-sm relative">
+            <div
+              className="flex h-full rounded-full py-2 hover:bg-white/50 cursor-pointer text-putih hover:text-black -mt-7 duration-500"
+              onClick={() => {
+                data.username === username
+                  ? navigate("/account")
+                  : navigate(`/profile/${data.username}`);
+              }}
+            >
+              <div className="w-20 h-20 rounded-full overflow-hidden absolute -bottom-2 border-2 border-putih">
+                <img src={data.profile_picture} alt="" />
               </div>
-              <div className="flex flex-col text-center items-end mb-1">
-                <div className="mb-1">{createdAtPost}</div>
-                {id === data.user_id ? (
-                  <Popover className="relative h-5">
-                    {({ open }) => (
-                      <>
-                        <Popover.Button>
-                          <DotsHorizontalIcon
-                            className={`${
-                              open
-                                ? "bg-merah/30 border-transparent text-merah"
-                                : "hover:bg-merah/30 hover:border-transparent border-merah/30"
-                            } h-5 w-5 cursor-pointer text-merah/50 duration-500 border-2 rounded-full`}
-                            onClick={() => {}}
-                          />
-                        </Popover.Button>
-                        <AnimatePresence>
-                          {open && (
-                            <Popover.Panel
-                              as={motion.div}
-                              static
-                              initial={{ height: 0 }}
-                              animate={{ height: "auto" }}
-                              exit={{ height: 0 }}
-                              transition={{ duration: 0.3, type: "spring" }}
-                              className="absolute right-0 z-10 bg-putih rounded focus:outline-none shadow-xl shadow-black overflow-hidden"
+              <div className="pl-24 pr-5 flex flex-col justify-between">
+                <div className="">
+                  by
+                  <span className="font-bold"> {data.username}</span>
+                </div>
+                <div className="text-black">{data.fullname}</div>
+              </div>
+            </div>
+            <div className="flex flex-col text-center items-end mb-1 -mt-5">
+              <div className="mb-1 text-putih">{createdAtPost}</div>
+              {id === data.user_id ? (
+                <Popover className="relative h-5">
+                  {({ open }) => (
+                    <>
+                      <Popover.Button>
+                        <DotsHorizontalIcon
+                          className={`${
+                            open
+                              ? "bg-merah/30 border-transparent text-merah"
+                              : "hover:bg-merah/30 hover:border-transparent border-merah/30"
+                          } h-5 w-5 cursor-pointer text-merah/50 duration-500 border-2 rounded-full`}
+                          onClick={() => {}}
+                        />
+                      </Popover.Button>
+                      <AnimatePresence>
+                        {open && (
+                          <Popover.Panel
+                            as={motion.div}
+                            static
+                            initial={{ height: 0 }}
+                            animate={{ height: "auto" }}
+                            exit={{ height: 0 }}
+                            transition={{ duration: 0.3, type: "spring" }}
+                            className="absolute right-0 z-10 bg-putih rounded focus:outline-none shadow-xl shadow-black overflow-hidden"
+                          >
+                            <div
+                              className={`hover:bg-merah hover:text-putih duration-500 cursor-pointer border-b border-merah block px-5 py-3 whitespace-no-wrap`}
+                              onClick={() => {
+                                navigate("/editrecipe");
+                                dispatch({
+                                  type: "NEWEDIT",
+                                  payload: post_id,
+                                });
+                              }}
                             >
-                              <div
-                                className={`hover:bg-merah hover:text-putih duration-500 cursor-pointer border-b border-merah block px-5 py-3 whitespace-no-wrap`}
-                                onClick={() => {
-                                  navigate("/editrecipe");
-                                  dispatch({
-                                    type: "NEWEDIT",
-                                    payload: post_id,
-                                  });
-                                }}
-                              >
-                                Edit
-                              </div>
-                              <div
-                                className={`hover:bg-merah hover:text-putih duration-500 cursor-pointer block px-5 py-3 whitespace-no-wrap`}
-                                onClick={() => {
-                                  modalDeleteHandler();
-                                }}
-                              >
-                                Delete
-                              </div>
-                            </Popover.Panel>
-                          )}
-                        </AnimatePresence>
-                      </>
-                    )}
-                  </Popover>
-                ) : null}
-              </div>
+                              Edit
+                            </div>
+                            <div
+                              className={`hover:bg-merah hover:text-putih duration-500 cursor-pointer block px-5 py-3 whitespace-no-wrap`}
+                              onClick={() => {
+                                modalDeleteHandler();
+                              }}
+                            >
+                              Delete
+                            </div>
+                          </Popover.Panel>
+                        )}
+                      </AnimatePresence>
+                    </>
+                  )}
+                </Popover>
+              ) : null}
             </div>
-            <div className="flex items-center justify-center text-center text-3xl">
-              "{data.title}"
-            </div>
-            <div className="flex items-center justify-center text-center text-base">
-              {likes
-                ? `${likes} chefs like this!`
-                : "No chef likes this recipe :<"}
-            </div>
+          </div>
+          <div className="flex items-center justify-center text-center text-3xl py-5">
+            "{data.title}"
+          </div>
+          <div className="flex items-center justify-center text-center text-base">
+            {likes
+              ? `${likes} chefs like this!`
+              : "No chef likes this recipe :<"}
           </div>
 
-          {/* Ingredients */}
           <div className="flex flex-col w-full p-5 bg-putih">
-            <div className="w-full bg-putih h mb-7 text-xl">
-              Ingredients:
+            {/* Ingredients */}
+            <div className="w-full bg-putih h mb-0 text-xl border-t border-merah">
+              <div className="h-10 flex items-center">Ingredients:</div>
               <div className="w-full border-y border-merah">
-                <ul className="max-w-full list-disc ml-5 break-words text-lg bg-putih">
+                <ul className="max-w-full list-disc ml-5 break-words text-lg py-3">
                   {data.ingredients.map((content) => {
                     return (
-                      <li key={content.ingredient_id} className="mb-2">
+                      <li key={content.ingredient_id} className="mb-3">
                         {content.ingredient}
                       </li>
                     );
@@ -388,12 +390,12 @@ const RecipeDetails = () => {
               </div>
             </div>
             <div className="w-full bg-putih text-xl ">
-              Instructions:
+              <div className="h-10 flex items-center">Instructions:</div>
               <div className="w-full border-y border-merah">
-                <ol className="max-w-full list-decimal ml-5 break-words text-lg bg-putih">
+                <ol className="max-w-full list-decimal ml-5 break-words text-lg py-3">
                   {data.instructions.map((content) => {
                     return (
-                      <li key={content.instruction_id} className="mb-2">
+                      <li key={content.instruction_id} className="mb-3">
                         {content.instruction}
                       </li>
                     );
@@ -401,132 +403,131 @@ const RecipeDetails = () => {
                 </ol>
               </div>
             </div>
-          </div>
-
-          {/* Liked */}
-          <div className="flex flex-col w-full p-5 bg-putih">
-            <div className="w-full relative bg-putih text-xl">
-              Chefs loved this recipe:
-            </div>
-            <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah mt-5">
-              {likersRender[0] ? (
-                <ul className="max-w-full mx-5 break-words text-xl bg-putih">
-                  {likersRender.map((content) => {
-                    return (
-                      <li key={content.id}>
-                        <div
-                          className="flex rounded-md hover:bg-white/50 cursor-pointer text-base py-2 w-auto"
-                          onClick={() => {
-                            content.username === username
-                              ? navigate("/account")
-                              : navigate(`/profile/${content.username}`);
-                          }}
-                        >
-                          <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
-                            <img
-                              src={
-                                content.profile_picture
-                                  ? API_URL + content.profile_picture
-                                  : cat
-                              }
-                              alt=""
-                            />
-                          </div>
-                          <div className="text-sm">
-                            <div className="mb-1">{content.username}</div>
-                            <div>{content.fullname}</div>
-                          </div>
-                        </div>
-                      </li>
-                    );
-                  })}
-                  {likers[0] ? (
-                    <div
-                      className="bg-merah flex justify-center items-center text-putih py-3 rounded-xl my-3 cursor-pointer text-base"
-                      onClick={() => moreLikers()}
-                    >
-                      See {likers.length} more
-                    </div>
-                  ) : null}
-                </ul>
-              ) : (
-                "No chef liked this recipe :<"
-              )}
-            </div>
-          </div>
-          {/* Comments */}
-          <div className="flex flex-col w-full px-5 bg-putih mb-10">
-            <div className="w-full relative bg-putih text-xl">
-              Comments from other chefs:
-            </div>
-            <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah mt-5">
-              {commentsRender[0] ? (
-                <ul className="max-w-full ml-5 break-words text-base bg-putih py-2">
-                  {commentsRender.map((content) => {
-                    return (
-                      <li className="flex flex-col" key={content.id}>
-                        <div className="flex justify-between items-center">
-                          <div className="w-full flex justify-between">
-                            <div
-                              className="flex rounded-md hover:bg-white/50 cursor-pointer text-base"
-                              onClick={() => {
-                                content.username === username
-                                  ? navigate("/account")
-                                  : navigate(`/profile/${content.username}`);
-                              }}
-                            >
-                              <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
-                                <img
-                                  src={
-                                    content.profile_picture
-                                      ? API_URL + content.profile_picture
-                                      : cat
-                                  }
-                                  alt=""
-                                />
-                              </div>
-                              <div className="text-sm">
-                                <div className="mb-1">{content.username}</div>
-                                <div>{content.fullname}</div>
-                              </div>
+            {/* Liked */}
+            <div className="w-full bg-putih text-xl">
+              <div className="h-10 flex items-center">
+                Chefs loved this recipe:
+              </div>
+              <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah">
+                {likersRender[0] ? (
+                  <ul className="max-w-full mx-5 break-words text-xl bg-putih">
+                    {likersRender.map((content) => {
+                      return (
+                        <li key={content.id}>
+                          <div
+                            className="flex rounded-md hover:bg-white/50 cursor-pointer text-base py-2 w-auto"
+                            onClick={() => {
+                              content.username === username
+                                ? navigate("/account")
+                                : navigate(`/profile/${content.username}`);
+                            }}
+                          >
+                            <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
+                              <img
+                                src={
+                                  content.profile_picture
+                                    ? API_URL + content.profile_picture
+                                    : cat
+                                }
+                                alt=""
+                              />
+                            </div>
+                            <div className="text-sm">
+                              <div className="mb-1">{content.username}</div>
+                              <div>{content.fullname}</div>
                             </div>
                           </div>
-                          {id === content.user_id ? (
-                            <button
-                              onClick={() => {
-                                setComment_id(content.id);
-                                modalDeleteCommentHandler();
-                              }}
-                              className={`cursor-pointer text-merah/50 duration-500 border-2 rounded-full mr-3 p-1 focus:outline-none hover:bg-merah/30 hover:border-transparent border-merah/30`}
-                            >
-                              <TrashIcon className="h-5 w-5" />
-                            </button>
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                        <div className="ml-16 relative mr-2">
-                          <div className="absolute border-b border-hijau w-7 h-2 rotate-45 top-3 bg-putih"></div>
-                          <div className="absolute border-t border-hijau w-5 h-2 rotate-[21deg] top-3"></div>
-                          <div className="border-hijau border ml-5 p-2 block rounded-lg bg-putih">
-                            {content.comment}
+                        </li>
+                      );
+                    })}
+                    {likers[0] ? (
+                      <div
+                        className="bg-merah flex justify-center items-center text-putih py-3 rounded-xl my-3 cursor-pointer text-base"
+                        onClick={() => moreLikers()}
+                      >
+                        See {likers.length} more
+                      </div>
+                    ) : null}
+                  </ul>
+                ) : (
+                  "No chef liked this recipe :<"
+                )}
+              </div>
+            </div>
+            {/* Comments */}
+            <div className="w-full bg-putih text-xl">
+              <div className="h-10 flex items-center">
+                Comments from other chefs:
+              </div>
+              <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah">
+                {commentsRender[0] ? (
+                  <ul className="max-w-full ml-5 break-words text-base bg-putih py-2">
+                    {commentsRender.map((content) => {
+                      return (
+                        <li className="flex flex-col" key={content.id}>
+                          <div className="flex justify-between items-center">
+                            <div className="w-full flex justify-between">
+                              <div
+                                className="flex rounded-md hover:bg-white/50 cursor-pointer text-base"
+                                onClick={() => {
+                                  content.username === username
+                                    ? navigate("/account")
+                                    : navigate(`/profile/${content.username}`);
+                                }}
+                              >
+                                <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
+                                  <img
+                                    src={
+                                      content.profile_picture
+                                        ? API_URL + content.profile_picture
+                                        : cat
+                                    }
+                                    alt=""
+                                  />
+                                </div>
+                                <div className="text-sm">
+                                  <div className="mb-1">{content.username}</div>
+                                  <div>{content.fullname}</div>
+                                </div>
+                              </div>
+                            </div>
+                            {id === content.user_id ? (
+                              <button
+                                onClick={() => {
+                                  setComment_id(content.id);
+                                  modalDeleteCommentHandler();
+                                }}
+                                className={`cursor-pointer text-merah/50 duration-500 border-2 rounded-full mr-3 p-1 focus:outline-none hover:bg-merah/30 hover:border-transparent border-merah/30`}
+                              >
+                                <TrashIcon className="h-5 w-5" />
+                              </button>
+                            ) : (
+                              ""
+                            )}
                           </div>
-                        </div>
-                      </li>
-                    );
-                  })}
-                  {comments[0] ? (
-                    <div
-                      className="bg-merah flex justify-center items-center text-putih py-3 rounded-xl my-3 cursor-pointer"
-                      onClick={() => moreComments()}
-                    >
-                      See {comments.length} more comments
-                    </div>
-                  ) : null}
-                </ul>
-              ) : (
-                "No chef commented here :<"
-              )}
+                          <div className="ml-16 relative mr-2">
+                            <div className="absolute border-b border-hijau w-7 h-2 rotate-45 top-3 bg-putih"></div>
+                            <div className="absolute border-t border-hijau w-5 h-2 rotate-[21deg] top-3"></div>
+                            <div className="border-hijau border ml-5 p-2 block rounded-lg bg-putih">
+                              {content.comment}
+                            </div>
+                          </div>
+                        </li>
+                      );
+                    })}
+                    {comments[0] ? (
+                      <div
+                        className="bg-merah flex justify-center items-center text-putih py-3 rounded-xl my-3 cursor-pointer"
+                        onClick={() => moreComments()}
+                      >
+                        See {comments.length} more comments
+                      </div>
+                    ) : null}
+                  </ul>
+                ) : (
+                  "No chef commented here :<"
+                )}
+              </div>
             </div>
           </div>
         </div>

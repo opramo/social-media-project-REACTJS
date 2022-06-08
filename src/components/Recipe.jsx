@@ -569,26 +569,28 @@ const Recipe = (props) => {
                   ) : null}
                 </div>
               </div>
-              <div className="h-[80%] w-full relative mt-3">
+              <div className="h-[80%] w-full relative mt-3 pb-4">
                 <div className="w-20 h-6 origin-center rotate-[-45deg] absolute top-4 bg-white/50"></div>
                 <div className="w-20 h-6 origin-center rotate-[-45deg] absolute bottom-14 right-0 bg-white/50"></div>
-                <div className="h-full w-full p-5 -mt-3">
-                  <div
-                    className="w-full aspect-video p-2 pb-0 bg-white cursor-pointer"
-                    onClick={() => navigate(`/recipe/${post_id}`)}
-                  >
-                    <img
-                      src={`${API_URL}${photo}`}
-                      alt=""
-                      className="w-full h-full object-cover"
-                      style={{ objectPosition: "0 0" }}
-                    />
-                  </div>
-                  <div
-                    className="h-1/6 flex items-center justify-center text-center text-2xl bg-white cursor-pointer"
-                    onClick={() => navigate(`/recipe/${post_id}`)}
-                  >
-                    "{title}"
+                <div className="h-full w-full p-5 -mt-3 ">
+                  <div className="h-full bg-white relative">
+                    <div
+                      className="w-full aspect-video p-2 pb-0 cursor-pointer"
+                      onClick={() => navigate(`/recipe/${post_id}`)}
+                    >
+                      <img
+                        src={`${API_URL}${photo}`}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        style={{ objectPosition: "0 0" }}
+                      />
+                    </div>
+                    <div
+                      className="absolute bottom-0 flex items-center h-1/6 w-full justify-center text-center p-2 m text-xl cursor-pointer"
+                      onClick={() => navigate(`/recipe/${post_id}`)}
+                    >
+                      "{title}"
+                    </div>
                   </div>
                 </div>
               </div>
@@ -613,7 +615,9 @@ const Recipe = (props) => {
                         >
                           <PaperAirplaneIcon
                             className={`${
-                              open ? "text-putih rotate-[45deg]" : "-rotate-180"
+                              open
+                                ? "text-putih rotate-[45deg]"
+                                : "text-black/60 -rotate-180"
                             } h-full w-full scale-75 duration-500 z-30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
                           />
                         </Popover.Button>
@@ -816,7 +820,7 @@ const Recipe = (props) => {
                   >
                     <ChatAltIcon
                       className={`${
-                        modalNewComment ? "text-putih" : ""
+                        modalNewComment ? "text-putih" : "text-black/60"
                       } h-full w-full p-2 duration-500`}
                     />
                   </button>
