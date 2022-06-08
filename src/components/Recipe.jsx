@@ -208,7 +208,7 @@ const Recipe = (props) => {
   const printKissed = () => {
     return (
       <button
-        className={`h-10 w-10 rounded-full border-2 border-merah mr-2 overflow-hidden duration-500 hover:shadow-black shadow-md shadow-black/50 focus:outline-none ${
+        className={`h-12 w-12 rounded-full border-2 border-merah mr-2 overflow-hidden duration-500 hover:shadow-black shadow-md shadow-black/50 focus:outline-none ${
           kissed ? "bg-merah" : "bg-putih"
         }`}
         onClick={async () => {
@@ -592,7 +592,7 @@ const Recipe = (props) => {
                   </div>
                 </div>
               </div>
-              <div className="h-[10%] w-full flex justify-between item px-5 -mt-3">
+              <div className="h-[10%] w-full flex justify-between item px-10 -mt-5">
                 <div className="flex items-center">
                   {printKissed()}
                   <span className="text-xs">
@@ -603,13 +603,13 @@ const Recipe = (props) => {
                 </div>
                 {/* Popover Button Share */}
                 <div className="flex items-center">
-                  <Popover className="relative overflow-visible w-10 h-10 rounded-full">
+                  <Popover className="relative overflow-visible w-12 h-12 rounded-full">
                     {({ open }) => (
                       <>
                         <Popover.Button
                           className={`${
                             open ? "bg-biru" : "bg-putih"
-                          } h-10 w-10 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 shadow-md shadow-black/50 hover:shadow-black focus:outline-none relative`}
+                          } h-12 w-12 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 shadow-md shadow-black/50 hover:shadow-black focus:outline-none relative`}
                         >
                           <PaperAirplaneIcon
                             className={`${
