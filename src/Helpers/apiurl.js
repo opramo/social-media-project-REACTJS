@@ -1,3 +1,3 @@
-const API_URL = `https://13.250.107.38/`;
+const API_URL = `http://localhost:3069`;
 
 export default API_URL;
