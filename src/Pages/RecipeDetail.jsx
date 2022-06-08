@@ -592,7 +592,7 @@ const RecipeDetails = () => {
                       className="absolute"
                     >
                       <TwitterShareButton
-                        url={`TheChefBook.com/recipe/${post_id}`}
+                        url={`vermillion-gnome-3a524b.netlify.app/recipe/${post_id}`}
                         title={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
                       >
                         <TwitterIcon
@@ -608,7 +608,7 @@ const RecipeDetails = () => {
                       className="absolute"
                     >
                       <WhatsappShareButton
-                        url={`TheChefBook.com/recipe/${post_id}`}
+                        url={`vermillion-gnome-3a524b.netlify.app/recipe/${post_id}`}
                         title={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
                       >
                         <WhatsappIcon
@@ -624,7 +624,7 @@ const RecipeDetails = () => {
                       className="absolute"
                     >
                       <FacebookShareButton
-                        url={`TheChefBook.com/recipe/${post_id}`}
+                        url={`vermillion-gnome-3a524b.netlify.app/recipe/${post_id}`}
                         quote={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
                       >
                         <FacebookIcon

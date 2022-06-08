@@ -29,6 +29,7 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import ModalDeleteComment from "./ModalDeleteComment";
+import WEB_URL from "../Helpers/websiteUrl";
 
 const Recipe = (props) => {
   const dispatch = useDispatch();
@@ -125,7 +126,7 @@ const Recipe = (props) => {
   });
 
   function copy() {
-    navigator.clipboard.writeText(`localhost:3000/recipe/${post_id}`);
+    navigator.clipboard.writeText(`${WEB_URL}/recipe/${post_id}`);
   }
 
   const modalNewCommentHandler = () => {
@@ -391,7 +392,7 @@ const Recipe = (props) => {
   return (
     <div
       className={`
-       relative w-full min-h-[550px] mb-5 rounded-xl overflow-hidden bg-transparent shadow-black/50 shadow-lg`}
+    relative w-full min-h-[550px] mb-5 rounded-xl overflow-hidden bg-transparent shadow-black/50 shadow-lg`}
     >
       {modalNewComment && (
         <ModalNewComment
@@ -637,7 +638,7 @@ const Recipe = (props) => {
                                 className="absolute"
                               >
                                 <TwitterShareButton
-                                  url={`TheChefBook.com/recipe/${post_id}`}
+                                  url={`${WEB_URL}/recipe/${post_id}`}
                                   title={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
                                 >
                                   <TwitterIcon
@@ -653,7 +654,7 @@ const Recipe = (props) => {
                                 className="absolute"
                               >
                                 <WhatsappShareButton
-                                  url={`TheChefBook.com/recipe/${post_id}`}
+                                  url={`${WEB_URL}/recipe/${post_id}`}
                                   title={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
                                 >
                                   <WhatsappIcon
@@ -669,7 +670,7 @@ const Recipe = (props) => {
                                 className="absolute"
                               >
                                 <FacebookShareButton
-                                  url={`TheChefBook.com/recipe/${post_id}`}
+                                  url={`${WEB_URL}/recipe/${post_id}`}
                                   quote={`Check this delicious recipe from TheChefBook.com: ${data.title}`}
                                 >
                                   <FacebookIcon
