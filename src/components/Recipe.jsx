@@ -391,7 +391,7 @@ const Recipe = (props) => {
   return (
     <div
       className={`
-       relative w-full min-h-[550px] mb-5 rounded-xl overflow-hidden bg-transparent shadow-black shadow-lg`}
+       relative w-full min-h-[550px] mb-5 rounded-xl overflow-hidden bg-transparent shadow-black/50 shadow-lg`}
     >
       {modalNewComment && (
         <ModalNewComment
@@ -491,7 +491,7 @@ const Recipe = (props) => {
             <div className="h-full flex flex-col w-full py-5 bg-putih rounded-l">
               <div className="h-[10%] w-full flex justify-between px-5 text-sm">
                 <div
-                  className="flex rounded-md hover:bg-white/50 cursor-pointer duration-500"
+                  className="flex rounded-full items-center pr-5 hover:bg-white/50 cursor-pointer duration-500"
                   onClick={() => {
                     user.username === username
                       ? navigate("/account")
@@ -509,7 +509,7 @@ const Recipe = (props) => {
                     />
                   </div>
                   <div className="flex flex-col justify-around">
-                    <div className="text-base">{user.username}</div>
+                    <div className="text-lg font-semibold">{user.username}</div>
                     <div className="text-xs">{createdAtPost}</div>
                   </div>
                 </div>
@@ -570,8 +570,8 @@ const Recipe = (props) => {
                 </div>
               </div>
               <div className="h-[80%] w-full relative mt-3 pb-4">
-                <div className="w-20 h-6 origin-center rotate-[-45deg] absolute top-4 bg-white/50"></div>
-                <div className="w-20 h-6 origin-center rotate-[-45deg] absolute bottom-14 right-0 bg-white/50"></div>
+                <div className="w-20 h-6 origin-center rotate-[-45deg] absolute top-4 z-10 bg-white/50"></div>
+                <div className="w-20 h-6 origin-center rotate-[-45deg] absolute bottom-14 z-10 right-0 bg-white/50"></div>
                 <div className="h-full w-full p-5 -mt-3 ">
                   <div className="h-full bg-white relative">
                     <div
@@ -618,7 +618,7 @@ const Recipe = (props) => {
                               open
                                 ? "text-putih rotate-[45deg]"
                                 : "text-black/60 -rotate-180"
-                            } h-full w-full scale-75 duration-500 z-30 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
+                            } h-full w-full scale-75 duration-500 z-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
                           />
                         </Popover.Button>
                         <AnimatePresence>
@@ -630,7 +630,7 @@ const Recipe = (props) => {
                               initial="hidden"
                               animate="visible"
                               exit="hidden"
-                              className="absolute top-0 focus:outline-none flex flex-col gap-y-2 h-14 w-14 pointer-events-none"
+                              className="absolute top-0 focus:outline-none z-10 flex flex-col gap-y-2 h-14 w-14 pointer-events-none"
                             >
                               <motion.div
                                 variants={animationShare.item1}

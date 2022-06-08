@@ -141,7 +141,7 @@ const NewRecipe = () => {
                   </div>
                   {/* Upload photo */}
 
-                  <div className="flex flex-col relative">
+                  <div className="flex flex-col relative w-full items-center">
                     <label
                       htmlFor="photo"
                       className="py-2 inline-block text-center"
@@ -190,7 +190,7 @@ const NewRecipe = () => {
                     />
                     <button
                       type="button"
-                      className="shadow-md my-2 inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+                      className="shadow-md w-auto my-2 inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
                     hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
                       onClick={() => photoRef.current.click()}
                     >

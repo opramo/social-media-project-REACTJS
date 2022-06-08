@@ -61,9 +61,9 @@ const Home = () => {
         hasMore={hasMore}
         next={() => posts[0] && getFeeds()}
         dataLength={posts.length}
-        className="px-10 py-5"
+        className="w-[650px] my-5 flex flex-col items-center relative"
       >
-        <div className="w-[600px] flex flex-col">{printRecipe()}</div>
+        <div className="w-[600px] flex flex-col relative">{printRecipe()}</div>
         {loading ? (
           <div className="w-[600px] h-60 flex flex-col items-center justify-center text-xl">
             <Loading className={"h-20 w-20 animate-bounce"} />
@@ -72,7 +72,7 @@ const Home = () => {
         ) : null}
         {hasMore ? null : (
           <div className="w-[600px] h-60 flex flex-col items-center justify-center text-xl">
-            Wow... You need to go outside more..
+            You have reached the end! Let's make a new recipe!
           </div>
         )}
       </InfiniteScroll>

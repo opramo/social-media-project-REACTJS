@@ -182,7 +182,7 @@ const EditRecipe = () => {
                     />
                   </div>
                   {/* Upload photo */}
-                  <div className="flex flex-col relative">
+                  <div className="flex flex-col relative w-full items-center">
                     <label
                       htmlFor="photo"
                       className="py-2 inline-block text-center"
@@ -236,7 +236,7 @@ const EditRecipe = () => {
                     hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
                       onClick={() => photoRef.current.click()}
                     >
-                      Add Photo
+                      Edit Photo
                     </button>
                   </div>
                   {/* Ingredients' list */}
