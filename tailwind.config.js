@@ -9,6 +9,7 @@ module.exports = {
         kuning: "#FFA600",
         biru: "#1F609E",
         hijau: "#3A7D44",
+        apotek: "#009B90",
       },
       animation: {
         "spin-share": "spin-share 1s linear",

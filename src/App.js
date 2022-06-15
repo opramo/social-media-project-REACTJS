@@ -16,6 +16,7 @@ import ModalRestriction from "./components/ModalRestriction";
 import RecipeDetails from "./Pages/RecipeDetail";
 import ResetPassword from "./Pages/ResetPassword";
 import Profile from "./Pages/Profile";
+import NotFound404 from "./Pages/NotFound404";
 
 // css
 
@@ -43,6 +44,7 @@ function App() {
         <Route path="/verification/:token" element={<Verification />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/profile/:profile_username" element={<Profile />} />
+        <Route path="*" element={<NotFound404 />} />
       </Routes>
       <ToastContainer
         pauseOnFocusLoss={false}

@@ -6,9 +6,10 @@ import { useSelector } from "react-redux";
 import API_URL from "../Helpers/apiurl";
 import axios from "axios";
 import Loading from "../components/Loading";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const params = useParams();
   let [myRecipes, setMyRecipe] = useState(true);
   const { id } = useSelector((state) => state.user);
@@ -59,7 +60,7 @@ const Profile = () => {
         });
         setPosts(res1.data);
       } catch (error) {
-        console.log(error);
+        navigate("/notfound404");
       } finally {
         setLoadingProfile(false);
         setLoadingPosts(false);
@@ -109,21 +110,23 @@ const Profile = () => {
           <div className="w-full block h-full absolute top-0 min-h-[300px]">
             <img
               src={
-                profile?.profile_cover ? API_URL + profile.profile_cover : cover
+                profile?.profile_cover
+                  ? API_URL + profile?.profile_cover
+                  : cover
               }
               alt=""
               className="h-full w-full"
             />
           </div>
           <div className="bg-gradient-to-b from-black py-2 text-center text-lg font-bold text-putih w-full tracking-wider z-10">
-            {`${profile.username}'s Kitchen`}
+            {`${profile?.username}'s Kitchen`}
           </div>
           <div className="flex flex-col items-center w-1/2 z-10 my-2">
             <div className="w-36 h-36 rounded-full overflow-hidden shadow-md shadow-black">
               <img
                 src={
                   profile?.profile_picture
-                    ? API_URL + profile.profile_picture
+                    ? API_URL + profile?.profile_picture
                     : Cat
                 }
                 alt=""
@@ -132,9 +135,9 @@ const Profile = () => {
           </div>
           <div className="text-white bg-gradient-to-t from-black w-full text-center flex flex-col items-center pb-10 z-10 text-xs">
             <div className="text-center py-1 text-putih text-base">
-              {profile.fullname}
+              {profile?.fullname}
             </div>
-            {profile.bio}
+            {profile?.bio}
           </div>
 
           {/* account button pages */}

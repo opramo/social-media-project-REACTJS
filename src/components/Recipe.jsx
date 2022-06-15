@@ -251,9 +251,13 @@ const Recipe = (props) => {
   // Ingredients List Render ///////////////
   const printIngredients = () => {
     return (
-      <ul className="max-w-full list-disc ml-5 break-words text-base bg-putih">
+      <ul className="max-w-full h-full list-disc ml-5 break-words text-xs sm:text-base bg-putih">
         {recipe.ingredients.map((content) => {
-          return <li key={content.ingredient_id}>{content.ingredient}</li>;
+          return (
+            <li key={content.ingredient_id} className="my-2">
+              {content.ingredient}
+            </li>
+          );
         })}
       </ul>
     );
@@ -263,9 +267,13 @@ const Recipe = (props) => {
   // Instructions List Render //////////////
   const printInstructions = () => {
     return (
-      <ol className="max-w-full list-decimal ml-5 break-words text-base bg-putih">
+      <ol className="max-w-full h-full list-decimal ml-5 break-words text-xs sm:text-base bg-putih">
         {recipe.instructions.map((content) => {
-          return <li key={content.instruction_id}>{content.instruction}</li>;
+          return (
+            <li key={content.instruction_id} className="my-2">
+              {content.instruction}
+            </li>
+          );
         })}
       </ol>
     );
@@ -287,7 +295,7 @@ const Recipe = (props) => {
                     : navigate(`/profile/${content.username}`);
                 }}
               >
-                <div className="w-12 h-12 rounded-full mr-3  overflow-hidden">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full mr-3  overflow-hidden">
                   <img
                     src={
                       content.profile_picture
@@ -297,7 +305,7 @@ const Recipe = (props) => {
                     alt=""
                   />
                 </div>
-                <div>
+                <div className="text-xs md:text-base">
                   <div className="mb-1">{content.username}</div>
                   <div>{content.fullname}</div>
                 </div>
@@ -307,7 +315,7 @@ const Recipe = (props) => {
         })}
         {likersMore.more ? (
           <div
-            className="bg-merah flex justify-center py-3 rounded-xl items-center text-putih cursor-pointer"
+            className="bg-merah flex justify-center py-3 text-xs sm:text-base rounded-xl text-center items-center text-putih cursor-pointer"
             onClick={() => navigate(`/recipe/${post_id}`)}
           >
             See {likersMore.total} more comments on recipe details
@@ -335,7 +343,7 @@ const Recipe = (props) => {
                         : navigate(`/profile/${content.username}`);
                     }}
                   >
-                    <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full mr-3 overflow-hidden">
                       <img
                         src={
                           content.profile_picture
@@ -345,7 +353,7 @@ const Recipe = (props) => {
                         alt=""
                       />
                     </div>
-                    <div className="text-sm">
+                    <div className="text-xs md:text-base">
                       <div className="mb-1">{content.username}</div>
                       <div>{content.fullname}</div>
                     </div>
@@ -365,10 +373,10 @@ const Recipe = (props) => {
                   ""
                 )}
               </div>
-              <div className="ml-16 relative mr-2">
+              <div className="ml-8 sm:ml-16 relative mr-2">
                 <div className="absolute border-b border-hijau w-7 h-2 rotate-45 top-3 bg-putih "></div>
                 <div className="absolute border-t border-hijau w-5 h-2 rotate-[21deg] top-3"></div>
-                <div className="border-hijau border ml-5 p-2 block rounded-lg bg-putih">
+                <div className="border-hijau border ml-5 p-2 block rounded-lg text-xs sm:text-base bg-putih">
                   {content.comment}
                 </div>
               </div>
@@ -377,7 +385,7 @@ const Recipe = (props) => {
         })}
         {commentsMore.more ? (
           <div
-            className="bg-merah flex justify-center items-center text-putih py-3 rounded-xl cursor-pointer"
+            className="bg-merah flex justify-center text-xs sm:text-base items-center text-center text-putih py-3 rounded-xl cursor-pointer"
             onClick={() => navigate(`/recipe/${post_id}`)}
           >
             See {commentsMore.total} more comments on recipe details
@@ -392,7 +400,7 @@ const Recipe = (props) => {
   return (
     <div
       className={`
-    relative w-full min-h-[550px] mb-5 rounded-xl overflow-hidden bg-transparent shadow-black/50 shadow-lg`}
+    relative w-full min-h-[380px] sm:min-h-[550px] mb-5 rounded-xl overflow-hidden bg-transparent shadow-black/50 shadow-lg`}
     >
       {modalNewComment && (
         <ModalNewComment
@@ -452,21 +460,23 @@ const Recipe = (props) => {
           type="button"
           className={`${
             isPage.recipe ? " text-merah" : "brightness-75"
-          } w-full h-[30%] rounded-r bg-putih focus:outline-none  duration-500 text-sm border-b border-black/30`}
+          } w-full h-[30%] rounded-r bg-putih focus:outline-none  duration-500 text-xs sm:text-sm border-b border-black/30`}
           onClick={() => getRecipe()}
         >
-          <p className="rotate-90 tracking-[1em] -mt-14">RECIPE</p>
+          <p className="rotate-90 tracking-[.5em] sm:tracking-[1em] -mt-8 sm:-mt-14">
+            RECIPE
+          </p>
         </button>
         {/*  */}
         {/* Likes Page Button */}
         <button
           type="button"
-          className={`w-full h-[30%] bg-putih rounded-r focus:outline-none duration-500 text-sm border-b border-black/30 ${
+          className={`w-full h-[30%] bg-putih rounded-r focus:outline-none duration-500 text-xs sm:text-sm border-b border-black/30 ${
             isPage.kisses ? "text-merah" : "brightness-75"
           }`}
           onClick={() => getLikers()}
         >
-          <p className="rotate-90 tracking-[1em] -mt-14 translate-y-1">
+          <p className="rotate-90 tracking-[.5em] sm:tracking-[1em] -mt-9 sm:-mt-14 translate-y-1">
             KISSES
           </p>
         </button>
@@ -474,12 +484,12 @@ const Recipe = (props) => {
         {/* Comments Page Button */}
         <button
           type="button"
-          className={`w-full h-[30%] rounded-r bg-putih focus:outline-none duration-500 text-sm ${
+          className={`w-full h-[30%] rounded-r bg-putih focus:outline-none duration-500 text-xs sm:text-sm ${
             isPage.comment ? "text-merah" : "brightness-75"
           }`}
           onClick={() => getComments()}
         >
-          <p className="rotate-90 tracking-[0.5em] -mt-14 -translate-y-1 ">
+          <p className="rotate-90 tracking-[.25em] sm:tracking-[.5em] -mt-10 sm:-mt-14 -translate-y-1 ">
             COMMENTS
           </p>
         </button>
@@ -571,8 +581,8 @@ const Recipe = (props) => {
                 </div>
               </div>
               <div className="h-[80%] w-full relative mt-3 pb-4">
-                <div className="w-20 h-6 origin-center rotate-[-45deg] absolute top-4 z-10 bg-white/50"></div>
-                <div className="w-20 h-6 origin-center rotate-[-45deg] absolute bottom-14 z-10 right-0 bg-white/50"></div>
+                {/* <div className="w-20 h-6 origin-center rotate-[-45deg] absolute top-4 z-10 bg-white/50"></div>
+                <div className="w-20 h-6 origin-center rotate-[-45deg] absolute bottom-14 z-10 right-0 bg-white/50"></div> */}
                 <div className="h-full w-full p-5 -mt-3 ">
                   <div className="h-full bg-white relative">
                     <div
@@ -587,7 +597,7 @@ const Recipe = (props) => {
                       />
                     </div>
                     <div
-                      className="absolute bottom-0 flex items-center h-1/6 w-full justify-center text-center p-2 m text-xl cursor-pointer"
+                      className="absolute bottom-0 flex items-center h-1/6 w-full font-semibold justify-center text-center p-2 m text-sm sm:text-xl cursor-pointer"
                       onClick={() => navigate(`/recipe/${post_id}`)}
                     >
                       "{title}"
@@ -717,7 +727,7 @@ const Recipe = (props) => {
         <>
           <div className="h-full w-[95%] absolute pr-3 rounded-l">
             <div className="h-full flex flex-col w-full p-5 bg-putih rounded-l">
-              <div className="w-full h-[225px] bg-putih h mb-7">
+              <div className="w-full h-1/2 bg-putih flex flex-col text-sm sm:text-base">
                 Ingredients:
                 <div className="w-full h-full overflow-y-scroll border-y border-merah">
                   {loading ? (
@@ -730,7 +740,7 @@ const Recipe = (props) => {
                   )}
                 </div>
               </div>
-              <div className="w-full h-[225px] bg-putih">
+              <div className="w-full h-1/2 bg-putih flex flex-col text-sm sm:text-base">
                 Instructions:
                 <div className="w-full h-full overflow-y-scroll border-y border-merah">
                   {loading ? (
@@ -753,7 +763,7 @@ const Recipe = (props) => {
         <>
           <div className="h-full w-[95%] absolute pr-3 flex rounded-l ">
             <div className="h-full flex flex-col w-full p-5 bg-putih rounded-l">
-              <div className="w-full relative bg-putih text-3xl">
+              <div className="w-full relative bg-putih text-xl sm:text-3xl">
                 {likes} Chefs loved this recipe:
               </div>
 
@@ -784,7 +794,7 @@ const Recipe = (props) => {
         <>
           <div className="h-full w-[95%] absolute pr-3 flex rounded-l">
             <div className="h-full flex flex-col w-full p-5 bg-putih rounded-l">
-              <div className="w-full relative bg-putih text-3xl">
+              <div className="w-full relative bg-putih text-xl sm:text-3xl">
                 Comments from other chefs:
               </div>
               <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah mt-5">

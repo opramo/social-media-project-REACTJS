@@ -174,7 +174,7 @@ const ModalSignUp = (props) => {
                       handleBlur,
                     } = formik;
                     return (
-                      <Form className="flex flex-col gap-y-1">
+                      <Form className="flex flex-col gap-y-5">
                         {/* Username */}
                         <div className="flex flex-col relative">
                           <label htmlFor="username">Username</label>
@@ -286,7 +286,7 @@ const ModalSignUp = (props) => {
                           values.password.length ? (
                             <div
                               name="password"
-                              className="text-merah -mt-5 ml-2 text-xs absolute bg-putih px-2 -bottom-2 pointer-events-none"
+                              className="text-merah -mt-5 mx-2 text-xs absolute bg-putih px-2 -bottom-5  sm:-bottom-2 pointer-events-none"
                             >
                               {errors.password}
                             </div>

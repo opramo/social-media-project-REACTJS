@@ -83,7 +83,8 @@ const MyKitchen = () => {
             <img
               src={profile_cover ? API_URL + profile_cover : cover}
               alt=""
-              className="absolute bottom-0 w-full"
+              className="w-full h-full object-cover"
+              style={{ objectPosition: "0 0" }}
             />
           </div>
           <div className="bg-gradient-to-b from-black py-2 text-center text-lg font-bold text-putih w-full tracking-wider z-10">
@@ -132,7 +133,7 @@ const MyKitchen = () => {
         </div>
         <div className="w-full flex justify-center bg-putih z-10">
           {myRecipes ? (
-            <div className="bg-putih w-[600px] h-auto py-5 relative z-10">
+            <div className="bg-putih w-[380px] sm:w-[600px] h-auto py-5 relative z-10">
               {loadingPosts ? (
                 <div className="py-20 flex flex-col justify-center items-center">
                   <Loading className="h-20 w-20 animate-bounce" />
@@ -147,7 +148,7 @@ const MyKitchen = () => {
               )}
             </div>
           ) : (
-            <div className="bg-putih w-[600px] h-auto py-5 relative z-10">
+            <div className="bg-putih w-[380px] sm:w-[600px] h-auto py-5 relative z-10">
               {loadingPosts ? (
                 <div className="py-20 flex flex-col justify-center items-center">
                   <Loading className="h-20 w-20 animate-bounce" />

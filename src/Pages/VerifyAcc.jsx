@@ -18,8 +18,7 @@ const VerifyAcc = () => {
         email,
       });
       toast.success("Email sent!", {
-        className: "bg-hijau",
-        position: "bottom-center",
+        position: "top-center",
         theme: "colored",
         style: { backgroundColor: "#3A7D44" },
       });
