@@ -174,7 +174,7 @@ const EditRecipe = () => {
                           className={
                             formik.errors.title && formik.touched.title
                               ? "p-2 text-center outline outline-merah rounded bg-putih"
-                              : "p-2 text-center focus:outline focus:outline-biru rounded bg-putih"
+                              : "p-2 text-center outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
                           }
                         />
                         <ErrorMessage
@@ -271,7 +271,7 @@ const EditRecipe = () => {
                                         className={`p-2 w-[90%] rounded bg-putih ${
                                           formik.errors.recipeName &&
                                           formik.touched.recipeName
-                                            ? "outline outline-merah"
+                                            ? "outline outline-2 outline-merah"
                                             : "outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru"
                                         }`}
                                       />
@@ -402,12 +402,15 @@ const EditRecipe = () => {
                         <button
                           type="submit"
                           disabled={
-                            !formik.isValid || formik.isSubmitting || loading
+                            !formik.isValid ||
+                            formik.isSubmitting ||
+                            loading ||
+                            !formik.dirty
                           }
                           className={`m-auto mt-3 justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
                   focus-visible:ring-biru duration-500
                   shadow-md hover:shadow-black text-white bg-hijau border-transparent 
-                  disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-white disabled:cursor-not-allowed
+                  disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-merah disabled:cursor-not-allowed
                 }`}
                         >
                           Edit Your Recipe

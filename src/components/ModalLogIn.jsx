@@ -151,7 +151,7 @@ const ModalLogIn = (props) => {
                       handleBlur,
                     } = formik;
                     return (
-                      <Form className="flex flex-col gap-y-2">
+                      <Form className="flex flex-col gap-y-5">
                         {/* Email/Username */}
                         <div className="flex flex-col relative">
                           <label htmlFor="personId" className="mb-1">
@@ -174,7 +174,7 @@ const ModalLogIn = (props) => {
                                 dirty) ||
                               (message[0] && !changed)
                                 ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
                             }
                           />
 
@@ -219,7 +219,7 @@ const ModalLogIn = (props) => {
                                 values.password.length) ||
                               (message[1] && !changed)
                                 ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
                             }
                           />
                           {errors.password &&
@@ -245,44 +245,42 @@ const ModalLogIn = (props) => {
                             {passVis ? <EyeIcon /> : <EyeOffIcon />}
                           </div>
                         </div>
-                        <div className="mt-4 flex items-end justify-between">
-                          <div className="flex flex-col items-start">
-                            <div className="text-xs mb-4">
-                              <span>Don't have an account? </span>
-                              <span
-                                className="hover:underline hover:text-biru duration-500 cursor-pointer"
-                                onClick={() => {
-                                  modalLogInHandler();
-                                  setTimeout(() => {
-                                    modalSignUpHandler();
-                                  }, 500);
-                                }}
-                              >
-                                Register here!
-                              </span>
-                            </div>
-                            {loading ? (
-                              <Loading
-                                className={"animate-spin h-10 w-10 ml-5"}
-                              />
-                            ) : (
-                              <button
-                                type="submit"
-                                disabled={
-                                  !dirty ||
-                                  !isValid ||
-                                  isSubmitting ||
-                                  loading ||
-                                  !changed
-                                }
-                                className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
-                               disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
+                        <div className="text-xs">
+                          <span>Don't have an account? </span>
+                          <span
+                            className="hover:underline hover:text-biru duration-500 cursor-pointer"
+                            onClick={() => {
+                              modalLogInHandler();
+                              setTimeout(() => {
+                                modalSignUpHandler();
+                              }, 500);
+                            }}
+                          >
+                            Register here!
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          {loading ? (
+                            <Loading
+                              className={"animate-spin h-10 w-10 ml-5"}
+                            />
+                          ) : (
+                            <button
+                              type="submit"
+                              disabled={
+                                !dirty ||
+                                !isValid ||
+                                isSubmitting ||
+                                loading ||
+                                !changed
+                              }
+                              className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
+                               disabled:shadow-none disabled:text-merah disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                               hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
-                              >
-                                Log In
-                              </button>
-                            )}
-                          </div>
+                            >
+                              Log In
+                            </button>
+                          )}
 
                           <span
                             className="hover:underline hover:text-biru duration-500 cursor-pointer text-xs"

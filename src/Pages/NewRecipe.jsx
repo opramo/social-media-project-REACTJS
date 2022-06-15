@@ -119,7 +119,7 @@ const NewRecipe = () => {
               >
                 {(formik) => {
                   return (
-                    <Form className="flex flex-col gap-y-5 p-5">
+                    <Form className="flex flex-col gap-y-5 px-2 md:px-5">
                       {/* Recipe's Name */}
                       <div className="flex flex-col relative">
                         <label htmlFor="title" className="text-center">
@@ -131,8 +131,8 @@ const NewRecipe = () => {
                           type="text"
                           className={
                             formik.errors.title && formik.touched.title
-                              ? "p-2 outline outline-merah outline-2 rounded bg-putih"
-                              : "p-2 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                              ? "p-2 text-center outline outline-merah outline-2 rounded bg-putih"
+                              : "p-2 text-center outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
                           }
                         />
                         <ErrorMessage
@@ -150,7 +150,7 @@ const NewRecipe = () => {
                         >
                           Recipe Photo
                         </label>
-                        <div className=" w-full aspect-video border rounded-lg border-merah overflow-hidden">
+                        <div className=" w-full aspect-video border rounded-lg border-gray-500 overflow-hidden">
                           <img
                             src={photoRecipe?.url}
                             alt=""
@@ -229,8 +229,8 @@ const NewRecipe = () => {
                                         className={`p-2 w-[90%] rounded bg-putih ${
                                           formik.errors.recipeName &&
                                           formik.touched.recipeName
-                                            ? " outline outline-merah outline-2 "
-                                            : " focus:outline focus:outline-biru focus:outline-2  focus:bg-white"
+                                            ? "outline outline-2 outline-merah"
+                                            : "outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru"
                                         }`}
                                       />
                                       <div className="w-[10%] flex gap-2 justify-center items-center">
@@ -303,7 +303,7 @@ const NewRecipe = () => {
                                           formik.errors.recipeName &&
                                           formik.touched.recipeName
                                             ? "outline outline-merah outline-2"
-                                            : "focus:outline focus:outline-biru focus:outline-2 focus:bg-white"
+                                            : "outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru"
                                         }`}
                                       />
                                       <div className="w-[10%] flex gap-2 justify-center items-center">
@@ -363,7 +363,7 @@ const NewRecipe = () => {
                           className={`m-auto mt-3 justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
                     focus-visible:ring-biru duration-500
                     shadow-md hover:shadow-black text-white bg-hijau border-transparent 
-                    disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-white disabled:cursor-not-allowed
+                    disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-merah disabled:cursor-not-allowed
                   }`}
                         >
                           Submit Your Recipe

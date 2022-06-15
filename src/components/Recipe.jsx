@@ -400,7 +400,7 @@ const Recipe = (props) => {
   return (
     <div
       className={`
-    relative w-full min-h-[380px] sm:min-h-[550px] mb-5 rounded-xl overflow-hidden bg-transparent shadow-black/50 shadow-lg`}
+    relative w-full aspect-square mb-5 rounded-xl overflow-hidden bg-transparent shadow-black/50 shadow-lg`}
     >
       {modalNewComment && (
         <ModalNewComment
@@ -509,7 +509,7 @@ const Recipe = (props) => {
                       : navigate(`/profile/${user.username}`);
                   }}
                 >
-                  <div className="w-12 h-12 rounded-full mr-3 overflow-hidden">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full mr-3 overflow-hidden">
                     <img
                       src={
                         user.profile_picture
@@ -584,7 +584,7 @@ const Recipe = (props) => {
                 {/* <div className="w-20 h-6 origin-center rotate-[-45deg] absolute top-4 z-10 bg-white/50"></div>
                 <div className="w-20 h-6 origin-center rotate-[-45deg] absolute bottom-14 z-10 right-0 bg-white/50"></div> */}
                 <div className="h-full w-full p-5 -mt-3 ">
-                  <div className="h-full bg-white relative">
+                  <div className="h-full bg-white relative flex flex-col">
                     <div
                       className="w-full aspect-video p-2 pb-0 cursor-pointer"
                       onClick={() => navigate(`/recipe/${post_id}`)}
@@ -597,7 +597,7 @@ const Recipe = (props) => {
                       />
                     </div>
                     <div
-                      className="absolute bottom-0 flex items-center h-1/6 w-full font-semibold justify-center text-center p-2 m text-sm sm:text-xl cursor-pointer"
+                      className="h-[100px] flex items-center  w-full font-semibold justify-center text-center p-2 m text-sm sm:text-xl cursor-pointer"
                       onClick={() => navigate(`/recipe/${post_id}`)}
                     >
                       "{title}"
@@ -645,7 +645,7 @@ const Recipe = (props) => {
                             >
                               <motion.div
                                 variants={animationShare.item1}
-                                className="absolute"
+                                className="absolute h-11 w-11"
                               >
                                 <TwitterShareButton
                                   url={`${WEB_URL}/recipe/${post_id}`}
@@ -661,7 +661,7 @@ const Recipe = (props) => {
                               </motion.div>
                               <motion.div
                                 variants={animationShare.item2}
-                                className="absolute"
+                                className="absolute h-11 w-11"
                               >
                                 <WhatsappShareButton
                                   url={`${WEB_URL}/recipe/${post_id}`}
@@ -677,7 +677,7 @@ const Recipe = (props) => {
                               </motion.div>
                               <motion.div
                                 variants={animationShare.item3}
-                                className="absolute"
+                                className="absolute h-11 w-11"
                               >
                                 <FacebookShareButton
                                   url={`${WEB_URL}/recipe/${post_id}`}
@@ -693,7 +693,7 @@ const Recipe = (props) => {
                               </motion.div>
                               <motion.div
                                 variants={animationShare.item4}
-                                className="absolute"
+                                className="absolute  h-11 w-11"
                               >
                                 <button
                                   onClick={() => {
@@ -731,8 +731,8 @@ const Recipe = (props) => {
                 Ingredients:
                 <div className="w-full h-full overflow-y-scroll border-y border-merah">
                   {loading ? (
-                    <div className="py-20 flex flex-col justify-center items-center">
-                      <Loading className="h-14 w-14 animate-spin" />
+                    <div className="h-full flex flex-col justify-center items-center">
+                      <Loading className="h-12 w-12 md:h-14 md:w-14 animate-spin" />
                       <div>Please wait...</div>
                     </div>
                   ) : (
@@ -744,8 +744,8 @@ const Recipe = (props) => {
                 Instructions:
                 <div className="w-full h-full overflow-y-scroll border-y border-merah">
                   {loading ? (
-                    <div className="py-20 flex flex-col justify-center items-center">
-                      <Loading className="h-14 w-14 animate-spin" />
+                    <div className="h-full flex flex-col justify-center items-center">
+                      <Loading className="h-12 w-12 md:h-14 md:w-14 animate-spin" />
                       <div>Please wait...</div>
                     </div>
                   ) : (
@@ -769,8 +769,8 @@ const Recipe = (props) => {
 
               <div className="h-full w-full relative bg-putih border-y border-merah  overflow-y-scroll mt-5">
                 {loading ? (
-                  <div className="py-20 flex flex-col justify-center items-center">
-                    <Loading className="h-14 w-14 animate-spin" />
+                  <div className="h-full flex flex-col justify-center items-center">
+                    <Loading className="h-12 w-12 md:h-14 md:w-14 animate-spin" />
                     <div>Please wait...</div>
                   </div>
                 ) : likers[0] ? (
@@ -778,11 +778,6 @@ const Recipe = (props) => {
                 ) : (
                   "No chef likes this recipe :<"
                 )}
-              </div>
-              <div className="w-full relative bg-putih text-3xl">
-                <div className="flex items-center">
-                  <div className="h-14 mt-2"></div>
-                </div>
               </div>
             </div>
           </div>
@@ -800,23 +795,25 @@ const Recipe = (props) => {
               <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah mt-5">
                 {loading ? (
                   <div className="py-20 flex flex-col justify-center items-center">
-                    <Loading className="h-14 w-14 animate-spin" />
+                    <Loading className="h-12 w-12 md:h-14 md:w-14 animate-spin" />
                     <div>Please wait...</div>
                   </div>
                 ) : comments[0] ? (
                   printComments()
                 ) : (
-                  "No chef commented here :<"
+                  <div className="h-full flex items-center justify-center text-center text-xs md:text-base">
+                    No chef commented here :&#60;
+                  </div>
                 )}
               </div>
 
               <div className="w-full relative bg-putih text-3xl">
-                <div className="flex items-center">
+                <div className="flex items-center pt-2">
                   <button
                     type="button"
                     className={`${
                       modalNewComment ? "bg-hijau" : "bg-putih"
-                    } h-14 w-14 mt-2 rounded-full border-2 border-hijau ml-1 
+                    } h-12 w-12 md:h-14 md:w-14 rounded-full border-2 border-hijau ml-1 
                     overflow-hidden duration-500 hover:shadow-black 
                     shadow-md focus:outline-none`}
                     onClick={() => {

@@ -23,10 +23,7 @@ const ModalNewComment = (props) => {
   } = props;
   const [loading, setLoading] = useState(false);
   const validationSchema = Yup.object({
-    comment: Yup.string().max(
-      300,
-      "You are exceeding the maximum characters limit! (300 chars)."
-    ),
+    comment: Yup.string().max(300, "You are exceeding the limit! (300 chars)."),
   });
   const initialValues = {
     comment: "",
@@ -107,7 +104,7 @@ const ModalNewComment = (props) => {
                   as="div"
                   className="relative text-lg font-medium leading-6 text-putih bg-merah rounded text-center mb-5 -mt-7 -mx-10"
                 >
-                  <h1 className="h-20 w-100 flex justify-center items-center text-xl">
+                  <h1 className="h-20 w-100 flex justify-center items-center text-base md:text-xl">
                     Leave a comment below!
                   </h1>
                   <XIcon
@@ -144,13 +141,7 @@ const ModalNewComment = (props) => {
                               errors.comment ? "outline-merah" : "outline-biru"
                             }`}
                           />
-                          <div
-                            className={`${
-                              errors.comment ? "text-merah" : "text-black"
-                            } absolute right-2 bottom-2 duration-500`}
-                          >
-                            {values.comment.length}/300
-                          </div>
+
                           {errors.comment ? (
                             <div
                               name="comment"
@@ -170,12 +161,19 @@ const ModalNewComment = (props) => {
                               disabled={!dirty || !isValid || isSubmitting}
                               type="input"
                               className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
-                            disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
+                            disabled:shadow-none disabled:text-merah disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                            hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
                             >
                               Submit Comment
                             </button>
                           )}
+                          <div
+                            className={`${
+                              errors.comment ? "text-merah" : "text-black"
+                            } absolute right-5 bottom-8 duration-500 z-10`}
+                          >
+                            {values.comment.length}/300
+                          </div>
                         </div>
                       </Form>
                     );

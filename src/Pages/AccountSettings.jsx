@@ -236,7 +236,7 @@ const AccountSettings = () => {
                         >
                           Profile Picture
                         </label>
-                        <div className="rounded-full w-1/3 aspect-square  border border-merah overflow-hidden relative">
+                        <div className="rounded-full w-1/3 aspect-square  border border-gray-500 overflow-hidden relative">
                           <img
                             src={profilePicture.ava.url}
                             alt=""
@@ -306,7 +306,7 @@ const AccountSettings = () => {
                         >
                           Profile Cover
                         </label>
-                        <div className="w-full aspect-video border rounded-lg border-merah overflow-hidden">
+                        <div className="w-full aspect-video border rounded-lg border-gray-500 overflow-hidden">
                           <img
                             src={profilePicture.cover.url}
                             alt=""
@@ -355,7 +355,7 @@ const AccountSettings = () => {
                         <button
                           type="button"
                           className="shadow-md my-2 inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
-                      disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
+                      disabled:shadow-none disabled:text-merah disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                       hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
                           onClick={() => coverRef.current.click()}
                           disabled={!is_verified}
@@ -390,7 +390,7 @@ const AccountSettings = () => {
                           className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
                             errors.fullname
                               ? "outline outline-2 outline-merah"
-                              : "focus:outline focus:outline-biru focus:outline-2"
+                              : "outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru"
                           }`}
                         />
                         {errors.fullname && dirty && values.fullname.length ? (
@@ -429,7 +429,7 @@ const AccountSettings = () => {
                           className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
                             errors.username
                               ? "outline outline-2 outline-merah"
-                              : "focus:outline focus:outline-biru focus:outline-2"
+                              : "outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru"
                           }`}
                         />
 
@@ -479,7 +479,7 @@ const AccountSettings = () => {
                           className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
                             errors.bio
                               ? "outline outline-2 outline-merah"
-                              : "focus:outline focus:outline-biru focus:outline-2"
+                              : "outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru"
                           }`}
                         />
                         {errors.bio && dirty && values.bio.length ? (
@@ -520,7 +520,7 @@ const AccountSettings = () => {
                               !changed
                             }
                             className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
-                        disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
+                        disabled:shadow-none disabled:text-merah disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                         hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
                           >
                             Save Changes

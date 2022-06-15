@@ -195,7 +195,7 @@ const ModalSignUp = (props) => {
                                 dirty) ||
                               (message[0] && !changed)
                                 ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
                             }
                           />
 
@@ -237,7 +237,7 @@ const ModalSignUp = (props) => {
                                 dirty) ||
                               (message[1] && !changed)
                                 ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
                             }
                           />
                           {errors.email &&
@@ -277,7 +277,7 @@ const ModalSignUp = (props) => {
                               values.password.length &&
                               dirty
                                 ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
                             }
                           />
                           {errors.password &&
@@ -320,7 +320,7 @@ const ModalSignUp = (props) => {
                               values.passwordConfirm.length &&
                               dirty
                                 ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 px-4 focus:outline focus:outline-biru focus:outline-2 rounded bg-putih"
+                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
                             }
                           />
                           {errors.passwordConfirm &&
@@ -344,7 +344,7 @@ const ModalSignUp = (props) => {
                           </div>
                         </div>
                         {/* Button Submit */}
-                        <div className="mt-4 flex items-center justify-between">
+                        <div className="flex items-center justify-between gap-x-5">
                           {loading ? (
                             <Loading
                               className={"animate-spin h-10 w-10 ml-5"}
@@ -359,10 +359,10 @@ const ModalSignUp = (props) => {
                                 loading ||
                                 !changed
                               }
-                              className={`justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
+                              className={`w-32 justify-center px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 
                           focus-visible:ring-biru duration-500
                           hover:text-putih shadow-md hover:shadow-black text-putih bg-hijau border-transparent 
-                          disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-white disabled:cursor-not-allowed
+                          disabled:bg-putih disabled:shadow-none disabled:border-merah disabled:text-merah disabled:cursor-not-allowed
                         }`}
                             >
                               Sign Up
