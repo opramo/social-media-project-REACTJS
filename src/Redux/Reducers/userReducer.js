@@ -15,6 +15,7 @@ const INITIAL_STATE = {
   deleted: false,
   edit: null,
   restriction: false,
+  refresh: 0,
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -25,6 +26,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
         loading: true,
         error: false,
         error_mes: "",
+      };
+    case "REFRESH":
+      return {
+        ...state,
+        refresh: action.payload,
       };
     case "LOGIN":
       return {

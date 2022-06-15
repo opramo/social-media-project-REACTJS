@@ -99,7 +99,7 @@ const MyKitchen = () => {
             </div>
           </div>
           <div className="text-white bg-gradient-to-t from-black w-full text-center flex flex-col items-center pb-10 z-10 text-xs">
-            <div className="text-center py-1 text-putih text-base">
+            <div className="text-center py-1 text-putih text-base font-semibold">
               {fullname}
             </div>
             {bio}
@@ -133,7 +133,7 @@ const MyKitchen = () => {
         </div>
         <div className="w-full flex justify-center bg-putih z-10">
           {myRecipes ? (
-            <div className="bg-putih w-[380px] sm:w-[600px] h-auto py-5 relative z-10">
+            <div className="bg-putih w-[600px] h-auto py-5 relative z-10">
               {loadingPosts ? (
                 <div className="py-20 flex flex-col justify-center items-center">
                   <Loading className="h-20 w-20 animate-bounce" />
@@ -148,7 +148,7 @@ const MyKitchen = () => {
               )}
             </div>
           ) : (
-            <div className="bg-putih w-[380px] sm:w-[600px] h-auto py-5 relative z-10">
+            <div className="bg-putih w-[600px] h-auto py-5 relative z-10">
               {loadingPosts ? (
                 <div className="py-20 flex flex-col justify-center items-center">
                   <Loading className="h-20 w-20 animate-bounce" />

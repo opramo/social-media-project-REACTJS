@@ -58,7 +58,7 @@ const ModalSignUp = (props) => {
     password: Yup.string()
       .min(8, "Password is too short - minimimum of 8 characters.")
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$&+,:;=?@#|'<>.-_^*()%!])[A-Za-z\d@$!%*?&]/,
         "Must also contain uppercase, number, and special character."
       )
       .required("Password is required!"),

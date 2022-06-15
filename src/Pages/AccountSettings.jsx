@@ -98,8 +98,6 @@ const AccountSettings = () => {
           headers: { authorization: token },
         }
       );
-      console.log(res);
-
       dispatch({ type: "LOGIN", payload: res.data });
       toast.success("Updated!", {
         theme: "colored",
@@ -291,7 +289,7 @@ const AccountSettings = () => {
                         <button
                           type="button"
                           className="shadow-md my-2 inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md 
-                      disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
+                      disabled:shadow-none disabled:text-merah disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                       hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
                           onClick={() => avaRef.current.click()}
                           disabled={!is_verified}

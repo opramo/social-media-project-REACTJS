@@ -104,7 +104,7 @@ const ModalNewComment = (props) => {
                   as="div"
                   className="relative text-lg font-medium leading-6 text-putih bg-merah rounded text-center mb-5 -mt-7 -mx-10"
                 >
-                  <h1 className="h-20 w-100 flex justify-center items-center text-base md:text-xl">
+                  <h1 className="h-20 w-100 flex justify-center items-center text-base sm:text-xl">
                     Leave a comment below!
                   </h1>
                   <XIcon

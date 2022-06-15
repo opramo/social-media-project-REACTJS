@@ -118,7 +118,7 @@ const RecipeDetails = () => {
   const printKissed = () => {
     return (
       <button
-        className={`h-12 w-12 md:h-14 md:w-14 rounded-full border-2 border-merah overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none ${
+        className={`h-12 w-12 sm:h-14 sm:w-14 rounded-full border-2 border-merah overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none ${
           kissed ? "bg-merah" : "bg-putih"
         }`}
         onClick={async () => {
@@ -135,7 +135,6 @@ const RecipeDetails = () => {
               );
               kissed ? setLikes(likes - 1) : setLikes(likes + 1);
               setKissed(!kissed);
-              console.log("liked!");
             } else {
               toast.error("Please verify your account!", {
                 theme: "colored",
@@ -177,8 +176,8 @@ const RecipeDetails = () => {
         const { username, fullname, profile_picture } = user;
         const { updated_at, photo, title, user_id } = post;
         setData({
-          photo: `${API_URL}${photo}`,
-          profile_picture: `${API_URL}${profile_picture}`,
+          photo,
+          profile_picture,
           title,
           user_id,
           updated_at,
@@ -279,20 +278,23 @@ const RecipeDetails = () => {
         />
       )}
       {/* Div to center content */}
-      <div className="h-60 hidden sticky top-32 md:flex flex-col items-end w-20 pointer-events-none" />
+      <div className="h-60 hidden sticky top-32 sm:flex flex-col items-end w-20 pointer-events-none" />
 
       {/* Content */}
-      <div className="flex my-5 justify-center overflow-hidden relative z-0  rounded-2xl shadow-lg shadow-black/50 w-[600px]">
+      <div className="flex sm:my-5 justify-center overflow-hidden relative z-0  sm:rounded-2xl shadow-lg shadow-black/50 sm:w-[600px]">
         <div className="z-0 w-full rounded-2xl relative ">
           <div className="w-full flex flex-col justify-center bg-putih z-10">
             <div className="w-full aspect-video rounded-t-2xl relative">
               <img
-                src={data.photo}
+                src={API_URL + data.photo}
                 alt=""
                 className="w-full h-full object-cover"
                 style={{ objectPosition: "0 0" }}
               />
               <div className="w-full h-20 bg-gradient-to-t from-black/50 absolute bottom-0"></div>
+              <div className="absolute -bottom-1 right-5 mb-1 text-putih text-xs sm:text-base">
+                {createdAtPost}
+              </div>
             </div>
             <div className="w-full flex justify-between px-5 text-sm relative">
               <div
@@ -304,7 +306,14 @@ const RecipeDetails = () => {
                 }}
               >
                 <div className="w-20 h-20 rounded-full overflow-hidden absolute -bottom-2 border-2 border-putih">
-                  <img src={data.profile_picture} alt="" />
+                  <img
+                    src={
+                      data.profile_picture
+                        ? API_URL + data.profile_picture
+                        : cat
+                    }
+                    alt=""
+                  />
                 </div>
                 <div className="pl-24 pr-5 flex flex-col justify-between">
                   <div className="">
@@ -314,8 +323,7 @@ const RecipeDetails = () => {
                   <div className="text-black">{data.fullname}</div>
                 </div>
               </div>
-              <div className="flex flex-col text-center items-end mb-1 -mt-5">
-                <div className="mb-1 text-putih">{createdAtPost}</div>
+              <div className="flex flex-col text-center items-end justify-end mb-1 -mt-5">
                 {id === data.user_id ? (
                   <Popover className="relative h-5">
                     {({ open }) => (
@@ -370,10 +378,10 @@ const RecipeDetails = () => {
                 ) : null}
               </div>
             </div>
-            <div className="flex items-center justify-center text-center text-3xl py-5">
+            <div className="flex items-center justify-center text-center text-xl sm:text-3xl py-3 sm:py-5">
               "{data.title}"
             </div>
-            <div className="flex items-center justify-center text-center text-base">
+            <div className="flex items-center justify-center text-center text-xs sm:text-base">
               {likes
                 ? `${likes} chefs like this!`
                 : "No chef likes this recipe :<"}
@@ -384,7 +392,7 @@ const RecipeDetails = () => {
               <div className="w-full bg-putih h mb-0 text-xl border-t border-merah">
                 <div className="h-10 flex items-center">Ingredients:</div>
                 <div className="w-full border-y border-merah">
-                  <ul className="max-w-full list-disc ml-5 break-words text-lg py-3">
+                  <ul className="max-w-full list-disc ml-5 break-words text-sm sm:text-lg py-3">
                     {data.ingredients.map((content) => {
                       return (
                         <li key={content.ingredient_id} className="mb-3">
@@ -398,10 +406,13 @@ const RecipeDetails = () => {
               <div className="w-full bg-putih text-xl ">
                 <div className="h-10 flex items-center">Instructions:</div>
                 <div className="w-full border-y border-merah">
-                  <ol className="max-w-full list-decimal ml-5 break-words text-lg py-3">
+                  <ol className="max-w-full list-decimal ml-5 break-words text-sm sm:text-lg py-3">
                     {data.instructions.map((content) => {
                       return (
-                        <li key={content.instruction_id} className="mb-3">
+                        <li
+                          key={content.instruction_id}
+                          className="mb-3 text-justify pr-2"
+                        >
                           {content.instruction}
                         </li>
                       );
@@ -416,7 +427,7 @@ const RecipeDetails = () => {
                 </div>
                 <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah">
                   {likersRender[0] ? (
-                    <ul className="max-w-full mx-5 break-words text-xl bg-putih">
+                    <ul className="max-w-full break-words text-xl bg-putih">
                       {likersRender.map((content) => {
                         return (
                           <li key={content.id}>
@@ -456,7 +467,9 @@ const RecipeDetails = () => {
                       ) : null}
                     </ul>
                   ) : (
-                    "No chef liked this recipe :<"
+                    <div className="h-20 flex items-center justify-center text-center text-xs sm:text-base">
+                      No chef likes this recipe :&#60;
+                    </div>
                   )}
                 </div>
               </div>
@@ -467,7 +480,7 @@ const RecipeDetails = () => {
                 </div>
                 <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah">
                   {commentsRender[0] ? (
-                    <ul className="max-w-full ml-5 break-words text-base bg-putih py-2">
+                    <ul className="max-w-full break-words text-base bg-putih py-2">
                       {commentsRender.map((content) => {
                         return (
                           <li className="flex flex-col" key={content.id}>
@@ -515,7 +528,7 @@ const RecipeDetails = () => {
                                 ""
                               )}
                             </div>
-                            <div className="ml-16 relative mr-2">
+                            <div className="ml-8 sm:ml-16 relative mr-2">
                               <div className="absolute border-b border-hijau w-7 h-2 rotate-45 top-3 bg-putih"></div>
                               <div className="absolute border-t border-hijau w-5 h-2 rotate-[21deg] top-3"></div>
                               <div className="border-hijau border ml-5 p-2 block rounded-lg bg-putih">
@@ -535,7 +548,9 @@ const RecipeDetails = () => {
                       ) : null}
                     </ul>
                   ) : (
-                    "No chef commented here :<"
+                    <div className="h-20 flex items-center justify-center text-center text-xs sm:text-base">
+                      No chef commented here :&#60;
+                    </div>
                   )}
                 </div>
               </div>
@@ -545,14 +560,14 @@ const RecipeDetails = () => {
       </div>
 
       {/* Sidebar Nav */}
-      <div className="h-80 fixed md:sticky top-32 right-2 flex flex-col items-end w-20">
+      <div className="h-80 fixed sm:sticky top-32 right-2 flex flex-col items-end w-20">
         <>{printKissed()}</>
 
         <button
           type="button"
           className={`${
             modalNewComment ? "bg-hijau" : "bg-putih"
-          } z-40 h-12 w-12 md:h-14 md:w-14 mt-2 rounded-full  border-2 border-hijau overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none`}
+          } z-40 h-12 w-12 sm:h-14 sm:w-14 mt-2 rounded-full  border-2 border-hijau overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none`}
           onClick={() => {
             is_verified
               ? modalNewCommentHandler()
@@ -570,13 +585,13 @@ const RecipeDetails = () => {
           />
         </button>
 
-        <Popover className="relative overflow-visible h-12 w-12 md:h-14 md:w-14 mt-2 rounded-full">
+        <Popover className="relative overflow-visible h-12 w-12 sm:h-14 sm:w-14 mt-2 rounded-full">
           {({ open }) => (
             <>
               <Popover.Button
                 className={`${
                   open ? "bg-biru" : "bg-putih"
-                } h-12 w-12 md:h-14 md:w-14 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 hover:shadow-black shadow-md 
+                } h-12 w-12 sm:h-14 sm:w-14 z-20 rounded-full border-2 border-biru overflow-hidden duration-500 hover:shadow-black shadow-md 
                 focus:outline-none relative`}
               >
                 <PaperAirplaneIcon

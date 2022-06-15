@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "./Loading";
 
 const ModalDelete = (props) => {
-  const { modalDelete, modalDeleteHandler } = props;
+  const { modalDelete, modalDeleteHandler, setDeleteRecipe } = props;
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -33,12 +33,13 @@ const ModalDelete = (props) => {
         style: { backgroundColor: "#3A7D44" },
       });
       setLoading(false);
+      setDeleteRecipe(true);
       props.setModalDelete(false);
-      setTimeout(() => {
-        location.pathname === `/recipe/${props.post_id}`
-          ? navigate("/home")
-          : window.location.reload();
-      }, 1000);
+      // setTimeout(() => {
+      //   location.pathname === `/recipe/${props.post_id}`
+      //     ? navigate("/home")
+      //     : window.location.reload();
+      // }, 1000);
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -86,7 +87,7 @@ const ModalDelete = (props) => {
                   as="div"
                   className="relative text-lg font-medium leading-6 text-putih bg-merah rounded text-center mb-5 -mt-7 -mx-10"
                 >
-                  <h1 className="h-20 w-100 flex justify-center items-center text-xl">
+                  <h1 className="h-20 w-100 flex justify-center items-center text-sm sm:text-xl">
                     You are about to delete your post
                   </h1>
                   <XIcon

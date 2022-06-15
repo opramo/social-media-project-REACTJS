@@ -3,15 +3,19 @@ import Recipe from "../components/Recipe";
 import Loading from "../components/Loading";
 import useInfiniteScroll from "../Helpers/useInfiniteScroll";
 import { useCallback } from "react";
+import { useSelector } from "react-redux";
 
 const Home = () => {
   const initialPage = 0;
   const [page, setPage] = useState(initialPage);
   const limit = 3;
+  let { refresh } = useSelector((state) => state.user);
   const { recipe, loading, hasMore, error, errorMsg } = useInfiniteScroll(
     limit,
     page
   );
+  // console.log(refresh);
+  console.log(`page: ${page}`);
 
   const observer = useRef();
   const lastRecipe = useCallback(
@@ -30,9 +34,9 @@ const Home = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-
+    setPage(initialPage);
     // eslint-disable-next-line
-  }, []);
+  }, [refresh]);
 
   const printRecipe = () => {
     let dataRecipe = recipe;
@@ -64,7 +68,11 @@ const Home = () => {
           <div className="bg-putih w-[600px] h-auto py-5 relative z-10">
             {printRecipe()}
             {loading && (
-              <div className="py-20 flex flex-col justify-center items-center">
+              <div
+                className={`${
+                  recipe[0] ? "py-20" : "min-h-screen -mt-20"
+                } flex flex-col justify-center items-center`}
+              >
                 <Loading className="h-20 w-20 animate-bounce" />
                 <div>Please wait...</div>
               </div>

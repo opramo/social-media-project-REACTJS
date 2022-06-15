@@ -21,9 +21,17 @@ const NavBar = () => {
   const location = useLocation();
 
   // Global states
-  const { username, is_verified, fullname, profile_picture, profile_cover } =
-    useSelector((state) => state.user);
+  let {
+    username,
+    is_verified,
+    fullname,
+    profile_picture,
+    profile_cover,
+    refresh,
+  } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
+  console.log(refresh);
 
   // Local states
   const [modalLogIn, setModalLogIn] = React.useState(false);
@@ -39,9 +47,9 @@ const NavBar = () => {
     setPassVis(false);
     dispatch({ type: "CLEARERROR" });
   };
-  const refresh = () => {
-    window.location.reload();
-  };
+  // const refresh = () => {
+  //   window.location.reload();
+  // };
 
   // Handler functions)
   const modalSignUpHandler = () => {
@@ -106,8 +114,8 @@ const NavBar = () => {
         />
       )}
 
-      <div className="z-30 fixed w-screen h-20 flex justify-center bg-putih shadow-lg">
-        <div className="px-10 flex items-center justify-center  relative bg-putih pointer-events-none">
+      <div className="z-40 fixed w-screen h-20 flex justify-center bg-putih shadow-lg">
+        <div className="px-36 flex items-center justify-center  relative bg-putih pointer-events-none">
           {/* Left Button */}
           {token ? (
             <motion.button
@@ -154,10 +162,15 @@ const NavBar = () => {
               duration: 0.1,
             }}
             onClick={() => {
-              navigate("/");
               token ? navigate("/home") : navigate("/");
-              (location.pathname === "/home" || location.pathname === "/") &&
-                refresh();
+              if (location.pathname === "/home") {
+                dispatch({ type: "REFRESH", payload: refresh + 1 });
+                toast.success("Feeds refreshed!", {
+                  theme: "colored",
+                  position: "top-center",
+                  style: { backgroundColor: "#3A7D44" },
+                });
+              }
             }}
             className={`border-2 border-merah rounded-full w-14 h-14 mx-3 shadow-md hover:shadow-black duration-500 focus:outline-none pointer-events-auto
             ${
@@ -184,7 +197,7 @@ const NavBar = () => {
 
           {/* Right Button */}
           {token ? (
-            <Menu as="div" className="relative ">
+            <Menu as="div" className="relative">
               {({ open }) => (
                 <>
                   <Menu.Button
@@ -236,7 +249,7 @@ const NavBar = () => {
                           // ease: "easeInOut",
                           type: "spring",
                         }}
-                        className="absolute right-0 mt-5 w-56 shadow-xl bg-putih shadow-black rounded-lg overflow-hidden -z-10 pointer-events-auto cursor-pointer"
+                        className="fixed sm:absolute right-0 mt-5 w-screen sm:w-56 shadow-xl bg-putih shadow-black rounded-lg overflow-hidden -z-10 pointer-events-auto cursor-pointer"
                       >
                         <Menu.Item
                           as="button"
@@ -248,7 +261,7 @@ const NavBar = () => {
                               profile_cover ? API_URL + profile_cover : cover
                             }
                             alt="cover"
-                            className="object-cover absolute h-full"
+                            className="object-cover absolute sm:h-full"
                           />
                           {is_verified ? null : (
                             <div className="bg-merah text-putih text-center z-10 absolute top-0 w-full py-1">

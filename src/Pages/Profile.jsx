@@ -135,7 +135,7 @@ const Profile = () => {
             </div>
           </div>
           <div className="text-white bg-gradient-to-t from-black w-full text-center flex flex-col items-center pb-10 z-10 text-xs">
-            <div className="text-center py-1 text-putih text-base">
+            <div className="text-center py-1 text-putih text-base font-semibold">
               {profile?.fullname}
             </div>
             {profile?.bio}

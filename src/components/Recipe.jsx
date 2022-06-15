@@ -50,6 +50,7 @@ const Recipe = (props) => {
 
   const [modalNewComment, setModalNewComment] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
+  const [deleteRecipe, setDeleteRecipe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [kissed, setKissed] = useState(liked);
   const [likes, setLikes] = useState(totalLikes);
@@ -251,7 +252,7 @@ const Recipe = (props) => {
   // Ingredients List Render ///////////////
   const printIngredients = () => {
     return (
-      <ul className="max-w-full h-full list-disc ml-5 break-words text-xs sm:text-base bg-putih">
+      <ul className="max-w-full h-full list-disc break-words ml-5 text-xs sm:text-base bg-putih">
         {recipe.ingredients.map((content) => {
           return (
             <li key={content.ingredient_id} className="my-2">
@@ -267,10 +268,10 @@ const Recipe = (props) => {
   // Instructions List Render //////////////
   const printInstructions = () => {
     return (
-      <ol className="max-w-full h-full list-decimal ml-5 break-words text-xs sm:text-base bg-putih">
+      <ol className="max-w-full h-full list-decimal break-words ml-5 text-xs sm:text-base bg-putih">
         {recipe.instructions.map((content) => {
           return (
-            <li key={content.instruction_id} className="my-2">
+            <li key={content.instruction_id} className="my-2 text-justify pr-2">
               {content.instruction}
             </li>
           );
@@ -295,7 +296,7 @@ const Recipe = (props) => {
                     : navigate(`/profile/${content.username}`);
                 }}
               >
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full mr-3  overflow-hidden">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-3  overflow-hidden">
                   <img
                     src={
                       content.profile_picture
@@ -305,7 +306,7 @@ const Recipe = (props) => {
                     alt=""
                   />
                 </div>
-                <div className="text-xs md:text-base">
+                <div className="text-xs sm:text-base">
                   <div className="mb-1">{content.username}</div>
                   <div>{content.fullname}</div>
                 </div>
@@ -343,7 +344,7 @@ const Recipe = (props) => {
                         : navigate(`/profile/${content.username}`);
                     }}
                   >
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full mr-3 overflow-hidden">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-3 overflow-hidden">
                       <img
                         src={
                           content.profile_picture
@@ -353,7 +354,7 @@ const Recipe = (props) => {
                         alt=""
                       />
                     </div>
-                    <div className="text-xs md:text-base">
+                    <div className="text-xs sm:text-base">
                       <div className="mb-1">{content.username}</div>
                       <div>{content.fullname}</div>
                     </div>
@@ -399,7 +400,7 @@ const Recipe = (props) => {
   ///////////////////////// Component Render /////////////////////
   return (
     <div
-      className={`
+      className={`${deleteRecipe ? "hidden" : null}
     relative w-full aspect-square mb-5 rounded-xl overflow-hidden bg-transparent shadow-black/50 shadow-lg`}
     >
       {modalNewComment && (
@@ -419,6 +420,7 @@ const Recipe = (props) => {
           modalDelete={modalDelete}
           modalDeleteHandler={modalDeleteHandler}
           post_id={post_id}
+          setDeleteRecipe={setDeleteRecipe}
         />
       )}
 
@@ -509,7 +511,7 @@ const Recipe = (props) => {
                       : navigate(`/profile/${user.username}`);
                   }}
                 >
-                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full mr-3 overflow-hidden">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full mr-3 overflow-hidden">
                     <img
                       src={
                         user.profile_picture
@@ -732,7 +734,7 @@ const Recipe = (props) => {
                 <div className="w-full h-full overflow-y-scroll border-y border-merah">
                   {loading ? (
                     <div className="h-full flex flex-col justify-center items-center">
-                      <Loading className="h-12 w-12 md:h-14 md:w-14 animate-spin" />
+                      <Loading className="h-12 w-12 sm:h-14 sm:w-14 animate-spin" />
                       <div>Please wait...</div>
                     </div>
                   ) : (
@@ -745,7 +747,7 @@ const Recipe = (props) => {
                 <div className="w-full h-full overflow-y-scroll border-y border-merah">
                   {loading ? (
                     <div className="h-full flex flex-col justify-center items-center">
-                      <Loading className="h-12 w-12 md:h-14 md:w-14 animate-spin" />
+                      <Loading className="h-12 w-12 sm:h-14 sm:w-14 animate-spin" />
                       <div>Please wait...</div>
                     </div>
                   ) : (
@@ -770,13 +772,15 @@ const Recipe = (props) => {
               <div className="h-full w-full relative bg-putih border-y border-merah  overflow-y-scroll mt-5">
                 {loading ? (
                   <div className="h-full flex flex-col justify-center items-center">
-                    <Loading className="h-12 w-12 md:h-14 md:w-14 animate-spin" />
+                    <Loading className="h-12 w-12 sm:h-14 sm:w-14 animate-spin" />
                     <div>Please wait...</div>
                   </div>
                 ) : likers[0] ? (
                   printUserLikes()
                 ) : (
-                  "No chef likes this recipe :<"
+                  <div className="h-full flex items-center justify-center text-center text-xs sm:text-base">
+                    No chef likes this recipe :&#60;
+                  </div>
                 )}
               </div>
             </div>
@@ -795,13 +799,13 @@ const Recipe = (props) => {
               <div className="h-full w-full relative bg-putih overflow-y-scroll border-y border-merah mt-5">
                 {loading ? (
                   <div className="py-20 flex flex-col justify-center items-center">
-                    <Loading className="h-12 w-12 md:h-14 md:w-14 animate-spin" />
+                    <Loading className="h-12 w-12 sm:h-14 sm:w-14 animate-spin" />
                     <div>Please wait...</div>
                   </div>
                 ) : comments[0] ? (
                   printComments()
                 ) : (
-                  <div className="h-full flex items-center justify-center text-center text-xs md:text-base">
+                  <div className="h-full flex items-center justify-center text-center text-xs sm:text-base">
                     No chef commented here :&#60;
                   </div>
                 )}
@@ -813,7 +817,7 @@ const Recipe = (props) => {
                     type="button"
                     className={`${
                       modalNewComment ? "bg-hijau" : "bg-putih"
-                    } h-12 w-12 md:h-14 md:w-14 rounded-full border-2 border-hijau ml-1 
+                    } h-12 w-12 sm:h-14 sm:w-14 rounded-full border-2 border-hijau ml-1 
                     overflow-hidden duration-500 hover:shadow-black 
                     shadow-md focus:outline-none`}
                     onClick={() => {
@@ -832,9 +836,6 @@ const Recipe = (props) => {
                       } h-full w-full p-2 duration-500`}
                     />
                   </button>
-                  {/* <span className="text-xs ml-5">
-                    Leave a comment on this recipe!
-                  </span> */}
                 </div>
               </div>
             </div>

@@ -89,8 +89,8 @@ const ModalDeleteComment = (props) => {
                   as="div"
                   className="relative text-lg font-medium leading-6 text-putih bg-merah rounded text-center mb-5 -mt-7 -mx-10"
                 >
-                  <h1 className="h-20 w-100 flex justify-center items-center text-xl">
-                    You are about to delete your comment
+                  <h1 className="h-20 w-100 flex justify-center items-center text-sm px-10 sm:text-xl">
+                    Deleting your comment...
                   </h1>
                   <XIcon
                     className="h-5 w-5 absolute top-1/2 right-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:text-white text-white/50 duration-500 border-2 border-white/30 rounded-full hover:bg-white/30 hover:border-transparent"

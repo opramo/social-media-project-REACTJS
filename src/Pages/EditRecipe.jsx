@@ -161,7 +161,7 @@ const EditRecipe = () => {
               >
                 {(formik) => {
                   return (
-                    <Form className="flex flex-col gap-y-5 px-2 md:px-5">
+                    <Form className="flex flex-col gap-y-5 px-2 sm:px-5">
                       {/* Recipe's Name */}
                       <div className="flex flex-col relative">
                         <label htmlFor="title" className="text-center">

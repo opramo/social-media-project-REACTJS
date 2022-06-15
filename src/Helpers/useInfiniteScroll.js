@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import API_URL from "./apiurl";
+import { useSelector } from "react-redux";
 
 function useInfiniteScroll(limit, page) {
+  let { refresh } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -32,7 +34,14 @@ function useInfiniteScroll(limit, page) {
   useEffect(() => {
     getFeeds();
     // eslint-disable-next-line
-  }, [limit, page]);
+  }, [limit, page, refresh]);
+  useEffect(() => {
+    if (refresh) {
+      setRecipe([]);
+    }
+
+    // eslint-disable-next-line
+  }, [refresh]);
 
   return { loading, error, recipe, hasMore, errorMsg };
 }
