@@ -182,26 +182,26 @@ const AccountSettings = () => {
                       {is_verified ? (
                         "Already verified!"
                       ) : (
-                        <>
-                          "Not yet verified!"
+                        <div className="flex flex-col">
+                          Not yet verified!
                           <button
                             type="button"
                             disabled={is_verified || loadingVerify}
-                            className="shadow-md inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md
+                            className="shadow-md inline-flex justify-center px-4 py-2 mt-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md
                         disabled:shadow-none disabled:text-white disabled:bg-putih disabled:border-merah disabled:cursor-not-allowed
                         hover:text-white hover:shadow-black focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"
                             onClick={() => sendEmail()}
                           >
                             Send Email Verification
                           </button>
-                        </>
+                        </div>
                       )}
                     </div>
                   </>
                 )}
               </div>
               {!is_verified && (
-                <div className="text-sm mr-5 text-merah">
+                <div className="text-sm mr-5 text-merah text-center">
                   Please verify your account to be able to change User Details.
                 </div>
               )}
@@ -500,7 +500,7 @@ const AccountSettings = () => {
                           type="email"
                           name=""
                           id=""
-                          className="p-2 outline outline-gray-600 outline-2 rounded-lg bg-putih w-full cursor-not-allowed"
+                          className="p-2 outline outline-gray-600 outline-1 rounded-lg bg-putih w-full cursor-not-allowed"
                           value={email}
                           disabled
                         />

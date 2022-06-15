@@ -266,7 +266,7 @@ const NavBar = () => {
                               {username}
                             </div>
                           ) : (
-                            <div className="bg-merah text-putih text-center z-10 absolute top-0 w-full py-1">
+                            <div className="bg-merah text-putih text-center z-10 absolute top-0 leading-10 w-full py-1">
                               unverified
                             </div>
                           )}

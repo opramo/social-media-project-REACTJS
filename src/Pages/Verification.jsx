@@ -92,18 +92,12 @@ function Verification() {
                 Welcome to our family, {username}!
               </h1>
             </div>
-            <div className="flex flex-col gap-y-5">
-              <div className="flex flex-col items-center justify-center text-center text-sm">
-                <p>
-                  Your account has been verified!
-                  <br />
-                  Please enjoy your stay here and enjoy all the features you
-                  have been waiting to use!
-                  <br />
-                  You will be redirected to home page immediately, if it's
-                  taking too long please click the button below
-                </p>
-              </div>
+            <div className="flex flex-col gap-y-5 items-center justify-center text-center text-sm">
+              <p>Your account has been verified!</p>
+              <p>
+                You will be redirected to home page immediately, if it's taking
+                too long please click the button below
+              </p>
               <button
                 type="button"
                 className="hover:text-white shadow-md hover:shadow-black inline-flex justify-center px-4 py-2 text-sm font-medium text-putih bg-hijau border border-transparent rounded-md  focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-biru duration-500"

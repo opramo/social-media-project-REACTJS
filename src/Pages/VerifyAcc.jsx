@@ -40,16 +40,13 @@ const VerifyAcc = () => {
             </div>
             <div className="flex flex-col gap-y-5 text-sm sm:text-base">
               <div className="flex flex-col relative text-center">
-                <p>
-                  Please verify your account by clicking the link that has
-                  between sent to your email!
-                </p>
+                <p>An email verification has been sent to your email!</p>
               </div>
             </div>
             <div className="mt-6 flex flex-col text-center items-center text-sm sm:text-base">
               Didn't get the email? click the button below!
               {loading ? (
-                <Loading className={"animate-spin h-10 w-10 ml-5"} />
+                <Loading className={"animate-spin h-10 w-10 mt-2"} />
               ) : (
                 <button
                   type="button"
