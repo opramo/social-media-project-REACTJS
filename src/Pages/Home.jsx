@@ -14,8 +14,6 @@ const Home = () => {
     limit,
     page
   );
-  // console.log(refresh);
-  console.log(`page: ${page}`);
 
   const observer = useRef();
   const lastRecipe = useCallback(
@@ -79,7 +77,7 @@ const Home = () => {
             )}
             {!hasMore && !loading && (
               <div className="py-20 flex flex-col justify-center items-center text-center">
-                You have reached the end! Let's make a new recipe!
+                You have reached the end! <span>Let's make a new recipe!</span>
               </div>
             )}
             {error && (

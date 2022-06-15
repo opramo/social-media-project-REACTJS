@@ -5,14 +5,11 @@ import axios from "axios";
 import API_URL from "../Helpers/apiurl";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
-import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "./Loading";
 
 const ModalDelete = (props) => {
   const { modalDelete, modalDeleteHandler, setDeleteRecipe } = props;
   const [loading, setLoading] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
 
   const onSubmit = async () => {
     try {

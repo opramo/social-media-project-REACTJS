@@ -385,7 +385,7 @@ const AccountSettings = () => {
                           disabled={!is_verified}
                           onBlur={handleBlur}
                           value={values.fullname}
-                          className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
+                          className={`p-2 rounded-lg bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
                             errors.fullname
                               ? "outline outline-2 outline-merah"
                               : "outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru"
@@ -424,7 +424,7 @@ const AccountSettings = () => {
                           disabled={!is_verified}
                           onBlur={handleBlur}
                           value={values.username}
-                          className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
+                          className={`p-2 rounded-lg bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
                             errors.username
                               ? "outline outline-2 outline-merah"
                               : "outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru"
@@ -474,7 +474,7 @@ const AccountSettings = () => {
                           disabled={!is_verified}
                           onBlur={handleBlur}
                           value={values.bio}
-                          className={`p-2 rounded bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
+                          className={`p-2 rounded-lg bg-putih w-full disabled:cursor-not-allowed disabled:outline-gray-600 ${
                             errors.bio
                               ? "outline outline-2 outline-merah"
                               : "outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru"
@@ -500,7 +500,7 @@ const AccountSettings = () => {
                           type="email"
                           name=""
                           id=""
-                          className="p-2 outline outline-gray-600 outline-2 rounded bg-putih w-full cursor-not-allowed"
+                          className="p-2 outline outline-gray-600 outline-2 rounded-lg bg-putih w-full cursor-not-allowed"
                           value={email}
                           disabled
                         />

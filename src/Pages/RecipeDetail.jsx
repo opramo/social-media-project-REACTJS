@@ -34,7 +34,9 @@ const RecipeDetails = () => {
   const dispatch = useDispatch();
   const params = useParams();
 
-  const { is_verified, id, username } = useSelector((state) => state.user);
+  const { is_verified, id, username, isLogIn } = useSelector(
+    (state) => state.user
+  );
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [modalNewComment, setModalNewComment] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
@@ -135,6 +137,12 @@ const RecipeDetails = () => {
               );
               kissed ? setLikes(likes - 1) : setLikes(likes + 1);
               setKissed(!kissed);
+            } else if (!isLogIn) {
+              toast.error("Please login into your account!", {
+                theme: "colored",
+                position: "top-center",
+                style: { backgroundColor: "#A90409" },
+              });
             } else {
               toast.error("Please verify your account!", {
                 theme: "colored",
@@ -198,7 +206,7 @@ const RecipeDetails = () => {
           setLikersRender([...likers.splice(0, 5)]);
         }
       } catch (error) {
-        console.log(error);
+        navigate("/notfound404");
       }
     })();
     window.scrollTo(0, 0);
@@ -569,13 +577,21 @@ const RecipeDetails = () => {
             modalNewComment ? "bg-hijau" : "bg-putih"
           } z-40 h-12 w-12 sm:h-14 sm:w-14 mt-2 rounded-full  border-2 border-hijau overflow-hidden duration-500 hover:shadow-black shadow-md focus:outline-none`}
           onClick={() => {
-            is_verified
-              ? modalNewCommentHandler()
-              : toast.error("Please verify your account!", {
-                  theme: "colored",
-                  position: "top-center",
-                  style: { backgroundColor: "#A90409" },
-                });
+            if (is_verified) {
+              modalNewCommentHandler();
+            } else if (!isLogIn) {
+              toast.error("Please login into your account!", {
+                theme: "colored",
+                position: "top-center",
+                style: { backgroundColor: "#A90409" },
+              });
+            } else {
+              toast.error("Please verify your account!", {
+                theme: "colored",
+                position: "top-center",
+                style: { backgroundColor: "#A90409" },
+              });
+            }
           }}
         >
           <ChatAltIcon

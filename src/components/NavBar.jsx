@@ -31,8 +31,6 @@ const NavBar = () => {
   } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  console.log(refresh);
-
   // Local states
   const [modalLogIn, setModalLogIn] = React.useState(false);
   const [modalSignUp, setModalSignUp] = React.useState(false);
@@ -76,7 +74,7 @@ const NavBar = () => {
         location.pathname === "/editrecipe" ||
         location.pathname === "/verifyaccount")
     ) {
-      console.log(`Tidak ada Session`);
+      console.log(`No Session`);
       navigate("/");
     }
     // eslint-disable-next-line
@@ -263,7 +261,11 @@ const NavBar = () => {
                             alt="cover"
                             className="object-cover absolute sm:h-full"
                           />
-                          {is_verified ? null : (
+                          {is_verified ? (
+                            <div className="h-auto w-full z-10 bg-gradient-to-b from-black/70 leading-10 text-white absolute top-0 font-semibold tracking-widest">
+                              {username}
+                            </div>
+                          ) : (
                             <div className="bg-merah text-putih text-center z-10 absolute top-0 w-full py-1">
                               unverified
                             </div>
@@ -286,11 +288,9 @@ const NavBar = () => {
                               className="h-20 w-20"
                             />
                           </div>
-                          <div className="h-auto w-full z-10 bg-black/30 text-white">
-                            {username}
-                          </div>
-                          <div className="h-auto w-full z-10 bg-black/30 text-white">
-                            {fullname}
+
+                          <div className="h-auto w-full z-10 bg-gradient-to-t from-black/70 leading-10 text-white absolute bottom-0 ">
+                            {is_verified ? fullname : username}
                           </div>
                         </Menu.Item>
                         <Menu.Item

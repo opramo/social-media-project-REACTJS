@@ -38,16 +38,15 @@ const VerifyAcc = () => {
                 Please Verify Your Account!
               </h1>
             </div>
-            <div className="flex flex-col gap-y-5">
+            <div className="flex flex-col gap-y-5 text-sm sm:text-base">
               <div className="flex flex-col relative text-center">
                 <p>
-                  It seems like you have not verified your account yet! Please
-                  verify your account by clicking the link that has between sent
-                  to your email!
+                  Please verify your account by clicking the link that has
+                  between sent to your email!
                 </p>
               </div>
             </div>
-            <div className="mt-6 flex flex-col text-center items-center">
+            <div className="mt-6 flex flex-col text-center items-center text-sm sm:text-base">
               Didn't get the email? click the button below!
               {loading ? (
                 <Loading className={"animate-spin h-10 w-10 ml-5"} />

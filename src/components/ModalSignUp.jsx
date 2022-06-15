@@ -194,8 +194,8 @@ const ModalSignUp = (props) => {
                                 values.username.length &&
                                 dirty) ||
                               (message[0] && !changed)
-                                ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
+                                ? "p-2 px-4 outline outline-merah outline-2 rounded-lg bg-putih"
+                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded-lg bg-putih"
                             }
                           />
 
@@ -236,8 +236,8 @@ const ModalSignUp = (props) => {
                                 values.email.length &&
                                 dirty) ||
                               (message[1] && !changed)
-                                ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
+                                ? "p-2 px-4 outline outline-merah outline-2 rounded-lg bg-putih"
+                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded-lg bg-putih"
                             }
                           />
                           {errors.email &&
@@ -276,8 +276,8 @@ const ModalSignUp = (props) => {
                               touched.password &&
                               values.password.length &&
                               dirty
-                                ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
+                                ? "p-2 px-4 outline outline-merah outline-2 rounded-lg bg-putih"
+                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded-lg bg-putih"
                             }
                           />
                           {errors.password &&
@@ -319,8 +319,8 @@ const ModalSignUp = (props) => {
                               touched.passwordConfirm &&
                               values.passwordConfirm.length &&
                               dirty
-                                ? "p-2 px-4 outline outline-merah outline-2 rounded bg-putih"
-                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
+                                ? "p-2 px-4 outline outline-merah outline-2 rounded-lg bg-putih"
+                                : "p-2 px-4 outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded-lg bg-putih"
                             }
                           />
                           {errors.passwordConfirm &&

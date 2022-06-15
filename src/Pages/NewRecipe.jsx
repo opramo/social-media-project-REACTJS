@@ -129,11 +129,11 @@ const NewRecipe = () => {
                           name="title"
                           placeholder="Recipe's Name"
                           type="text"
-                          className={
+                          className={`p-2 rounded text-center bg-putih outline ${
                             formik.errors.title && formik.touched.title
-                              ? "p-2 text-center outline outline-merah outline-2 rounded bg-putih"
-                              : "p-2 text-center outline-gray-500 outline outline-1 focus:outline-2 focus:outline-biru rounded bg-putih"
-                          }
+                              ? " outline-merah outline-2"
+                              : "outline-gray-500  outline-1 focus:outline-2 focus:outline-biru"
+                          }`}
                         />
                         <ErrorMessage
                           component="div"
@@ -141,6 +141,7 @@ const NewRecipe = () => {
                           className="text-merah -mt-5 ml-2 text-xs absolute bottom-0"
                         />
                       </div>
+
                       {/* Upload photo */}
 
                       <div className="flex flex-col relative w-full items-center">
@@ -150,7 +151,7 @@ const NewRecipe = () => {
                         >
                           Recipe Photo
                         </label>
-                        <div className=" w-full aspect-video border rounded-lg border-gray-500 overflow-hidden">
+                        <div className=" w-full aspect-video border rounded border-gray-500 overflow-hidden">
                           <img
                             src={photoRecipe?.url}
                             alt=""

@@ -25,7 +25,7 @@ function LandingPage() {
       <div className="h-screen w-full flex flex-col pt-20 bg-putih items-center overflow-hidden">
         <div className=" h-full w-full flex justify-center items-center relative">
           <h1 className="w-full z-10 text-8xl sm:text-9xl font-semibold text-putih break-words drop-shadow-[0_5px_5px_rgba(256,256,256,0.5)]">
-            <span className="text-merah drop-shadow-lg shadow-white">
+            <span className="text-merah drop-shadow-lg shadow-white text-center sm:flex sm:justify-center">
               The Chef Book
             </span>
           </h1>

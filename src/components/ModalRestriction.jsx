@@ -6,12 +6,12 @@ const ModalRestriction = () => {
   return (
     <div className="fixed z-50 left-1/2 -translate-x-1/2 bottom-0 inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-putih shadow-2xl rounded-2xl">
       <div className="text-lg font-medium leading-6 text-putih bg-merah rounded text-center mb-5 -mt-7 -mx-10 flex justify-center">
-        <h1 className="h-20 w-100 flex justify-center items-center text-xl">
+        <h1 className="h-14 sm:h-20 w-100 flex justify-center items-center text-base sm:text-xl">
           Please Verify!
         </h1>
       </div>
       <div className="flex flex-col gap-y-5">
-        <div className="flex flex-col items-center justify-center text-center text-sm">
+        <div className="flex flex-col items-center justify-center text-center text-xs sm:text-base">
           <p>
             To enjoy all the features, please verify your account! <br />
             Go to the Account Settings Page to verify your account.
