@@ -115,7 +115,8 @@ const Profile = () => {
                   : cover
               }
               alt=""
-              className="h-full w-full"
+              className="w-full h-full object-cover"
+              style={{ objectPosition: "50% 50%" }}
             />
           </div>
           <div className="bg-gradient-to-b from-black py-2 text-center text-lg font-bold text-putih w-full tracking-wider z-10">

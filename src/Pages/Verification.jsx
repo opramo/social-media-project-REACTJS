@@ -24,6 +24,9 @@ function Verification() {
 
   const verifying = async () => {
     try {
+      if (is_verified) {
+        return navigate("/");
+      }
       setLoading(true);
       let res = await axios.get(`${API_URL}/auth/verification`, {
         headers: {
@@ -62,11 +65,6 @@ function Verification() {
       setLoadingEmail(false);
     }
   };
-
-  useEffect(() => {
-    is_verified && navigate("/");
-    // eslint-disable-next-line
-  }, []);
 
   if (loading) {
     return (

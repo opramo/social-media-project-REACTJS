@@ -24,8 +24,18 @@ function LandingPage() {
     <>
       <div className="h-screen w-full flex flex-col pt-20 bg-putih items-center overflow-hidden">
         <div className=" h-full w-full flex justify-center items-center relative">
-          <h1 className="z-10 text-9xl text-white">Welcome to TheChefBook</h1>
-          <img src={cover} alt="" className="h-full w-full absolute top-0" />
+          <h1 className="w-full z-10 text-9xl font-semibold text-putih break-words drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]">
+            Welcome to <br />
+            <span className="text-merah drop-shadow-lg shadow-white">
+              The Chef Book
+            </span>
+          </h1>
+          <img
+            src={cover}
+            alt=""
+            className="w-full h-full object-cover absolute"
+            style={{ objectPosition: "50% 50%" }}
+          />
         </div>
         {/* <div className="border-2 border-black h-[800px] w-[1600px]"></div>
         <div className="border-2 border-black h-[800px] w-[1600px]"></div> */}

@@ -31,9 +31,10 @@ function useInfiniteScroll(limit, page) {
 
   useEffect(() => {
     getFeeds();
+    // eslint-disable-next-line
   }, [limit, page]);
 
-  return { loading, error, recipe, hasMore };
+  return { loading, error, recipe, hasMore, errorMsg };
 }
 
 export default useInfiniteScroll;
