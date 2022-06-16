@@ -10,6 +10,7 @@ This is an Individual Project for Purwadhika Digital School's bootcamp requireme
 The project has the following features such as:
 -Authentication (Register with authentication using JWT Token and bcrypt for password hashing method)
 -Email verification (by using the help of node-mailer to automatically send the verification & forgot password email)
+-Global state management to help manage states on some components globally (by using Redux)
 -Full CRUD operations on posts made from users
 -Home page posts fetching using infinite-scroll method
 -Image upload which uploaded on the self-made server (by using the help of multer module)
